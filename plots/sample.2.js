@@ -1,0 +1,171 @@
+var Base = require('../lib/base'),
+    Plot = new Base.Template;
+
+Object.extend(Plot, {
+
+	title: 'Sample Plot 2',
+	createdBy: 'Odd Marthon Lende',
+	creationDate: '2012-10-03T09:12Z'
+
+});
+
+Object.extend(Plot.datasets, {
+
+		0 : {
+
+			"type": "curve",
+		  	"id" : 'b39b2f24-eb7c-433d-95cd-2b951ce4a8a4',
+			"height": "25%",
+			"width": "33%",
+			"title": "Example Curve 1 (Seconds / 5 Minutes)",
+			"description": "Curve Example",
+			"unit" : "seconds",
+			"resolution": 1 / 24 / 60 * 5,
+			"multiple": false,
+			"options" : {
+				"rgraph" : {
+					"chart.filled" : false,
+					'chart.linewidth' : 1
+				}
+			}
+		},
+
+		2 : {
+
+			"type": "curve",
+		  	"id" : '2235a6e4-b1e7-4809-bb8d-c006bbc5cf59',
+			"height": "25%",
+			"width": "34%",
+			"title": "Example Curve 2 (Minutes / 30 Minutes)",
+			"description": "Curve Example",
+			"unit" : "minutes",
+			"resolution": 1 / 24 / 2,
+			"multiple": false,
+			"options" : {
+				"rgraph" : {
+					"chart.filled" : true,
+					"chart.colors" : ['#9FF781'],
+					"chart.fillstyle" : ['#CEF6EC'],
+					"chart.linewidth" : 1,
+					"chart.curvy" : false
+				}
+			}
+		},
+
+		1 : {
+
+			"type": "curve",
+		  	"id" : 'cd869530-d580-49c2-bd23-3a64cdb24222',
+			"height": "25%",
+			"width": "34%",
+			"title": "Example Curve 3 (Seconds / 1 Minute)",
+			"description": "Curve Example",
+			"unit" : "seconds",
+			"resolution": 1 / 24 / 60,
+			"multiple": false,
+			"options" : {
+				"rgraph" : {
+					"chart.filled" : true,
+					"chart.colors" : ['#F3F781'],
+					"chart.fillstyle" : ['#F2F5A9'],
+					'chart.linewidth' : 1
+				}
+			}
+		},
+
+		3 : {
+
+			"type": "curve",
+		  	"id" : '63c60ac5-df5f-4fee-ab84-cdeec3399626',
+			"height": "25%",
+			"width": "34%",
+			"title": "Example Curve 4 (Minutes / 1 Day)",
+			"description": "Curve Example",
+			"unit" : "minutes",
+			"resolution": 1,
+			"options" : {
+				"rgraph" : {
+					"chart.filled" : true,
+					"chart.colors" : ['#F5DA81'],
+					"chart.fillstyle" : ['#F3E2A9'],
+					'chart.linewidth' : 1
+				}
+			}
+		},
+
+		4 : {
+
+			"type": "curve",
+		  	"id" : '12b0cea2-4f6d-4f5a-a45f-9960ff72df24',
+			"height": "25%",
+			"width": "34%",
+			"title": "Example Curve 2 (Seconds / 10 Minutes)",
+			"description": "Curve Example",
+			"unit" : "seconds",
+			"resolution": 1 / 24 / 60 * 10,
+			"options" : {
+				"rgraph" : {
+					"chart.filled" : false,
+					"chart.colors" : ['#FF0000', '#00FF00', '#0000FF'],
+					"chart.fillstyle" : ['#DD0000', '#00DD00', '#0000DD'],
+					'chart.linewidth' : 1
+				}
+			}
+		},
+
+		5 : {
+
+			"type": "curve",
+		  	"id" : 'ddd243c6-9258-4c36-b5b7-b38b7a13d774',
+			"height": "25%",
+			"width": "34%",
+			"title": "Example Curve 6 (Minutes / 1 Day)",
+			"description": "Curve Example",
+			"unit" : "minutes",
+			"resolution": 1,
+			"multiple": false,
+			"options" : {
+				"rgraph" : {
+					"chart.filled" : true,
+					"chart.colors" : ['#9F81F7'],
+					"chart.fillstyle" : ['#BCA9F5'],
+					'chart.linewidth' : 1
+				}
+			}
+		},
+
+		6 : {
+
+			"type": 'graph',
+			"id" : '074892c6-bb73-4400-a49f-05d944a28853',
+			"width" : "50%",
+			"height" : "50%",
+			"multiple" : false,
+            "labels" : ["a", "b", "c"],
+            "title": "Example Graph 1",
+			"description": "Example Graph",
+			"options" : {
+				"rgraph" : {
+					"chart.labels.above" : false,
+					"chart.shadow" : false,
+					"chart.key.interactive" : false,
+					"chart.colors" :  ['#000000']
+				}
+			}
+		},
+
+		7 : {
+
+			"type": 'graph',
+			"id" : '89422367-8dcc-45a1-b98b-4cd60b9521fa',
+			"width" : "50%",
+			"height" : "50%",
+			"multiple" : false,
+            "labels" : ["a", "b", "c"],
+            "title": "Example Graph 2",
+			"description": "Example Graph"
+		},
+
+});
+
+module.exports = Plot;

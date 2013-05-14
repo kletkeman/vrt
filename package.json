@@ -1,0 +1,14 @@
+{
+  "author": "Odd Marthon Lende (oddmarthon.lende@bakerhughes.com)",
+  "name": "VisualizeRT",
+  "description": "RealTime Data Visualizer",
+  "version": "0.1.0",
+  "main": "./index.js",
+  "private" : true,
+  "dependencies" : {
+	"socket.io" : ">=0.9.8",
+	"express" : ">=3.0 <4.0",
+        "prototype" : ">=0.0.5",
+	"asyncblock" : ">=0.3.4"
+  }
+}
