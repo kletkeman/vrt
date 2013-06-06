@@ -3,7 +3,10 @@
 
 Realtime Data Visualizer for Node.js
 
+## Quick Start
+===
 
+node standalone.js && node test/test.js
 
 ##License
 ===
