@@ -53,6 +53,10 @@ var viewController = {
 	},
 
 	hideAll : function() {
+		
+		if(window['RGraph'])
+			RGraph.ObjectRegistry.Clear();
+
 		for(var id in vrt.Api.DataSet.collection)
 			vrt.Api.DataSet.collection[id].hide();
 	},
@@ -90,6 +94,8 @@ document.observe('dom:loaded', function() {
 	var responder = function(response) {
 		if(response.action === 'onCreate')
 			new vrt.Api[response.ms.type.capitalize()](response.ms);
+		else if(response.action === 'onError')
+			console.error(response);
 		else if(/^(on)/gi.test(response.action))
 			vrt.receive(response.type, response.action, response.ms);;
 	};
