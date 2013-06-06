@@ -6,9 +6,10 @@
   "main": "./index.js",
   "private" : true,
   "dependencies" : {
-	"socket.io" : ">=0.9.8",
-	"express" : ">=3.0 <4.0",
-        "prototype" : ">=0.0.5",
-	"asyncblock" : ">=0.3.4"
+	   "socket.io" : ">=0.9.8",
+     "express" : ">=3.0 <4.0",
+     "prototype" : ">=0.0.5",
+	   "asyncblock" : ">=0.3.4",
+     "guid" : ">=0.0.10"
   }
 }
