@@ -100,12 +100,19 @@ Object.extend(Plot.datasets, {
 
       "type": 'vprogress',
       "id" : '91d7b990-25a8-4276-9364-5a8c7925b163',
-      "width" : "15%",
+      "width" : "20%",
       "height" : "50%",
       "title": "Memory (MB)",
       "topBoundary" : (function() { for(var mb = 0, len = Math.round(os.totalmem() / 1024 / 1024); mb < len; mb+=100); return mb; })(),
       "description": "Used Memory vs Total Memory",
-      "showLabels" : false
+      "showLabels" : true,
+      "options" : {
+        "rgraph" : {
+          "chart.gutter.right" : 215,
+          "chart.gutter.bottom" : 5,
+          "chart.key.position.x" : 150
+        }
+      }
     },
 
     5 : {
@@ -117,14 +124,19 @@ Object.extend(Plot.datasets, {
       "title": "CPU load",
       "description": "1 minute CPU load average",
       "showLabels" : false,
-      "topBoundary" : 100
+      "topBoundary" : 100,
+      "options" : {
+        "rgraph" : {
+          "chart.gutter.bottom" : 5
+        }
+      }
     },
 
     6 : {
 
       "type": 'graph',
       "id" : '7a37a6b0-365a-4b2e-8ac3-3ffd90c7dc05',
-      "width" : "30%",
+      "width" : "65%",
       "height" : "50%",
       "multiple" : true,
       "labels" : ["1 Minute Average", "5", "15"],
@@ -134,120 +146,90 @@ Object.extend(Plot.datasets, {
         "rgraph" : {
           "chart.labels.above" : true,
           "chart.shadow" : true,
-          "chart.key.interactive" : true
+          "chart.key.interactive" : true,
+          "chart.text.size" : 10,
+          "chart.gutter.bottom" : 55
+        }
+      }
+    },
+
+    7 : {
+
+      "type": 'gauge',
+      "id" : 'd6f7007a-cdcd-11e2-9523-db65f68810d5',
+      "width" : "25%",
+      "height" : "20%",
+      "min" : 0,
+      "max" : 100,
+      "title": "CPU load 3",
+      "description": "CPU load",
+      "options" : {
+        "rgraph" : {
+          "chart.text.size" : 8,
+          "chart.title.top.pos": 0.15,
+          "chart.title.size" : 8
+        }
+      }
+    },
+
+    8: {
+
+      "type": 'gauge',
+      "id" : '604df2d4-cdce-11e2-a715-83c718705c79',
+      "width" : "25%",
+      "height" : "20%",
+      "min" : 0,
+      "max" : 100,
+      "title": "Net In Mbit\\s",
+      "description": "Network Bandwidth Incoming",
+      "options" : {
+        "rgraph" : {
+          "chart.text.size" : 8,
+          "chart.title.top.pos": 0.15,
+          "chart.title.size" : 8
+        }
+      }
+    },
+
+    9 : {
+
+      "type": 'gauge',
+      "id" : '6098647c-cdce-11e2-aeab-ef2b3978312c',
+      "width" : "25%",
+      "height" : "20%",
+      "min" : 0,
+      "max" : 100,
+      "title": "Net Out kB\\s",
+      "description": "Network Bandwidth Outgoing",
+      "options" : {
+        "rgraph" : {
+          "chart.text.size" : 8,
+          "chart.title.top.pos": 0.15,
+          "chart.title.size" : 8
+        }
+      }
+    },
+
+    10 : {
+
+      "type": 'gauge',
+      "id" : '612d5014-cdce-11e2-ab74-435da7c8812a',
+      "width" : "25%",
+      "height" : "20%",
+      "min" : 0,
+      "max" : 100,
+      "title": "Net Total Mbit\\s",
+      "description": "Total Network Bandwidth",
+      "options" : {
+        "rgraph" : {
+          "chart.text.size" : 8,
+          "chart.title.top.pos": 0.15,
+          "chart.title.size" : 8
         }
       }
     }
 
 });
-
-try {
-
-  var pcap = require('pcap'),
-      pcap_session = pcap.createSession('eth0'),
-      throughput = {},
-      if_addresses = [];
-
-  pcap_session.findalldevs().forEach(function (dev) {
-    if (pcap_session.device_name === dev.name)
-      dev.addresses.forEach(function (iface) {
-        if_addresses.push(iface.addr);
-      });
-  });
-
-  pcap_session.on('packet', function(raw) {
-
-    var packet = pcap.decode.packet(raw),
-        saddr,
-        daddr,
-        direction,
-        len    = packet.pcap_header.len;
-    
-    if(packet.link.ip && packet.link.ip.tcp) {
-      
-      daddr  = packet.link.ip.daddr,
-      saddr  = packet.link.ip.saddr;
-
-      if(if_addresses && if_addresses.indexOf(daddr) > -1)
-        direction = 'in';
-      else if(if_addresses && if_addresses.indexOf(saddr) > -1)
-        direction = 'out';
-
-      if(direction) {
-        throughput[direction] = throughput[direction] || 0;    
-        throughput[direction] += len;
-      }
-
-    }
-
-  });
-
-  setInterval(function() {
-
-    var total = 0;
-
-    for(var direction in throughput) {
-
-      total += throughput[direction];
-
-      if(!throughput[direction])
-        continue;
-
-      if(direction === 'in') {
-
-        vrt.write(Plot.datasets[0].id, {
-          'In (kB/s)' : throughput[direction] / 1024 
-        });
-
-        vrt.write(Plot.datasets[3].id, {
-          'In' : Math.round(throughput[direction] / 1024) + ' kB/s'
-        });
-      }
-      else if(direction === 'out') {
-         vrt.write(Plot.datasets[1].id, {
-          'Out (kB/s)' : throughput[direction] / 1024
-         });
-         vrt.write(Plot.datasets[3].id, {
-          'Out' : Math.round(throughput[direction] / 1024) + ' kB/s'
-         });
-      }
-      
-      throughput[direction] = 0;
-
-    }
-    
-    vrt.write(Plot.datasets[2].id, {
-      'Total (kB/s)' : total / 1024
-    });
-
-    vrt.write(Plot.datasets[3].id, {
-
-      "Free  Memory" : Math.round(os.freemem() / 1024 / 1024) + 'MB',
-      "CPU Usage" : Math.round(os.loadavg()[0] * 100) + '%',
-      "Uptime" : Math.round(os.uptime() / 60 / 60 / 24) + ' days',
-      'Total' : Math.round(total / 1024) + ' kB/s'
-
-    });    
-
-    vrt.write(Plot.datasets[4].id, {
-      'Used Memory' : Math.round(os.totalmem() / 1024 / 1024) - Math.round(os.freemem() / 1024 / 1024),
-      'Free Memory' : Math.round(os.freemem() / 1024 / 1024)
-    });
-
-    vrt.write(Plot.datasets[5].id, {
-        'CPU Usage' : Math.round(os.loadavg()[0] * 100)
-    });
-
-    vrt.write(Plot.datasets[6].id, {
-        'CPU Usage' : os.loadavg().map(function(v) { return Math.round(v * 100); })
-    });
-
-  }, 1000);
-
-}
-catch(err) {
-  console.error(Plot.title + ' : ' + err.message);
-}
 
 module.exports = Plot;
 
