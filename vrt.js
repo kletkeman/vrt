@@ -10,14 +10,19 @@ var fs = require('fs'),
 	browserdir = '/lib/types/browser';
 
 module.exports.scripts = [
+	'/deps/RGraph/libraries/RGraph.common.dynamic.js',	
 	'/deps/RGraph/libraries/RGraph.common.core.js',
 	'/deps/RGraph/libraries/RGraph.common.tooltips.js',
 	'/deps/RGraph/libraries/RGraph.common.effects.js',
 	'/deps/RGraph/libraries/RGraph.common.key.js',
+	'/deps/RGraph/libraries/RGraph.drawing.rect.js',
 	'/deps/RGraph/libraries/RGraph.bar.js',
 	'/deps/RGraph/libraries/RGraph.pie.js',
-	'/deps/RGraph/libraries/RGraph.line.js',
+	'/deps/RGraph/libraries/RGraph.line.js',	
 	'/deps/RGraph/libraries/RGraph.vprogress.js',
+	'/deps/RGraph/libraries/RGraph.hprogress.js',
+	'/deps/RGraph/libraries/RGraph.gauge.js',
+	'/deps/RGraph/libraries/RGraph.led.js',
 	'/lib/store.js',
 	'/lib/stores/clientstore.js',
 	'/lib/api.js',
@@ -139,6 +144,24 @@ module.exports.routes = [
 			req.accepts('application/json');
 			try {
 				vrt.write(req.params.id, req.body, function(err) {
+					res.send({error: err ? err.message : 0});
+				});
+			}
+			catch(err) {
+				res.send({error: err.message});
+			}
+		}
+	},
+
+	{	
+		path:   '/api/v1/:id/save',
+		method: 'post',
+		sessions: false,
+		secure: false,
+		handler: function(req, res) {
+			req.accepts('application/json');
+			try {
+				vrt.save(req.params.id, req.body, function(err) {
 					res.send({error: err ? err.message : 0});
 				});
 			}
