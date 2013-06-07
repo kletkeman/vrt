@@ -1,5 +1,4 @@
 ##VRT
-===
 
 Realtime Data Visualizer for Node.js
 <p>VRT is an API for displaying and buffering data for node.js.<br />
@@ -9,18 +8,16 @@ Currently the best way is to define plots using files, but the goal is to be abl
 </p>
 
 ## Quick Start
-===
 
 Get RGraph (http://www.rgraph.net/) and unzip to visualizert/deps/rgraph
 
-cd visualizert\n
-npm install\n
+cd visualizert<br />
+npm install<br />
 
-run "node standalone.js"
-run "node test/test.js"
+run "node standalone.js"<br />
+run "node test/test.js"<br />
 
 ##License
-===
 
 (The MIT License)
 
