@@ -2,14 +2,19 @@
 ===
 
 Realtime Data Visualizer for Node.js
+<p>VRT is an API for displaying and buffering data for node.js.<br />
+You can use this API to create your own widgets or use the widgets already included. You write data directly to the widget by posting JSON over http.<br />
+The data and configuration can be buffered/stored in memory or other ways as long as there has been written a store module for it , currently only memory is supported. <br />
+Currently the best way is to define plots using files, but the goal is to be able to remote control the whole application remotely using the http API.
+</p>
 
 ## Quick Start
 ===
 
 Get RGraph (http://www.rgraph.net/) and unzip to visualizert/deps/rgraph
 
-cd visualizert
-npm install
+cd visualizert\n
+npm install\n
 
 run "node standalone.js"
 run "node test/test.js"
