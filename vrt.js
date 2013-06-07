@@ -30,7 +30,7 @@ module.exports.scripts = [
 ];
 
 var base = fs.readdirSync(__dirname + basedir).sort(),
-	browser = fs.readdirSync(__dirname + browserdir).sort();
+	browser = fs.readdirSync(__dirname + browserdir).sort().reverse();
 
 module.exports.scripts.push(basedir + '/dataset.js');
 module.exports.scripts.push(browserdir + '/dataset.js');
