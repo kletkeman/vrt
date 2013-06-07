@@ -11,11 +11,16 @@ Currently the best way is to define plots using files, but the goal is to be abl
 
 Get RGraph (http://www.rgraph.net/) and unzip to visualizert/deps/rgraph
 
-cd visualizert<br />
-npm install<br />
+```bash
+# Install dependencies
+cd visualizert
+npm install
 
-run "node standalone.js"<br />
-run "node test/test.js"<br />
+# Run the application and write test data to it.
+node standalone.js
+node test/test.js
+
+```
 
 ##Sample 1
 ![Screenshot of Sample 1](https://raw.github.com/oddmarthon-lende/vrt/master/screenshots/s1.png "Sample Plot 1")
