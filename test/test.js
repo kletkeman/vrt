@@ -52,7 +52,7 @@ vrt.configure({
 
 		if(!data)
 			return;
-		
+
 		var opt = Object.extend({}, options);
 
 		opt.path = (options.path + id + '/save');
@@ -105,7 +105,6 @@ setInterval(function() {
 setInterval(function() {
 	var quote = quotes[Math.round(Math.random() * quotes.length)];
 	vrt.write(s1.datasets[6].id, {0 : quote});
-	console.log(quote);
 }, 10000);
 
 // Graph 1
@@ -274,21 +273,26 @@ setInterval(function() {
 
 	  if(direction === 'in') {
 
-	    vrt.write(s3.datasets[0].id, {
+	  	var _in = {
 	      'In (kB/s)' : throughput[direction] / 1024 
-	    });
+	    };
+
+	    vrt.write(s3.datasets[0].id, _in);
+	    vrt.write(s3.datasets[7].datasets[2].id, _in);
+
 	    vrt.write(s3.datasets[3].id, {
 	      'In' : Math.round(throughput[direction] / 1024) + ' kB/s'
 	    });
+
 	    
-	   	vrt.get(s3.datasets[8].id, function(err, obj) {
+	   	vrt.get(s3.datasets[9].id, function(err, obj) {
 	   		var value = Math.round(throughput[direction] / 1024 / 1024);
 	   		var max = Math.ceil(value / 10) * 10;
 	   		if(obj.max !== max)
 		   		vrt.save(obj.id, {
 		   			max : max
 		   		});
-	   		vrt.write(s3.datasets[8].id, {
+	   		vrt.write(s3.datasets[9].id, {
 	   			value : value
 	   		});
 	   	});	   	
@@ -296,21 +300,25 @@ setInterval(function() {
 	  }
 	  else if(direction === 'out') {
 
-	     vrt.write(s3.datasets[1].id, {
+	  	var out = {
 	      'Out (kB/s)' : throughput[direction] / 1024
-	     });
+	     };
+
+	     vrt.write(s3.datasets[1].id, out);
+	     vrt.write(s3.datasets[7].datasets[2].id, out);
+
 	     vrt.write(s3.datasets[3].id, {
 	      'Out' : Math.round(throughput[direction] / 1024) + ' kB/s'
 	     });
 
-	     vrt.get(s3.datasets[9].id, function(err, obj) {
+	     vrt.get(s3.datasets[10].id, function(err, obj) {
 	   		var value = Math.round(throughput[direction] / 1024);
 	   		var max = Math.ceil(value / 1000) * 1000
 	   		if(obj.max !== max)
 		   		vrt.save(obj.id, {
 		   			max : max
 		   		});
-	   		vrt.write(s3.datasets[9].id, {
+	   		vrt.write(s3.datasets[10].id, {
 	   			value : value
 	   		});
 	   	});
@@ -323,18 +331,35 @@ setInterval(function() {
 
 	}
 
-	vrt.write(s3.datasets[2].id, {
+	var total_message = {
 	  'Total (kB/s)' : total / 1024
+	};
+
+	vrt.get(s3.datasets[7].datasets[2].id, function(err, obj) {
+	   	
+	   	var t = Object.values(total_message)[0] / 1024
+	   	var max = Math.ceil(t / 1000) * 1000;
+
+	   	if(obj.topBoundary !== max)
+			vrt.save(obj.id, {
+		   		topBoundary : max
+		   	});
+
+	   	vrt.write(s3.datasets[7].datasets[2].id, total_message);
+
 	});
 
-	vrt.get(s3.datasets[10].id, function(err, obj) {
+	vrt.write(s3.datasets[2].id, total_message);
+	
+
+	vrt.get(s3.datasets[11].id, function(err, obj) {
 		var value = Math.round(total / 1024 / 1024);
 		var max = Math.ceil(value / 10) * 10;
 	   	if(obj.max !== max)
 		   	vrt.save(obj.id, {
 		   		max : max
 		   	});
-	   	vrt.write(s3.datasets[10].id, {
+	   	vrt.write(s3.datasets[11].id, {
 	   		value : value
 	   	});
 	});
@@ -349,16 +374,22 @@ setInterval(function() {
 
 	});    
 
-	vrt.write(s3.datasets[4].id, {
+	var memory = {
 	  'Used Memory' : Math.round(os.totalmem() / 1024 / 1024) - Math.round(os.freemem() / 1024 / 1024),
 	  'Free Memory' : Math.round(os.freemem() / 1024 / 1024)
-	});
+	};
 
-	vrt.write(s3.datasets[5].id, {
+	vrt.write(s3.datasets[4].id, memory);
+	vrt.write(s3.datasets[7].datasets[0].id, memory);
+
+	var cpu = {
 	    'CPU Usage' : Math.round(os.loadavg()[0] * 100)
-	});
+	};
 
-	vrt.write(s3.datasets[7].id, {
+	vrt.write(s3.datasets[5].id, cpu);
+	vrt.write(s3.datasets[7].datasets[1].id, cpu);
+
+	vrt.write(s3.datasets[8].id, {
 	    value : Math.round(os.loadavg()[0] * 100)
 	});
 
@@ -366,5 +397,11 @@ setInterval(function() {
 	    'CPU Usage' : os.loadavg().map(function(v) { return Math.round(v * 100); })
 	});
 
+
+
 }, 1000);
+
+setInterval(function() {
+	vrt.write(s3.datasets[7].datasets[3].id, {'Sin' : Math.max(Math.sin((new Date().getTime())), 0) * 100});
+},100);
 			

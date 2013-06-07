@@ -136,7 +136,7 @@ Object.extend(Plot.datasets, {
 
       "type": 'graph',
       "id" : '7a37a6b0-365a-4b2e-8ac3-3ffd90c7dc05',
-      "width" : "65%",
+      "width" : "30%",
       "height" : "50%",
       "multiple" : true,
       "labels" : ["1 Minute Average", "5", "15"],
@@ -153,7 +153,89 @@ Object.extend(Plot.datasets, {
       }
     },
 
-    7 : {
+    7 : { // Widget stacking
+
+      "type": 'stack',
+      "id" : '6bdb1164-ce9f-11e2-bae0-6fe25a1048f5',
+      "width" : "35%",
+      "height" : "50%",
+      "title" : "System Information Bar Stack",
+      "description" : "Sysinfo Stack",
+      "datasets" : {
+
+          0 : {
+
+            "type": 'hprogress',
+            "id" : '5c5b3778-ce9a-11e2-97fe-73ae9ef18a30',
+            "width" : "100%",
+            "height" : "25%",
+            "showLabels" : false,
+            "topBoundary" :  (function() { for(var mb = 0, len = Math.round(os.totalmem() / 1024 / 1024); mb < len; mb+=100); return mb; })(),
+            "title": "Free Memory vs Used",
+            "description": "Memory Example 2",
+            "options" : {
+              "rgraph" : {
+                "chart.gutter.right" : 30
+              }
+            }
+          },
+
+          1 : {
+
+            "type": 'hprogress',
+            "id" : 'b326b274-ce9c-11e2-8334-2396eb1cb599',
+            "width" : "100%",
+            "height" : "25%",
+            "showLabels" : false,
+            "topBoundary" : 100,
+            "title": "CPU 4",
+            "description": "Horizontal CPU Example",
+            "options" : {
+              "rgraph" : {
+                "chart.gutter.right" : 30
+              }
+            }
+          },
+
+          2 : {
+
+            "type": 'hprogress',
+            "id" : 'b47c7b2c-ce9c-11e2-8bd2-af2a300d8c93',
+            "width" : "100%",
+            "height" : "25%",
+            "showLabels" : true,
+            "topBoundary" : 100,
+            "title": "Horizontal Bandwidth Example",
+            "description": "Displays In & Out BandWidth",
+            "options" : {
+              "rgraph" : {
+                "chart.gutter.right" : 30
+              }
+            }
+          },
+
+          3 : {
+
+            "type": 'hprogress',
+            "id" : 'db970e3c-cf52-11e2-949a-6b8c7a45910c',
+            "width" : "100%",
+            "height" : "25%",
+            "showLabels" : false,
+            "topBoundary" : 100,
+            "title": "Sine",
+            "description": "Sine Wave",
+            "options" : {
+              "rgraph" : {
+                "chart.gutter.right" : 30
+              }
+            }
+          }
+
+        }
+
+    },
+
+    8 : {
 
       "type": 'gauge',
       "id" : 'd6f7007a-cdcd-11e2-9523-db65f68810d5',
@@ -172,7 +254,7 @@ Object.extend(Plot.datasets, {
       }
     },
 
-    8: {
+    9: {
 
       "type": 'gauge',
       "id" : '604df2d4-cdce-11e2-a715-83c718705c79',
@@ -191,7 +273,7 @@ Object.extend(Plot.datasets, {
       }
     },
 
-    9 : {
+    10 : {
 
       "type": 'gauge',
       "id" : '6098647c-cdce-11e2-aeab-ef2b3978312c',
@@ -210,7 +292,7 @@ Object.extend(Plot.datasets, {
       }
     },
 
-    10 : {
+    11 : {
 
       "type": 'gauge',
       "id" : '612d5014-cdce-11e2-ab74-435da7c8812a',
