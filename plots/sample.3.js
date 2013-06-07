@@ -209,7 +209,10 @@ Object.extend(Plot.datasets, {
             "description": "Displays In & Out BandWidth",
             "options" : {
               "rgraph" : {
-                "chart.gutter.right" : 30
+                "chart.gutter.right" : 30,
+                "chart.key.position.y" : -0.5,
+                "chart.key.position.x" : 0,
+                "chart.title.size" : 9
               }
             }
           },
