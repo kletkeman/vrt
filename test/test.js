@@ -335,17 +335,14 @@ setInterval(function() {
 	  'Total (kB/s)' : total / 1024
 	};
 
-	vrt.get(s3.datasets[7].datasets[2].id, function(err, obj) {
+	vrt.get(s3.datasets[7].datasets[2].id, function(err, obj) {   	
 	   	
-	   	var t = Object.values(total_message)[0] / 1024
-	   	var max = Math.ceil(t / 1000) * 1000;
+	   	var max = Math.ceil((total / 1024) / 1000) * 1000;
 
 	   	if(obj.topBoundary !== max)
 			vrt.save(obj.id, {
 		   		topBoundary : max
 		   	});
-
-	   	vrt.write(s3.datasets[7].datasets[2].id, total_message);
 
 	});
 
