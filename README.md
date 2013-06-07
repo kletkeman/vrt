@@ -6,7 +6,13 @@ Realtime Data Visualizer for Node.js
 ## Quick Start
 ===
 
-node standalone.js && node test/test.js
+Get RGraph (http://www.rgraph.net/) and unzip to visualizert/deps/rgraph
+
+cd visualizert
+npm install
+
+run "node standalone.js"
+run "node test/test.js"
 
 ##License
 ===
