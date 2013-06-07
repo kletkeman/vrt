@@ -17,6 +17,13 @@ npm install<br />
 run "node standalone.js"<br />
 run "node test/test.js"<br />
 
+##Sample 1
+![Screenshot of Sample 1](https://raw.github.com/oddmarthon-lende/vrt/master/screenshots/s1.png "Sample Plot 1")
+##Sample 2
+![Screenshot of Sample 2](https://raw.github.com/oddmarthon-lende/vrt/master/screenshots/s2.png "Sample Plot 2")
+##Sample 3
+![Screenshot of Sample 3](https://raw.github.com/oddmarthon-lende/vrt/master/screenshots/s3.png "Sample Plot 3")
+
 ##License
 
 (The MIT License)
