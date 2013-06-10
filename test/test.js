@@ -1,7 +1,6 @@
 var prototype = require('prototype'),
 	Base = require('../lib/base'),
 	os = require('os'),
-	config = require('../../../lib/config').config,
 	http = require('http'),
 	quotes = require('./quotes.js');
 
