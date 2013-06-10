@@ -6,7 +6,9 @@ You can use this API to create your own widgets or use the widgets already inclu
 The data and configuration can be buffered/stored in memory or other ways as long as there has been written a store module for it , currently only memory is supported. <br />
 Currently the best way is to define plots using files, but the goal is to be able to remote control the whole application remotely using the http API.
 </p>
-
+<p>
+It has been tested in Chrome and Safari. Probably works in IE10 also...
+</p>
 ## Quick Start
 
 Get RGraph (http://www.rgraph.net/) and unzip to visualizert/deps/rgraph
