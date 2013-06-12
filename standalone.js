@@ -4,7 +4,7 @@ var express = require('express')()
   , app = require('./vrt');
 
 app.scripts = [
-	'/js/prototype.js',
+	'/deps/prototype.js',
 	'/js/color.js',
 	'/js/proto.js',
 	'/js/time.js',
