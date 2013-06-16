@@ -2,6 +2,7 @@ var prototype = require('prototype');
 
 Object.extend(global, prototype);
 
+global.$ = Object;
 global.vrt = require('./lib/api');
 global.Base = require('./lib/base');
 

@@ -8,9 +8,9 @@ var viewController = {
 		console.log(bar.innerText);
 
 		if(percent < 100) 
-			bar.show();
+			$(bar).show();
 		else 
-			bar.hide();
+			$(bar).hide();
 	},
 
 	showGroup : function(groupname) {
@@ -18,8 +18,8 @@ var viewController = {
 		if(typeof vrt.Api.DataSet.groups[groupname] === 'undefined')
 			throw new Error('No group `'+groupname+'`');
 
-		vrt.Api.DataSet.groups[groupname] = vrt.Api.DataSet.groups[groupname].sortBy(function(dataset) {
-			return dataset.sortKey;
+		vrt.Api.DataSet.groups[groupname] = vrt.Api.DataSet.groups[groupname].sort(function(a, b) {
+			return a.sortKey > b.sortKey;
 		});
 
 		this.hideAll();
@@ -46,16 +46,14 @@ var viewController = {
 				menu.add(new Option(''));
 
 				for(var name in vrt.Api.DataSet.groups)
-					menu.add(new Option(name));
+					if(!vrt.Api.DataSet.groups[name].__vrt_hide_group__)
+						menu.add(new Option(name));
 			}
 
 		};
 	},
 
 	hideAll : function() {
-		
-		if(window['RGraph'])
-			RGraph.ObjectRegistry.Clear();
 
 		for(var id in vrt.Api.DataSet.collection)
 			vrt.Api.DataSet.collection[id].hide();
@@ -64,31 +62,31 @@ var viewController = {
 	elements : function() {
 
 		return {
-			navigation : $('navigation'),
-			menu : $('grouplist'),
-			status : $('status'),
-			progressbar : $('progressbar')
+			navigation : $('#navigation').get(0),
+			menu : $('#grouplist').get(0),
+			status : $('#status').get(0),
+			progressbar : $('#progressbar').get(0)
 		};
 	}
 
 };
 
-document.observe('dom:loaded', function() {
+$(document).ready(function() {
 
 	var navigation = viewController.elements().navigation,
-		navigation_height = navigation.getHeight();
+		navigation_height = $(navigation).height();
 
-	document.observe('scroll', function(event) {
+	$(document).scroll(function(event) {
 		viewController.elements().navigation.setStyle({
 			top : document.body.scrollTop + 'px'
 		});
 	});
 
-	document.observe('mousemove', function(event) {
+	$(document).mousemove(function(event) {
 		if(event && (event.clientY <= navigation_height) )
-			navigation.show()
+			$(navigation).show()
 		else
-			navigation.hide();
+			$(navigation).hide();
 	});
 
 	var responder = function(response) {
