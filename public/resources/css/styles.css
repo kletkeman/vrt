@@ -1,0 +1,43 @@
+body {
+	overflow: hidden; 
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
+	margin: 0px; 
+	padding: 0px;
+}
+
+div#navigation {
+	display: none; 
+	position: absolute; 
+	top: 0px; height: 25px; 
+	width: 100%; 
+	background-color: #D8D8D8; 
+	color: #000; 
+	-webkit-box-shadow: 0 4px 10px #999; 
+	moz-box-shadow: 0 4px 10px #999; 
+	box-shadow: 0 4px 10px #999; 
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4),0 0 10px rgba(0, 0, 0, 0.1); 
+	background: #FAFAFA; 
+	background: -moz-linear-gradient(#FAFAFA,#EAEAEA); 
+	background: -webkit-linear-gradient(#FAFAFA,#EAEAEA); 
+	border-bottom: 1px solid #CACACA;
+}
+
+div#navigation label {
+	margin-left: 25px;
+}
+
+div#navigation select {
+	width: 250px;
+}
+
+#progressbar {
+	text-align: center; 
+	color: #D8D8D8; 
+	font-size: 8pt; 
+	position: absolute; 
+	z-index: -1; 
+	top: 60%; 
+	left: 45%; 
+	width: 10%; 
+	display: none;
+}
