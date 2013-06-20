@@ -8,31 +8,34 @@ global.Base = require('./lib/base');
 
 var fs = require('fs'),
 	basedir = '/lib/types/base',
-	browserdir = '/lib/types/browser';
-
+	browserdir = '/lib/types/browser',
+	jsdir = '/js',
+	depsdir = '/deps';
+	
 module.exports.scripts = [
-	'/deps/d3.v3.js',
 	'/lib/store.js',
 	'/lib/stores/clientstore.js',
-	'/lib/api.js',
-	'/js/viewcontroller.js'
+	'/lib/api.js'
 ];
 
-var base = fs.readdirSync(__dirname + basedir).sort(),
-	browser = fs.readdirSync(__dirname + browserdir).sort().reverse();
+var base = [basedir + '/dataset.js'].concat(fs.readdirSync(__dirname + basedir).sort().filter(function(path) {
+		return path.indexOf('dataset.js') === -1;
+	}).map(function(path) {
+		return basedir + '/' + path;
+	}) ),
+	browser = [browserdir + '/dataset.js'].concat(fs.readdirSync(__dirname + browserdir).sort().reverse().filter(function(path) {
+			return path.indexOf('dataset.js') === -1;
+		}).map(function(path) {
+			return browserdir + '/' + path;
+	}) );
+	js = fs.readdirSync(__dirname + jsdir).sort().map(function(path) {
+		return jsdir + '/' + path;
+	}),
+	deps = fs.readdirSync(__dirname + depsdir).sort().map(function(path) {
+		return depsdir + '/' + path;
+	});
 
-module.exports.scripts.push(basedir + '/dataset.js');
-module.exports.scripts.push(browserdir + '/dataset.js');
-
-base.forEach(function(path) {
-	if(path.indexOf('dataset.js') === -1)
-		module.exports.scripts.push(basedir + '/' + path);
-});
-
-browser.forEach(function(path) {
-	if(path.indexOf('dataset.js') === -1)
-		module.exports.scripts.push(browserdir + '/' + path);
-});
+module.exports.scripts = deps.concat(js).concat(module.exports.scripts).concat(base).concat(browser);
 
 module.exports.routes = [
 

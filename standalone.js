@@ -4,7 +4,6 @@ var express = require('express')()
   , app = require('./vrt');
 
 app.scripts = [
-	'/deps/jquery-1.10.1.js',
 	'/node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js'
 ].concat(app.scripts);
 
