@@ -25,13 +25,13 @@ express.configure(function() {
 vrt.configure({
 
 	"store": new vrt.Api.MemoryStore(),
-	"publish": function(id, eventHandlerName, data, callback) {
+	"publish": function(id, eventHandlerName, args, callback) {
 
 		io.sockets.emit('event', {
 			_streamFetchType: 'on*',	
 			type: id,
 			action: eventHandlerName, 
-			ms: data
+			ms: args
 		});
 
 		if(typeof callback === 'function')
