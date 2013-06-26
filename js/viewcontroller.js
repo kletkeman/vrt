@@ -19,7 +19,7 @@ var viewController = {
 			throw new Error('No group `'+groupname+'`');
 
 		vrt.Api.DataSet.groups[groupname] = vrt.Api.DataSet.groups[groupname].sort(function(a, b) {
-			return a.sortKey > b.sortKey;
+			return d3.ascending(a.sortKey, b.sortKey);
 		});
 
 		this.hideAll();
