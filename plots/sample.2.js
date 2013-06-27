@@ -19,15 +19,8 @@ Object.extend(Plot.datasets, {
 			"width": "33%",
 			"title": "Example Curve 1 (Seconds / 5 Minutes)",
 			"description": "Curve Example",
-			"unit" : "seconds",
-			"resolution": 1 / 24 / 60 * 5,
-			"multiple": false,
-			"options" : {
-				"rgraph" : {
-					"chart.filled" : false,
-					'chart.linewidth' : 1
-				}
-			}
+			"bufferSize": 60 * 5,
+			"step" : 0
 		},
 
 		2 : {
@@ -35,21 +28,11 @@ Object.extend(Plot.datasets, {
 			"type": "curve",
 		  	"id" : '2235a6e4-b1e7-4809-bb8d-c006bbc5cf59',
 			"height": "25%",
-			"width": "34%",
+			"width": "33%",
 			"title": "Example Curve 2 (Minutes / 30 Minutes)",
 			"description": "Curve Example",
-			"unit" : "minutes",
-			"resolution": 1 / 24 / 2,
-			"multiple": false,
-			"options" : {
-				"rgraph" : {
-					"chart.filled" : true,
-					"chart.colors" : ['#9FF781'],
-					"chart.fillstyle" : ['#CEF6EC'],
-					"chart.linewidth" : 1,
-					"chart.curvy" : false
-				}
-			}
+			"bufferSize": 30,
+			"step" : 0
 		},
 
 		1 : {
@@ -57,20 +40,11 @@ Object.extend(Plot.datasets, {
 			"type": "curve",
 		  	"id" : 'cd869530-d580-49c2-bd23-3a64cdb24222',
 			"height": "25%",
-			"width": "34%",
+			"width": "33%",
 			"title": "Example Curve 3 (Seconds / 1 Minute)",
 			"description": "Curve Example",
-			"unit" : "seconds",
-			"resolution": 1 / 24 / 60,
-			"multiple": false,
-			"options" : {
-				"rgraph" : {
-					"chart.filled" : true,
-					"chart.colors" : ['#F3F781'],
-					"chart.fillstyle" : ['#F2F5A9'],
-					'chart.linewidth' : 1
-				}
-			}
+			"bufferSize": 60,
+			"step" : 0
 		},
 
 		3 : {
@@ -78,19 +52,11 @@ Object.extend(Plot.datasets, {
 			"type": "curve",
 		  	"id" : '63c60ac5-df5f-4fee-ab84-cdeec3399626',
 			"height": "25%",
-			"width": "34%",
+			"width": "33%",
 			"title": "Example Curve 4 (Minutes / 1 Day)",
 			"description": "Curve Example",
-			"unit" : "minutes",
-			"resolution": 1,
-			"options" : {
-				"rgraph" : {
-					"chart.filled" : true,
-					"chart.colors" : ['#F5DA81'],
-					"chart.fillstyle" : ['#F3E2A9'],
-					'chart.linewidth' : 1
-				}
-			}
+			"bufferSize": 60 * 24,
+			"step" : 0
 		},
 
 		4 : {
@@ -98,19 +64,11 @@ Object.extend(Plot.datasets, {
 			"type": "curve",
 		  	"id" : '12b0cea2-4f6d-4f5a-a45f-9960ff72df24',
 			"height": "25%",
-			"width": "34%",
+			"width": "33%",
 			"title": "Example Curve 2 (Seconds / 10 Minutes)",
 			"description": "Curve Example",
-			"unit" : "seconds",
-			"resolution": 1 / 24 / 60 * 10,
-			"options" : {
-				"rgraph" : {
-					"chart.filled" : false,
-					"chart.colors" : ['#FF0000', '#00FF00', '#0000FF'],
-					"chart.fillstyle" : ['#DD0000', '#00DD00', '#0000DD'],
-					'chart.linewidth' : 1
-				}
-			}
+			"bufferSize": 60 * 10,
+			"step" : 0
 		},
 
 		5 : {
@@ -118,20 +76,11 @@ Object.extend(Plot.datasets, {
 			"type": "curve",
 		  	"id" : 'ddd243c6-9258-4c36-b5b7-b38b7a13d774',
 			"height": "25%",
-			"width": "34%",
+			"width": "33%",
 			"title": "Example Curve 6 (Minutes / 1 Day)",
 			"description": "Curve Example",
-			"unit" : "minutes",
-			"resolution": 1,
-			"multiple": false,
-			"options" : {
-				"rgraph" : {
-					"chart.filled" : true,
-					"chart.colors" : ['#9F81F7'],
-					"chart.fillstyle" : ['#BCA9F5'],
-					'chart.linewidth' : 1
-				}
-			}
+			"bufferSize": 60 * 24,
+			"step" : 0
 		},
 
 		6 : {
@@ -141,17 +90,10 @@ Object.extend(Plot.datasets, {
 			"width" : "50%",
 			"height" : "50%",
 			"multiple" : false,
-            "labels" : ["a", "b", "c"],
+            "labels" : ["L0"],
             "title": "Example Graph 1",
 			"description": "Example Graph",
-			"options" : {
-				"rgraph" : {
-					"chart.labels.above" : false,
-					"chart.shadow" : false,
-					"chart.key.interactive" : false,
-					"chart.colors" :  ['#000000']
-				}
-			}
+			"step" : 0
 		},
 
 		7 : {
@@ -161,9 +103,10 @@ Object.extend(Plot.datasets, {
 			"width" : "50%",
 			"height" : "50%",
 			"multiple" : false,
-            "labels" : ["a", "b", "c"],
+            "labels" : ["L0"],
             "title": "Example Graph 2",
-			"description": "Example Graph"
+			"description": "Example Graph",
+			"step" : 0
 		},
 
 });
