@@ -20,6 +20,7 @@ div#navigation {
 	background: -moz-linear-gradient(#FAFAFA,#EAEAEA); 
 	background: -webkit-linear-gradient(#FAFAFA,#EAEAEA); 
 	border-bottom: 1px solid #CACACA;
+	z-index : 99999;
 }
 
 div#navigation label {
@@ -41,3 +42,167 @@ div#navigation select {
 	width: 10%; 
 	display: none;
 }
+
+.widget.container div.widget.title {
+	
+	display : inline-block;
+	text-align : left;
+	font : 10px sans-serif;
+	position : absolute;
+	transform: rotate(-90deg);
+	-ms-transform : rotate(-90deg);
+	-webkit-transform : rotate(-90deg);
+	
+}
+
+.widget .crosshair {
+ 	background: #000;
+	opacity: .2;
+	z-index: 2;
+	position: absolute;
+    pointer-events: none;
+}
+
+.widget .crosshair.horizontal {
+	left: 0;
+    right: 0;
+	height: 1px;
+}
+
+.widget .crosshair.vertical {
+	top: 0;
+    bottom: 0;
+	width: 1px;
+}
+
+.widget .axis text {
+  -webkit-transition: fill-opacity 250ms linear;
+}
+
+.widget.stack div.stack.title  {
+	display : none;
+}
+
+.widget line {
+  shape-rendering: crispEdges;
+}
+
+/* Cubism */
+
+.widget.cubism div.display {
+	overflow: auto;
+}
+
+.widget.cubism .axis {
+  font: 10px sans-serif;
+  position: relative;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.widget.cubism .axis path {
+  display: none;
+}
+
+.widget.cubism .axis line {
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.widget.cubism .axis.bottom {
+  background-image: linear-gradient(bottom, #fff 0%, rgba(255,255,255,0) 100%);
+  background-image: -o-linear-gradient(bottom, #fff 0%, rgba(255,255,255,0) 100%);
+  background-image: -moz-linear-gradient(bottom, #fff 0%, rgba(255,255,255,0) 100%);
+  background-image: -webkit-linear-gradient(bottom, #fff 0%, rgba(255,255,255,0) 100%);
+  background-image: -ms-linear-gradient(bottom, #fff 0%, rgba(255,255,255,0) 100%);
+  bottom: 0px;
+  padding: 5px 0 0 0;
+  position: relative;
+}
+
+.widget.cubism .horizon {
+  border-bottom: solid 1px #000;
+  overflow: hidden;
+  position: relative;
+}
+
+.widget.cubism .horizon {
+  border-top: solid 1px #000;
+  border-bottom: solid 1px #000;
+}
+
+.widget.cubism .horizon + .horizon {
+  border-top: none;
+}
+
+.widget.cubism .horizon canvas {
+  display: block;
+}
+
+.widget.cubism .horizon .title,
+.widget.cubism .horizon .value {
+  top: 0;
+  line-height: 30px;
+  margin: 0 6px;
+  position: absolute;
+  text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  white-space: nowrap;
+  font: 10px sans-serif;
+}
+
+.widget.cubism .horizon .title {
+  left: 0;
+  font-weight: bold;
+}
+
+.widget.cubism .horizon .value {
+  right: 0;
+}
+
+.widget.cubism .line {
+  background: #000;
+  opacity: .2;
+  z-index: 2;
+}
+
+/* Pie */
+
+.widget.donut text.value, .widget.donut text.label {
+  font-weight: bold;
+  pointer-events: none;
+  cursor: pointer;
+}
+
+
+/* Graph */
+
+.widget.graph .axis text {
+	font : 10px sans-serif;
+}
+
+.widget.graph .axis path, .widget.graph .axis line {
+	fill : none;
+	stroke : #000;
+	
+}
+
+.widget.graph label {
+	position : absolute;
+	top : 10px;
+	right : 10px;
+}
+
+/* Curve */
+
+.widget.curve .axis path, .widget.curve .axis line {
+	fill: none;
+	stroke : #000;
+}
+
+.widget.curve .line {
+	fill: none;
+	stroke : steelblue;
+	stroke-width: 1.5px;
+}
+
+
