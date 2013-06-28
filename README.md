@@ -1,8 +1,8 @@
 ##VRT
 
 Realtime Data Visualizer for Node.js
-<p>VRT + D3 (Data-Driven Documents) is an API for creating visualizations and buffering the data on the server.<br />
-You can use this API to create your own widgets or use the widgets already included. You write data directly to the widget by posting JSON over http.<br />
+<p>VRT + D3 (Data-Driven Documents) is a framework for creating visualizations and buffering the data on the server.<br />
+You can use the API to create your own widgets or use the widgets already included. You write data directly to the widget by posting JSON over http.<br />
 The data and configuration can be buffered/stored in memory or other ways as long as there has been written a store module for it , currently only memory is supported. <br />
 Currently the best way is to define plots using files, but the goal is to be able to remote control the whole application remotely using the http API.
 </p>
