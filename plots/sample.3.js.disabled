@@ -156,7 +156,6 @@ Object.extend(Plot.datasets, {
     7 : { // Widget stacking
 
       "type": 'stack',
-      "id" : '6bdb1164-ce9f-11e2-bae0-6fe25a1048f5',
       "width" : "35%",
       "height" : "50%",
       "title" : "System Information Bar Stack",

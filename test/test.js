@@ -1,3 +1,5 @@
+global.$ = Object;
+
 var prototype = require('prototype'),
 	Base = require('../lib/base'),
 	os = require('os'),
@@ -6,10 +8,12 @@ var prototype = require('prototype'),
 
 
 var s1 = require('../plots/sample.1.js'),
-	s2 = require('../plots/sample.2.js'),
-	s3 = require('../plots/sample.3.js');
+	s2 = require('../plots/sample.2.js'),/*
+	s3 = require('../plots/sample.3.js');*/
+	s4 = require('../plots/sample.4.js');
 
 global.vrt = require('../lib/api');
+
 
 var options = {
 	host: '127.0.0.1',
@@ -74,114 +78,192 @@ vrt.configure({
 
 Base.load();
 
+
+// Write some data to the routing tree
+
+(function() {
+	
+	var paths = {
+		"random" : null,
+		"sin" : null,
+		"cos" : null,
+		"sqrt" : null
+	}, value = 0, components;
+	
+setInterval(function() {
+	
+	for(var path in paths) {
+		paths[path] = Math[path](value);
+	}
+	
+	vrt.write("math", paths, function(){});
+	
+	value += .1;
+	
+}, 500);
+
+})();
+
+
+})();
+
 // Sample 1		
 
-// Curve 1
-(function()  {
-	var value = 0;
-	setInterval(function() {
-		value+=0.5;
-		vrt.write(s1.datasets[0].id, { 'test99' : value });
-	}, 30 * 1000);
+// The Curve #1 widget
+
+(function() {
+	var id    = s1.datasets[0].id,
+		i = 0;
+		
+	while(i < 5)
+		(function(i) {
+			
+			var value = 0;
+			
+			setInterval(function() {
+				vrt.write(id, {label: 'T'+i, value: value += .10 * Math.sqrt(i)});
+			}, 500);
+			
+		})(i++);
+	
 })();
 
-// Curve 2
-(function()  {
-	var value = 0;
-	setInterval(function() {
-		value++;
-		vrt.write(s1.datasets[1].id, { 'test100' : value });
-	}, 10 * 1000);
+// The Curve #2 widget
+
+(function() {
+	var id    = s1.datasets[1].id,
+		i = 0, f = [Math.cos, Math.sin];
+		
+	while(i < 5)
+		(function(i) {
+			
+			var value = 0;
+			
+			setInterval(function() {
+				vrt.write(id, {label: 'T'+i, value: f[i % 2](value += 5 / Math.pow(10, i+1)) + 1 });
+			}, 1000);
+			
+		})(i++);
+	
 })();
 
-// Sample Text 1
+// The Messages widget
 setInterval(function() {
-	var quote = quotes[Math.round(Math.random() * quotes.length)];
-	vrt.write(s1.datasets[5].id, {0 : quote});
-}, 5000);
-
-// Sample Text 2
-setInterval(function() {
-	var quote = quotes[Math.round(Math.random() * quotes.length)];
-	vrt.write(s1.datasets[6].id, {0 : quote});
+	var quote = quotes[Math.floor(Math.random() * quotes.length)];
+	vrt.write(s1.datasets[3].datasets[1].id, {title : quote.substr(0, 20) + "...", text: quote, seen: Math.floor(Math.random() * 2)});
 }, 10000);
 
-// Graph 1
+
+// The Bubbletrouble widget
 (function() {
-	var id = s1.datasets[2].id;
-	setInterval(function() {					
-		vrt.write(id, {'test1' : [Math.round(Math.random() * 100), Math.round(Math.random() * 100) ,Math.round(Math.random() * 100)]});
-	}, 2000);
+	
+	var id   = s1.datasets[3].datasets[0].id,
+		data = [{name : 'google.com'},
+				{name : 'microsoft.com'},
+				{name : 'vg.no'},
+				{name : 'dagbladet.no'},
+				{name : 'bakerhughes.com'},
+				{name : 'nodejs.org'},
+				{name : 'github.com'},
+				{name : 'reddit.com'},
+				{name : 'gmail.com'},
+				{name : 'hotmail.com'},
+				{name : 'codeplex.com'},
+				{name : 'stackoverflow.com'},
+				{name : 'digg.com'},
+				{name : 'facebook.com'}],
+		index = 0, warning;
+		
+		setInterval(function() {
+			
+			if(typeof warning === 'object') {
+				warning.warning = '';
+				vrt.write(id, warning);
+				warning = undefined;
+			}
+			else if(typeof warning === 'undefined')
+				warning = index;
+			
+			data[index].value = Math.round(Math.random() * 200),
+			data[index].unit  = 'ms';
+			
+			if(warning === index) {
+				data[index].warning = 'Unreachable';
+				warning = data[index];
+			}
+			else
+				data[index].warning = '';
+			
+			vrt.write(id, data[index]);
+			
+			index = Math.floor(Math.random() * data.length);
+			
+			
+			
+		}, 5000);
+		
+})();
+
+// The Graph widget
+(function() {
+	
+	var id    = s1.datasets[2].datasets[0].id,
+		index = 0, v
+		i     = 0;
+		
 	setInterval(function() {
-		vrt.write(id, {'test2' : [Math.round(Math.random() * 100), Math.round(Math.random() * 100) ,Math.round(Math.random() * 100)]}); 
-	}, 2100);
-	setInterval(function() {
-		vrt.write(id, {'test3' : [Math.round(Math.random() * 100), Math.round(Math.random() * 100) ,Math.round(Math.random() * 100)]});
-	}, 2200);
-	setInterval(function() {
-		vrt.write(id, {'test4' : [Math.round(Math.random() * 100), Math.round(Math.random() * 100) ,Math.round(Math.random() * 100)]});
-	}, 2300);
-	setInterval(function() {
-		vrt.write(id, {'test5' : [Math.round(Math.random() * 100), Math.round(Math.random() * 100) ,Math.round(Math.random() * 100)]}); 
-	}, 2400);
-	setInterval(function() {
-		vrt.write(id, {'test6' : [Math.round(Math.random() * 100), Math.round(Math.random() * 100) ,Math.round(Math.random() * 100)]}); 
-	}, 2500);
-	setInterval(function() {
-		vrt.write(id, {'test7' : [Math.round(Math.random() * 100), Math.round(Math.random() * 100) ,Math.round(Math.random() * 100)]});
-	}, 2600);
-	setInterval(function() {
-		vrt.write(id, {'test8' : [Math.round(Math.random() * 100), Math.round(Math.random() * 100) ,Math.round(Math.random() * 100)]}); 
-	}, 2700);
-	setInterval(function() {
-		vrt.write(id, {'test9' : [Math.round(Math.random() * 100), Math.round(Math.random() * 100) ,Math.round(Math.random() * 100)]});  
-	}, 2900);
+		
+		var values = [null, null, null, null];
+		
+		values[Math.floor(Math.random() * values.length)] = Math.random() * 1000;
+		
+		vrt.write(id, {name: 'T'+index, values: values});
+		
+		index = Math.floor(Math.random() * 10);
+		
+	}, 1000);
+	
+	
+	
 })();
 
 // Pie 1
-setInterval(function() {
+
+(function() {
 	
-	var id = s1.datasets[3].id;
-	vrt.write(id, {'test10' : Math.round(Math.random() * 100)}); 
-	vrt.write(id, {'test11' : Math.round(Math.random() * 100)}); 
-	vrt.write(id, {'test12' : Math.round(Math.random() * 100)}); 
-}, 3000);
+	var id    = s1.datasets[2].datasets[1].id,
+		index = 0;
+		
+	setInterval(function() {
+	
+		vrt.write(id, {label: 'T'+index, value: Math.random() * 100});
+		index = Math.floor(Math.random() * 10);
+		
+	}, 1200);
+	
+	
+	
+})();
 
 // Pie 2
-setInterval(function() {
+
+(function() {
 	
-	var id = s1.datasets[4].id;
-	vrt.write(id, {'test13' : Math.round(Math.random() * 100)}); 
-	vrt.write(id, {'test14' : Math.round(Math.random() * 100)});
-	vrt.write(id, {'test15' : Math.round(Math.random() * 100)}); 
-	vrt.write(id, {'test16' : Math.round(Math.random() * 100)}); 
-	vrt.write(id, {'test17' : Math.round(Math.random() * 100)}); 
-	vrt.write(id, {'test18' : Math.round(Math.random() * 100)}); 
-}, 4000);
+	var id    = s1.datasets[2].datasets[2].id,
+		index = 0;
+		
+	setInterval(function() {
+		
+		vrt.write(id, {label: 'T'+index, value: Math.random() * 1982});
+		index = Math.floor(Math.random() * 10);
+		
+	}, 500);
+	
+	
+	
+})();
 
-// TrafficLights 1
-setInterval(function() {
-	var id = s1.datasets[7].id;
-	vrt.write(id, {'google.com' : Math.round(Math.random() * 2)});
-	vrt.write(id, {'microsoft.com' : Math.round(Math.random() * 2)});
-	vrt.write(id, {'bakerhughes.com' : Math.round(Math.random() * 2)});
-	vrt.write(id, {'github.com' : Math.round(Math.random() * 2)});
-	vrt.write(id, {'altavista.com' : Math.round(Math.random() * 2)});
-}, 5000);
 
-// Ticker 1
-setInterval(function() {
-	var id = s1.datasets[8].id;
-	vrt.write(id, {'google.com' : Math.round(Math.random() * 200) + 'ms'});
-	vrt.write(id, {'microsoft.com' : Math.round(Math.random() * 200) + 'ms'});
-	vrt.write(id, {'vg.no' : Math.round(Math.random() * 200) + 'ms'});
-	vrt.write(id, {'dagbladet.no' : Math.round(Math.random() * 200) + 'ms'});
-	vrt.write(id, {'bakerhughes.com' : Math.round(Math.random() * 200) + 'ms'});
-	vrt.write(id, {'nodjs.org' : Math.round(Math.random() * 200) + 'ms'});
-	vrt.write(id, {'github.com' : Math.round(Math.random() * 200) + 'ms'});
-	vrt.write(id, {'altavista.com' : Math.round(Math.random() * 200) + 'ms'});
-	vrt.write(id, {'rogavis.no' : Math.round(Math.random() * 200) + 'ms'});
-}, 6000);
 
 // Sample 2			
 				
@@ -193,19 +275,21 @@ setInterval(function() {
 		
 		// Curve 1
 		vrt.write(s2.datasets[0].id, { 
-			'test1000' :  100 + (Math.sin(value) * 100), 
-			'test999' : 100 + (Math.cos(value) * 100) 
+			label: 'T0', value : 100 + (Math.sin(value) * 100)
+		});	
+		vrt.write(s2.datasets[0].id, {
+			label : 'T1', value : 100 + (Math.cos(value) * 100)
 		});
 
 		// Curve 2
 		vrt.write(s2.datasets[1].id, { 
-			'test1002' :  100 + (Math.sin(value) * 100)
+			label : 'T0', value :  100 + (Math.sin(value) * 100)
 		});
-
 		
 
 	}, 1000);
 })();
+
 
 // Curve 3
 
@@ -213,13 +297,13 @@ setInterval(function() {
 	var value = 0;
 	setInterval(function() {
 		value++;					
-		vrt.write(s2.datasets[2].id, {'test1001' : value % 4});
-}, 1000 * 50);
+		vrt.write(s2.datasets[2].id, {label : 'T0', value : value % 4});
+}, 1000 * 60);
 })();
 
 // Curve 4
 setInterval(function() {					
-	vrt.write(s2.datasets[3].id, {'test1003' : Math.round(Math.random() * 100)});
+	vrt.write(s2.datasets[3].id, {label : 'T0', value : Math.round(Math.random() * 100)});
 }, 1000 * 30);
 
 // Curve 5
@@ -227,35 +311,34 @@ setInterval(function() {
 	var value = 0;
 	setInterval(function() {					
 		value += .25;
-		vrt.write(s2.datasets[4].id, {'test10001' : 100 + (Math.sin(value) * 100)});
-		vrt.write(s2.datasets[4].id, {'test10002' : 50 + (Math.cos(value) * 50) });
-		vrt.write(s2.datasets[4].id, {'test10003' : 25 + (Math.sin(value) * 25)});
+		vrt.write(s2.datasets[4].id, {label : 'T0', value : 100 + (Math.sin(value) * 100)});
+		vrt.write(s2.datasets[4].id, {label : 'T1', value : 50 + (Math.cos(value) * 50) });
+		vrt.write(s2.datasets[4].id, {label : 'T2', value : 25 + (Math.sin(value) * 25)});
 	}, 1000);
 })();
 
 // Curve 6
 setInterval(function() {					
-	vrt.write(s2.datasets[5].id, {'test1005' : Math.round(Math.random() * 100)});
+	vrt.write(s2.datasets[5].id, {label : 'T0', value : Math.round(Math.random() * 100)});
 }, 1000 * 15);
 
 // Graph 1
 setInterval(function() {
 	
-	for(var i = 1000, obj = {}, t = (new Date()).getTime(); i < 1050; i++)
-		obj['test'+i] = 1000 - ( (Math.cos(i + t)) * 100);
+	for(var i = 0, obj = {}, t = (new Date()).getTime(); i < 50; i++)
+		vrt.write(s2.datasets[6].id, {name : "T"+i, values: [1000 - ( (Math.cos(i + t)) * 100)]});
 
-	vrt.write(s2.datasets[6].id, obj);
 }, 1000 * 1);
 
 // Graph 2
 setInterval(function() {
 	
-	for(var i = 2000, obj = {}, t = (new Date()).getTime(); i < 2025; i++)
-		obj['test'+i] = 2000 - ( (Math.sin(i + t)) * 1000);
-
-	vrt.write(s2.datasets[7].id, obj);
+	for(var i = 0, obj = {}, t = (new Date()).getTime(); i < 25; i++)
+		vrt.write(s2.datasets[7].id, {name: "T"+i, values : [2000 - ( (Math.sin(i + t)) * 1000)]});
+		
 }, 1000 * 2);
 
+/*
 // Sample 3
 
 setInterval(function() {
@@ -401,3 +484,27 @@ setInterval(function() {
 	vrt.write(s3.datasets[7].datasets[3].id, {'Sin' : Math.max(Math.sin((new Date().getTime())), 0) * 100});
 },100);
 			
+*/
+
+// Sample 4
+
+
+// The Cubism widget
+(function() {
+	
+	var id    = s4.datasets[0].id,
+		index = 0;
+	
+	while(index < 10)
+		(function(index) {
+	
+			var value = 0,
+	    	    i     = 0;
+	
+			setInterval(function() {
+			    vrt.write(id, {label: 'T'+index, value: (value = Math.max(-10, Math.min(10, value + .8 * Math.random() - .4 + .2 * Math.cos(i += index * .02))))});
+			}, 1000);
+			
+		})(index++);
+	
+})();
