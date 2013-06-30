@@ -81,6 +81,22 @@ module.exports.routes = [
 			}
 		}
 	},
+	
+	{	
+		path:   '/api/v1/tree/:path',
+		method: 'get',
+		sessions: false,
+		secure: false,
+		handler: function(req, res) {
+			req.accepts('application/json');
+			try {
+				res.send(vrt.tree(req.params.path));	
+			}
+			catch(err) {
+				res.send({error: err.message});
+			}
+		}
+	},
 
 	{	
 		path:   '/api/v1/available',
