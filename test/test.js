@@ -93,7 +93,7 @@ Base.load();
 setInterval(function() {
 	
 	for(var path in paths) {
-		paths[path] = Math[path](value);
+		paths[path] = {value : Math[path](value), letter: path[0].toUpperCase()}
 	}
 	
 	vrt.write("math", paths, function(){});
@@ -104,8 +104,6 @@ setInterval(function() {
 
 })();
 
-
-})();
 
 // Sample 1		
 
