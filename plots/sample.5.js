@@ -51,6 +51,7 @@ Object.extend(Plot.datasets, {
 		},
 		
 	1 : {	
+
 			"type": 'graph',
 			"width" : "50%",
 			"height" : "50%",
@@ -115,6 +116,7 @@ Object.extend(Plot.datasets, {
 					"timestamp" : function(d) { return d?d:+new Date(); }
 				}
 			}
+
 		}
 	}
 		
