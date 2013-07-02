@@ -91,7 +91,10 @@ $(document).ready(function() {
 
 	var responder = function(response) {
 		if(response.action === 'onCreate')
-			new vrt.Api[response.ms.type.capitalize()](response.ms);
+		{
+			var type = response.ms.type;
+			new vrt.Api[type.substr(0,1).toUpperCase()+type.substr(1)](response.ms);
+		}
 		else if(response.action === 'onError')
 			console.error(response);
 		else if(/^(on)/gi.test(response.action))
