@@ -97,7 +97,7 @@ Object.extend(Plot.datasets, {
 			"width": "50%",
 			"title": "Math",
 			"description": "Curve Example",
-			"bufferSize": 60 * 60 * 2, // 1 minute of 500ms data
+			"bufferSize": 60 * 2, // 1 minute of 500ms data
 			"step" : 1000
 			
 		},
