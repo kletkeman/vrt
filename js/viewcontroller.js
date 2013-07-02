@@ -90,6 +90,7 @@ $(document).ready(function() {
 	});
 
 	var responder = function(response) {
+		
 		if(response.action === 'onCreate')
 		{
 			var type = response.ms.type;
