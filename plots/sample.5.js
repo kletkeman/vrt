@@ -50,8 +50,7 @@ Object.extend(Plot.datasets, {
 
 		},
 		
-	1 : {
-
+	1 : {	
 			"type": 'graph',
 			"width" : "50%",
 			"height" : "50%",
@@ -74,13 +73,50 @@ Object.extend(Plot.datasets, {
 						}
 					},
 					"defaults" : {
-						"name" : "Math"
+						"name" : "Math",
+						"values" : function(d) { return d?Math.abs(d):Array(); }
 					}
 				
 				}
 
 			}
+		},
+	2 : {
+		
+		"id" : "bd45d600-e322-11e2-a28f-0800200c9a66",
+		"type": 'stack',
+	    "width" : "50%",
+	    "height" : "50%",
+	    "title" : "Sample 5 Bottom Right Stack Producer",
+	    "description" : "",
+	    "blueprint" : {
+		
+			"type": "curve",
+			"height": "50%",
+			"width": "50%",
+			"title": "Math",
+			"description": "Curve Example",
+			"bufferSize": 60 * 60 * 2, // 1 minute of 500ms data
+			"step" : 1000
+			
+		},
+		"datasets" : {},
+		"identifier" : "label",
+		"schema" : {
+			
+			"Math.[function]" : {
+				
+				"bind" : {
+					"[function]" : "label",
+					"{value}" : "value"
+				},
+				"defaults" : {
+					"value" : function(d) { return d?Math.abs(d):Number(); },
+					"timestamp" : function(d) { return d?d:+new Date(); }
+				}
+			}
 		}
+	}
 		
 });
 
