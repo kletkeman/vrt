@@ -1,13 +1,16 @@
-var prototype = require('prototype');
+var jsdom    = require("jsdom"),
+	fs       = require('fs'),
+	jquery   = fs.readFileSync(__dirname + "/deps/jquery.js", "utf-8").toString(),
+	document = jsdom.jsdom("<html><head></head><body></body></html>"),
+	window   = document.createWindow();
+		
+(new Function("window", "document", jquery))(window, document);
 
-Object.extend(global, prototype);
-
-global.$ = Object;
+global.$ = window.$;
 global.vrt = require('./lib/api');
 global.Base = require('./lib/base');
 
-var fs = require('fs'),
-	basedir = '/lib/types/base',
+var basedir = '/lib/types/base',
 	browserdir = '/lib/types/browser',
 	jsdir = '/js',
 	depsdir = '/deps';

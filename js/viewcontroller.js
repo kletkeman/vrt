@@ -93,8 +93,8 @@ $(document).ready(function() {
 		
 		if(response.action === 'onCreate')
 		{
-			var type = response.ms.type;
-			new vrt.Api[type.substr(0,1).toUpperCase()+type.substr(1)](response.ms);
+			var type = response.ms.type.capitalize();
+			new vrt.Api[type](response.ms);
 		}
 		else if(response.action === 'onError')
 			console.error(response);

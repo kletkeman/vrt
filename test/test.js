@@ -1,7 +1,6 @@
-global.$ = Object;
+require("../vrt");
 
-var prototype = require('prototype'),
-	Base = require('../lib/base'),
+var Base = require('../lib/base'),
 	os = require('os'),
 	http = require('http'),
 	quotes = require('./quotes.js');
@@ -13,7 +12,6 @@ var s1 = require('../plots/sample.1.js'),
 	s4 = require('../plots/sample.4.js');
 
 global.vrt = require('../lib/api');
-
 
 var options = {
 	host: '127.0.0.1',
@@ -33,7 +31,7 @@ vrt.configure({
 
 	"write" : function(id, data, callback) {
 
-		var opt = Object.extend({}, options);
+		var opt = $.extend({}, options);
 
 		opt.path = (options.path + id);
 
@@ -56,7 +54,7 @@ vrt.configure({
 		if(!data)
 			return;
 
-		var opt = Object.extend({}, options);
+		var opt = $.extend({}, options);
 
 		opt.path = (options.path + id + '/save');
 
@@ -100,7 +98,7 @@ setInterval(function() {
 	
 	value += .1;
 	
-}, 500);
+}, 1000);
 
 })();
 
