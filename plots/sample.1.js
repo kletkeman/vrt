@@ -1,118 +1,115 @@
 var Base = require('../lib/base'),
-    Plot = new Base.Template;
+	Dashboard = new Base.Template({
 
-Object.extend(Plot, {
+		title: 'Sample Plot',
+		createdBy: 'Odd Marthon Lende',
+		creationDate: '2012-09-24T12:55Z',
+		datasets: {
 
-	title: 'Sample Plot',
-	createdBy: 'Odd Marthon Lende',
-	creationDate: '2012-09-24T12:55Z',
+			0: {
 
-});
+				"type": "curve",
+				"id": '9795b25c-fa52-430a-a60b-85f8c30d056a',
+				"height": "25%",
+				"width": "50%",
+				"title": "Example Curve 1 (Hours / 7 Days)",
+				"description": "Curve Example",
+				"bufferSize": 500
+			},
 
-Object.extend(Plot.datasets, {
+			1: {
 
-		0 : {
+				"type": "curve",
+				"id": 'ba99b297-0d68-4453-ac73-562888d540ad',
+				"height": "25%",
+				"width": "50%",
+				"title": "Example Curve 2 (Minutes / 1 Day)",
+				"description": "Curve Example",
+				"bufferSize": 500
+			},
 
-			"type": "curve",
-		  	"id" : '9795b25c-fa52-430a-a60b-85f8c30d056a',
-			"height": "25%",
-			"width": "50%",
-			"title": "Example Curve 1 (Hours / 7 Days)",
-			"description": "Curve Example",
-			"bufferSize" : 500
-		},
+			2: {
 
-		1 : {
+				"type": 'stack',
+				"width": "50%",
+				"height": "75%",
+				"title": "Bottom Left",
+				"description": "",
+				"datasets": {
 
-			"type": "curve",
-		  	"id" : 'ba99b297-0d68-4453-ac73-562888d540ad',
-			"height": "25%",
-			"width": "50%",
-			"title": "Example Curve 2 (Minutes / 1 Day)",
-			"description": "Curve Example",
-			"bufferSize" : 500
-		},
-		
-		2 : {
+					0: {
+						"type": 'graph',
+						"id": '969d2513-2eaf-4fbd-81af-2c82b06ec1c8',
+						"width": "100%",
+						"height": "50%",
+						"labels": ["L1", "L2", "L3"],
+						"title": "Example Graph 1",
+						"description": "Example Graph"
+					},
 
-		    "type": 'stack',
-		    "width" : "50%",
-		    "height" : "75%",
-		    "title" : "Bottom Left",
-		    "description" : "",
-		    "datasets" : {
-			  
-				0 : {
-					"type": 'graph',
-					"id" : '969d2513-2eaf-4fbd-81af-2c82b06ec1c8',
-					"width" : "100%",
-					"height" : "50%",
-					"labels" : ["L1", "L2", "L3"],
-	            	"title": "Example Graph 1",
-					"description": "Example Graph"
-				},
-				
-				1 : {
+					1: {
 
-					"type": 'donut',
-					"id" : '228e5020-de53-11e2-a28f-0800200c9a66',
-					"height" : "50%",
-					"width" : "50%",
-					"title": "Example Donut 1",
-					"description": "Example Donut"
+						"type": 'donut',
+						"id": '228e5020-de53-11e2-a28f-0800200c9a66',
+						"height": "50%",
+						"width": "50%",
+						"title": "Example Donut 1",
+						"description": "Example Donut"
 
-				},
+					},
 
-				2 : {
+					2: {
 
-					"type": 'donut',
-					"id" : '81627ed1-4462-425c-97b6-9041747e2b88',
-					"height" : "50%",
-					"width" : "50%",
-					"title": "Example Donut 2",
-					"description": "Example Donut"
+						"type": 'donut',
+						"id": '81627ed1-4462-425c-97b6-9041747e2b88',
+						"height": "50%",
+						"width": "50%",
+						"title": "Example Donut 2",
+						"description": "Example Donut"
+
+					}
 
 				}
+			},
 
-		  }
-		},
-		
-		3 : {
+			3: {
 
-		      "type": 'stack',
-		      "width" : "50%",
-		      "height" : "75%",
-		      "title" : "Bottom Right",
-		      "description" : "Example",
-		      "datasets" : {
-			
-				0 : {
-					"type": 'bubbletrouble',
-					"id" : '22dec686-b52b-46b4-b302-df9b2531cfe5',
-					"height" : "50%",
-					"width" : "100%",
-					"title": "Server Latency",
-					"description": "Visualizes server latency and availability"
-				},
-				
-				1 : {
+				"type": 'stack',
+				"width": "50%",
+				"height": "75%",
+				"title": "Bottom Right",
+				"description": "Example",
+				"datasets": {
 
-					"type": 'messages',
-					"id" : '22421476-720c-498a-9c34-c313d6fa4bf0',
-					"height" : "50%",
-					"width" : "100%",
-					"fontFamily": "Arial",
-					"fontSize": "9pt",
-					"fontColor": "#000",
-					"title": "Messages",
-					"description": "Visualizes incoming messages by time and whether it has been marked as read.",
-					"bufferSize": 500
+					0: {
+						"type": 'bubbletrouble',
+						"id": '22dec686-b52b-46b4-b302-df9b2531cfe5',
+						"height": "50%",
+						"width": "100%",
+						"title": "Server Latency",
+						"description": "Visualizes server latency and availability"
+					},
+
+					1: {
+
+						"type": 'messages',
+						"id": '22421476-720c-498a-9c34-c313d6fa4bf0',
+						"height": "50%",
+						"width": "100%",
+						"fontFamily": "Arial",
+						"fontSize": "9pt",
+						"fontColor": "#000",
+						"title": "Messages",
+						"description": "Visualizes incoming messages by time and whether it has been marked as read.",
+						"bufferSize": 500
+					}
+
+
 				}
-			
-			
-		  }
+			}
+
 		}
-		
-});
 
-module.exports = Plot;
+	});
+
+module.exports = Dashboard;

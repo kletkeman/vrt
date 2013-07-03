@@ -1,319 +1,320 @@
+var os = require('os');
 var Base = require('../lib/base'),
-    Plot = new Base.Template,
-    os   = require('os');
+	Dashboard = new Base.Template({
 
-Object.extend(Plot, {
+		title: 'Sample Plot 3',
+		createdBy: 'Odd Marthon Lende',
+		creationDate: '2012-10-10T12:10Z',
+		datasets: {
 
-  title: 'Sample Plot 3',
-  createdBy: 'Odd Marthon Lende',
-  creationDate: '2012-10-10T12:10Z'
+			0: {
 
-});
+				"type": "curve",
+				"id": '8083a89e-c286-4b38-bfef-702f041253e3',
+				"height": "25%",
+				"width": "30%",
+				"title": "Network Inbound (kB/s)",
+				"description": "Inbound Network Traffic Speed",
+				"unit": "seconds",
+				"resolution": 1 / 24 / 60 * 5,
+				"options": {
+					"rgraph": {
+						"chart.filled": true,
+						"chart.colors": ['#F3F781'],
+						"chart.fillstyle": ['#F2F5A9'],
+						'chart.linewidth': 1
+					}
+				}
+			},
 
-Object.extend(Plot.datasets, {
+			1: {
 
-    0 : {
+				"type": "curve",
+				"id": '58a9947d-0db1-4753-b5e3-87c190a5d385',
+				"height": "25%",
+				"width": "30%",
+				"title": "Network Outbound (kB/s)",
+				"description": "Outbound Network Traffic Speed",
+				"unit": "seconds",
+				"resolution": 1 / 24 / 60 * 5,
+				"options": {
+					"rgraph": {
+						"chart.filled": true,
+						"chart.colors": ['#9FF781'],
+						"chart.fillstyle": ['#CEF6EC'],
+						"chart.linewidth": 1
+					}
+				}
+			},
 
-      "type": "curve",
-      "id" : '8083a89e-c286-4b38-bfef-702f041253e3',
-      "height": "25%",
-      "width": "30%",
-      "title": "Network Inbound (kB/s)",
-      "description": "Inbound Network Traffic Speed",
-      "unit" : "seconds",
-      "resolution": 1 / 24 / 60 * 5,
-      "options" : {
-        "rgraph" : {
-          "chart.filled" : true,
-          "chart.colors" : ['#F3F781'],
-          "chart.fillstyle" : ['#F2F5A9'],
-          'chart.linewidth' : 1
-        }
-      }
-    },
+			2: {
 
-    1 : {
+				"type": "curve",
+				"id": 'c85bd096-8903-4d02-88fc-0fbcfeda542d',
+				"height": "25%",
+				"width": "30%",
+				"title": "Network Total (kB/s)",
+				"description": "Total Network Traffic Speed",
+				"unit": "seconds",
+				"resolution": 1 / 24 / 60 * 5,
+				"options": {
+					"rgraph": {
+						"chart.filled": true,
+						"chart.colors": ['#9FF781'],
+						"chart.fillstyle": ['#CEF6EC'],
+						"chart.linewidth": 1
+					}
+				}
+			},
 
-      "type": "curve",
-      "id" : '58a9947d-0db1-4753-b5e3-87c190a5d385',
-      "height": "25%",
-      "width": "30%",
-      "title": "Network Outbound (kB/s)",
-      "description": "Outbound Network Traffic Speed",
-      "unit" : "seconds",
-      "resolution": 1 / 24 / 60 * 5,
-      "options" : {
-        "rgraph" : {
-          "chart.filled" : true,
-          "chart.colors" : ['#9FF781'],
-          "chart.fillstyle" : ['#CEF6EC'],
-          "chart.linewidth" : 1
-        }
-      }
-    },
-
-    2 : {
-
-      "type": "curve",
-      "id" : 'c85bd096-8903-4d02-88fc-0fbcfeda542d',
-      "height": "25%",
-      "width": "30%",
-      "title": "Network Total (kB/s)",
-      "description": "Total Network Traffic Speed",
-      "unit" : "seconds",
-      "resolution": 1 / 24 / 60 * 5,
-      "options" : {
-        "rgraph" : {
-          "chart.filled" : true,
-          "chart.colors" : ['#9FF781'],
-          "chart.fillstyle" : ['#CEF6EC'],
-          "chart.linewidth" : 1
-        }
-      }
-    },
-
-    3 : {
-      "type": 'ticker',
-      "id" : '38fecf7c-2956-4034-bc15-6d533a26ef26',
-      "height" : "25%",
-      "width" : "12%",
-      "title": "Computer Information",
-      "description": "Information returned by the operating system.",
-      "fontSize": "10pt",
-      "fontColor" : "#000000",
-      "fontWeight" : "bold",
-      "data" : {
-        "Hostname" : os.hostname(),
-        "Uptime" : null,
-        "Total Memory" : Math.round(os.totalmem() / 1024 / 1024) + 'MB',
-        "Free  Memory" : null,
-        "CPU Usage" : null,
-        "In" : null,
-        "Out" : null,
-        "Total" : null
+			3: {
+				"type": 'ticker',
+				"id": '38fecf7c-2956-4034-bc15-6d533a26ef26',
+				"height": "25%",
+				"width": "12%",
+				"title": "Computer Information",
+				"description": "Information returned by the operating system.",
+				"fontSize": "10pt",
+				"fontColor": "#000000",
+				"fontWeight": "bold",
+				"data": {
+					"Hostname": os.hostname(),
+					"Uptime": null,
+					"Total Memory": Math.round(os.totalmem() / 1024 / 1024) + 'MB',
+					"Free  Memory": null,
+					"CPU Usage": null,
+					"In": null,
+					"Out": null,
+					"Total": null
 
 
-      }
-    },
+				}
+			},
 
-    4 : {
+			4: {
 
-      "type": 'vprogress',
-      "id" : '91d7b990-25a8-4276-9364-5a8c7925b163',
-      "width" : "20%",
-      "height" : "50%",
-      "title": "Memory (MB)",
-      "topBoundary" : (function() { for(var mb = 0, len = Math.round(os.totalmem() / 1024 / 1024); mb < len; mb+=100); return mb; })(),
-      "description": "Used Memory vs Total Memory",
-      "showLabels" : true,
-      "options" : {
-        "rgraph" : {
-          "chart.gutter.right" : 215,
-          "chart.gutter.bottom" : 5,
-          "chart.key.position.x" : 150
-        }
-      }
-    },
+				"type": 'vprogress',
+				"id": '91d7b990-25a8-4276-9364-5a8c7925b163',
+				"width": "20%",
+				"height": "50%",
+				"title": "Memory (MB)",
+				"topBoundary": (function() {
+					for (var mb = 0, len = Math.round(os.totalmem() / 1024 / 1024); mb < len; mb += 100);
+					return mb;
+				})(),
+				"description": "Used Memory vs Total Memory",
+				"showLabels": true,
+				"options": {
+					"rgraph": {
+						"chart.gutter.right": 215,
+						"chart.gutter.bottom": 5,
+						"chart.key.position.x": 150
+					}
+				}
+			},
 
-    5 : {
+			5: {
 
-      "type": 'vprogress',
-      "id" : '8c65c545-ed4c-45ba-a07e-a741882a1f6f',
-      "width" : "15%",
-      "height" : "50%",
-      "title": "CPU load",
-      "description": "1 minute CPU load average",
-      "showLabels" : false,
-      "topBoundary" : 100,
-      "options" : {
-        "rgraph" : {
-          "chart.gutter.bottom" : 5
-        }
-      }
-    },
+				"type": 'vprogress',
+				"id": '8c65c545-ed4c-45ba-a07e-a741882a1f6f',
+				"width": "15%",
+				"height": "50%",
+				"title": "CPU load",
+				"description": "1 minute CPU load average",
+				"showLabels": false,
+				"topBoundary": 100,
+				"options": {
+					"rgraph": {
+						"chart.gutter.bottom": 5
+					}
+				}
+			},
 
-    6 : {
+			6: {
 
-      "type": 'graph',
-      "id" : '7a37a6b0-365a-4b2e-8ac3-3ffd90c7dc05',
-      "width" : "30%",
-      "height" : "50%",
-      "multiple" : true,
-      "labels" : ["1 Minute Average", "5", "15"],
-      "title": "CPU load 2",
-      "description": "1, 5 and 15 minute CPU load averages",
-      "options" : {
-        "rgraph" : {
-          "chart.labels.above" : true,
-          "chart.shadow" : true,
-          "chart.key.interactive" : true,
-          "chart.text.size" : 10,
-          "chart.gutter.bottom" : 55
-        }
-      }
-    },
+				"type": 'graph',
+				"id": '7a37a6b0-365a-4b2e-8ac3-3ffd90c7dc05',
+				"width": "30%",
+				"height": "50%",
+				"multiple": true,
+				"labels": ["1 Minute Average", "5", "15"],
+				"title": "CPU load 2",
+				"description": "1, 5 and 15 minute CPU load averages",
+				"options": {
+					"rgraph": {
+						"chart.labels.above": true,
+						"chart.shadow": true,
+						"chart.key.interactive": true,
+						"chart.text.size": 10,
+						"chart.gutter.bottom": 55
+					}
+				}
+			},
 
-    7 : { // Widget stacking
+			7: { // Widget stacking
+				"type": 'stack',
+				"width": "35%",
+				"height": "50%",
+				"title": "System Information Bar Stack",
+				"description": "Sysinfo Stack",
+				"datasets": {
 
-      "type": 'stack',
-      "width" : "35%",
-      "height" : "50%",
-      "title" : "System Information Bar Stack",
-      "description" : "Sysinfo Stack",
-      "datasets" : {
+					0: {
 
-          0 : {
+						"type": 'hprogress',
+						"id": '5c5b3778-ce9a-11e2-97fe-73ae9ef18a30',
+						"width": "100%",
+						"height": "25%",
+						"showLabels": false,
+						"topBoundary": (function() {
+							for (var mb = 0, len = Math.round(os.totalmem() / 1024 / 1024); mb < len; mb += 100);
+							return mb;
+						})(),
+						"title": "Free Memory vs Used",
+						"description": "Memory Example 2",
+						"options": {
+							"rgraph": {
+								"chart.gutter.right": 30
+							}
+						}
+					},
 
-            "type": 'hprogress',
-            "id" : '5c5b3778-ce9a-11e2-97fe-73ae9ef18a30',
-            "width" : "100%",
-            "height" : "25%",
-            "showLabels" : false,
-            "topBoundary" :  (function() { for(var mb = 0, len = Math.round(os.totalmem() / 1024 / 1024); mb < len; mb+=100); return mb; })(),
-            "title": "Free Memory vs Used",
-            "description": "Memory Example 2",
-            "options" : {
-              "rgraph" : {
-                "chart.gutter.right" : 30
-              }
-            }
-          },
+					1: {
 
-          1 : {
+						"type": 'hprogress',
+						"id": 'b326b274-ce9c-11e2-8334-2396eb1cb599',
+						"width": "100%",
+						"height": "25%",
+						"showLabels": false,
+						"topBoundary": 100,
+						"title": "CPU 4",
+						"description": "Horizontal CPU Example",
+						"options": {
+							"rgraph": {
+								"chart.gutter.right": 30
+							}
+						}
+					},
 
-            "type": 'hprogress',
-            "id" : 'b326b274-ce9c-11e2-8334-2396eb1cb599',
-            "width" : "100%",
-            "height" : "25%",
-            "showLabels" : false,
-            "topBoundary" : 100,
-            "title": "CPU 4",
-            "description": "Horizontal CPU Example",
-            "options" : {
-              "rgraph" : {
-                "chart.gutter.right" : 30
-              }
-            }
-          },
+					2: {
 
-          2 : {
+						"type": 'hprogress',
+						"id": 'b47c7b2c-ce9c-11e2-8bd2-af2a300d8c93',
+						"width": "100%",
+						"height": "25%",
+						"showLabels": true,
+						"topBoundary": 100,
+						"title": "Horizontal Bandwidth Example",
+						"description": "Displays In & Out BandWidth",
+						"options": {
+							"rgraph": {
+								"chart.gutter.right": 30,
+								"chart.key.position.y": -0.5,
+								"chart.key.position.x": 0,
+								"chart.title.size": 9
+							}
+						}
+					},
 
-            "type": 'hprogress',
-            "id" : 'b47c7b2c-ce9c-11e2-8bd2-af2a300d8c93',
-            "width" : "100%",
-            "height" : "25%",
-            "showLabels" : true,
-            "topBoundary" : 100,
-            "title": "Horizontal Bandwidth Example",
-            "description": "Displays In & Out BandWidth",
-            "options" : {
-              "rgraph" : {
-                "chart.gutter.right" : 30,
-                "chart.key.position.y" : -0.5,
-                "chart.key.position.x" : 0,
-                "chart.title.size" : 9
-              }
-            }
-          },
+					3: {
 
-          3 : {
+						"type": 'hprogress',
+						"id": 'db970e3c-cf52-11e2-949a-6b8c7a45910c',
+						"width": "100%",
+						"height": "25%",
+						"showLabels": false,
+						"topBoundary": 100,
+						"title": "Sine",
+						"description": "Sine Wave",
+						"options": {
+							"rgraph": {
+								"chart.gutter.right": 30
+							}
+						}
+					}
 
-            "type": 'hprogress',
-            "id" : 'db970e3c-cf52-11e2-949a-6b8c7a45910c',
-            "width" : "100%",
-            "height" : "25%",
-            "showLabels" : false,
-            "topBoundary" : 100,
-            "title": "Sine",
-            "description": "Sine Wave",
-            "options" : {
-              "rgraph" : {
-                "chart.gutter.right" : 30
-              }
-            }
-          }
+				}
 
-        }
+			},
 
-    },
+			8: {
 
-    8 : {
+				"type": 'gauge',
+				"id": 'd6f7007a-cdcd-11e2-9523-db65f68810d5',
+				"width": "25%",
+				"height": "20%",
+				"min": 0,
+				"max": 100,
+				"title": "CPU load 3",
+				"description": "CPU load",
+				"options": {
+					"rgraph": {
+						"chart.text.size": 8,
+						"chart.title.top.pos": 0.15,
+						"chart.title.size": 8
+					}
+				}
+			},
 
-      "type": 'gauge',
-      "id" : 'd6f7007a-cdcd-11e2-9523-db65f68810d5',
-      "width" : "25%",
-      "height" : "20%",
-      "min" : 0,
-      "max" : 100,
-      "title": "CPU load 3",
-      "description": "CPU load",
-      "options" : {
-        "rgraph" : {
-          "chart.text.size" : 8,
-          "chart.title.top.pos": 0.15,
-          "chart.title.size" : 8
-        }
-      }
-    },
+			9: {
 
-    9: {
+				"type": 'gauge',
+				"id": '604df2d4-cdce-11e2-a715-83c718705c79',
+				"width": "25%",
+				"height": "20%",
+				"min": 0,
+				"max": 100,
+				"title": "Net In Mbit\\s",
+				"description": "Network Bandwidth Incoming",
+				"options": {
+					"rgraph": {
+						"chart.text.size": 8,
+						"chart.title.top.pos": 0.15,
+						"chart.title.size": 8
+					}
+				}
+			},
 
-      "type": 'gauge',
-      "id" : '604df2d4-cdce-11e2-a715-83c718705c79',
-      "width" : "25%",
-      "height" : "20%",
-      "min" : 0,
-      "max" : 100,
-      "title": "Net In Mbit\\s",
-      "description": "Network Bandwidth Incoming",
-      "options" : {
-        "rgraph" : {
-          "chart.text.size" : 8,
-          "chart.title.top.pos": 0.15,
-          "chart.title.size" : 8
-        }
-      }
-    },
+			10: {
 
-    10 : {
+				"type": 'gauge',
+				"id": '6098647c-cdce-11e2-aeab-ef2b3978312c',
+				"width": "25%",
+				"height": "20%",
+				"min": 0,
+				"max": 100,
+				"title": "Net Out kB\\s",
+				"description": "Network Bandwidth Outgoing",
+				"options": {
+					"rgraph": {
+						"chart.text.size": 8,
+						"chart.title.top.pos": 0.15,
+						"chart.title.size": 8
+					}
+				}
+			},
 
-      "type": 'gauge',
-      "id" : '6098647c-cdce-11e2-aeab-ef2b3978312c',
-      "width" : "25%",
-      "height" : "20%",
-      "min" : 0,
-      "max" : 100,
-      "title": "Net Out kB\\s",
-      "description": "Network Bandwidth Outgoing",
-      "options" : {
-        "rgraph" : {
-          "chart.text.size" : 8,
-          "chart.title.top.pos": 0.15,
-          "chart.title.size" : 8
-        }
-      }
-    },
+			11: {
 
-    11 : {
+				"type": 'gauge',
+				"id": '612d5014-cdce-11e2-ab74-435da7c8812a',
+				"width": "25%",
+				"height": "20%",
+				"min": 0,
+				"max": 100,
+				"title": "Net Total Mbit\\s",
+				"description": "Total Network Bandwidth",
+				"options": {
+					"rgraph": {
+						"chart.text.size": 8,
+						"chart.title.top.pos": 0.15,
+						"chart.title.size": 8
+					}
+				}
+			}
 
-      "type": 'gauge',
-      "id" : '612d5014-cdce-11e2-ab74-435da7c8812a',
-      "width" : "25%",
-      "height" : "20%",
-      "min" : 0,
-      "max" : 100,
-      "title": "Net Total Mbit\\s",
-      "description": "Total Network Bandwidth",
-      "options" : {
-        "rgraph" : {
-          "chart.text.size" : 8,
-          "chart.title.top.pos": 0.15,
-          "chart.title.size" : 8
-        }
-      }
-    }
+		}
 
-});
+	});
 
-module.exports = Plot;
-
+module.exports = Dashboard;
