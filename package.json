@@ -2,14 +2,22 @@
   "author": "Odd Marthon Lende (oddmarthon.lende@bakerhughes.com)",
   "name": "VisualizeRT",
   "description": "RealTime Data Visualizer",
-  "version": "0.1.0",
-  "main": "./index.js",
+  "repository" : {
+	"type" : "git",
+	"url" : "https://github.com/oddmarthon-lende/vrt.git"
+  },
+  "licenses" : [{ 
+	"type" : "Apache",
+	"url" : "https://raw.github.com/oddmarthon-lende/vrt/master/LICENSE"
+	  
+  }],
+  "version": "0.2.0",
+  "main": "./standalone.js",
   "private" : true,
   "dependencies" : {
-	   "socket.io" : ">=0.9.8",
+	 "socket.io" : ">=0.9.8",
      "express" : ">=3.0 <4.0",
-     "prototype" : ">=0.0.5",
-	   "asyncblock" : ">=0.3.4",
+     "jsdom" : ">=0.6.5",
      "guid" : ">=0.0.10",
      "jade" : ">=0.31.1"
   }
