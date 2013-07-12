@@ -18,7 +18,8 @@ var basedir = '/lib/types/base',
 module.exports.scripts = [
 	'/lib/store.js',
 	'/lib/stores/clientstore.js',
-	'/lib/api.js'
+	'/lib/api.js',
+	'/lib/queue.js'
 ];
 
 var base = [basedir + '/dataset.js'].concat(fs.readdirSync(__dirname + basedir).sort().filter(function(path) {
