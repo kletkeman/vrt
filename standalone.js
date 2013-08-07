@@ -1,7 +1,9 @@
 var express = require('express')()
-  , server = require('http').createServer(express)
-  , io = require('socket.io').listen(server)
-  , app = require('./vrt');
+  , server  = require('http').createServer(express)
+  , io      = require('socket.io').listen(server)
+  , app     = require('./vrt')
+  , net     = require("net")
+  , repl    = require("repl");
 
 app.scripts = [
 	'/node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js'
@@ -57,3 +59,12 @@ for(var i = 0, script, len = app.scripts.length; i < len; i++) {
 }
 
 server.listen(80);
+
+net.createServer(function (socket) {
+
+  var remote = repl.start("vrt::remote> ", socket);
+
+  remote.context.vrt = vrt;
+  remote.context.dump = heapdump.writeSnapshot;
+  
+}).listen(5001);

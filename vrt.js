@@ -7,6 +7,7 @@ var jsdom    = require("jsdom"),
 (new Function("window", "document", jquery))(window, document);
 
 global.$ = window.$;
+global.heapdump = require("heapdump");
 global.vrt = require('./lib/api');
 global.Base = require('./lib/base');
 
