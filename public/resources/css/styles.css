@@ -43,6 +43,10 @@ div#navigation select {
 	display: none;
 }
 
+.widget.container {
+	overflow: hidden;
+}
+
 .widget.container div.widget.title {
 	
 	display : inline-block;
