@@ -42,8 +42,9 @@ vrt.configure({
 				console.log('Response : ' + chunk);
 			});
 		
-			vrt.Api.prototype.write.call(vrt, id, data, callback);
 		});
+		
+		callback && callback();
 		
 		req.write(JSON.stringify(data));
 		req.end();
