@@ -26,7 +26,7 @@ express.configure(function() {
 
 vrt.configure({
 
-	"store": new vrt.Api.MemoryStore(),
+	"store": new vrt.Api.MongoStore(),
 	"publish": function(id, eventHandlerName, args, callback) {
 
 		io.sockets.emit('event', {
