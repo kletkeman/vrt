@@ -110,7 +110,7 @@ $(document).ready(function() {
 	}
 
 
-	vrt.reload();
+	vrt.store.reload();
 	viewController.loadMenu().groups();
 	
 
