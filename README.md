@@ -47,3 +47,6 @@ Copyright 2012 Square, Inc.
 D3 - http://github.com/mbostock/d3
 Copyright (c) 2013, Michael Bostock
 All rights reserved.
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/oddmarthon-lende/vrt/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
