@@ -1,8 +1,9 @@
-var jsdom    = require("jsdom"),
-	fs       = require('fs'),
-	jquery   = fs.readFileSync(__dirname + "/deps/jquery.js", "utf-8").toString(),
-	document = jsdom.jsdom("<html><head></head><body></body></html>"),
-	window   = document.createWindow();
+var jsdom      = require("jsdom"),
+	fs         = require('fs'),
+	jquery     = fs.readFileSync(__dirname + "/deps/jquery.js", "utf-8").toString(),
+	document   = jsdom.jsdom("<html><head></head><body></body></html>"),
+	window     = document.createWindow(),
+	JSONStream = require("JSONStream");
 		
 (new Function("window", "document", jquery))(window, document);
 
@@ -159,6 +160,46 @@ module.exports.routes = [
 				vrt.write(req.params.id, req.body, function(err) {
 					res.send({error: err ? err.message : 0});
 				});
+			}
+			catch(err) {
+				res.send({error: err.message});
+			}
+		}
+	},
+
+	{	
+		path:   '/api/v1/:id/data',
+		method: 'get',
+		sessions: false,
+		secure: false,
+		handler: function(req, res) {
+			
+			try {
+				
+				var s;
+
+				vrt.data(req.params.id, function(err, row, eof) {
+
+					var d;
+
+					if(err)
+						return res.send({error: err ? err.message : 0});
+					
+					if(!s) {
+						s = JSONStream.stringifyObject();
+						s.pipe(res);
+					}
+
+					
+					for(var k in row)
+						d = [k, row[k]];
+
+					if(eof)
+						return s.end();
+					
+					return s.write(d);
+				});
+				
 			}
 			catch(err) {
 				res.send({error: err.message});
