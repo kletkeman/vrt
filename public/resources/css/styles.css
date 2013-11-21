@@ -47,6 +47,11 @@ div#navigation select {
 	overflow: hidden;
 }
 
+
+.widget.container.loading {
+	opacity: .5;
+}
+
 .widget.container div.widget.title {
 	
 	display : inline-block;
