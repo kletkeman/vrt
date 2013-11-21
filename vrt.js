@@ -174,36 +174,15 @@ module.exports.routes = [
 		secure: false,
 		handler: function(req, res) {
 			
-			try {
+			var stream = JSONStream.stringify(false);
+
+			stream.pipe(res).on('error', function(err) {
+				res.end({error: err.message});
+			});
+
+			vrt.data(req.params.id, stream);
 				
-				var s;
-
-				vrt.data(req.params.id, function(err, row, eof) {
-
-					var d;
-
-					if(err)
-						return res.send({error: err ? err.message : 0});
-					
-					if(!s) {
-						s = JSONStream.stringifyObject();
-						s.pipe(res);
-					}
-
-					
-					for(var k in row)
-						d = [k, row[k]];
-
-					if(eof)
-						return s.end();
-					
-					return s.write(d);
-				});
-				
-			}
-			catch(err) {
-				res.send({error: err.message});
-			}
+			
 		}
 	},
 
