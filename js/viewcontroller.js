@@ -1,19 +1,6 @@
-var viewController = {
+function ViewController() {};
 
-	progress: function(percent) {
-
-		var bar = this.elements().progressbar;	
-
-		bar.innerText = 'Loading objects : ' + percent + '%';
-		console.log(bar.innerText);
-
-		if(percent < 100) 
-			$(bar).show();
-		else 
-			$(bar).hide();
-	},
-
-	showGroup : function(groupname) {
+ViewController.prototype.showGroup = function(groupname) {
 
 		if(typeof vrt.Api.DataSet.groups[groupname] === 'undefined')
 			throw new Error('No group `'+groupname+'`');
@@ -27,9 +14,9 @@ var viewController = {
 		for(var i = 0, group = vrt.Api.DataSet.groups[groupname], len = group.length; i < len; i++)
 			group[i].show();
 
-	},
+};
 
-	loadMenu : function() {
+ViewController.prototype.loadMenu = function() {
 
 		var context = this;
 		var elements = this.elements();
@@ -51,67 +38,60 @@ var viewController = {
 			}
 
 		};
-	},
+};
 
-	hideAll : function() {
+ViewController.prototype.message =  function(text, expire) {
 
+		var msg = this.message, context = this, args = Array.prototype.slice.call(arguments);
+			expire = typeof args[args.length - 1] === 'number' ? (args.pop() + 1) : undefined;
+		
+		msg.queue = msg.queue || [];
+
+		if(args.length > 1) {
+			while(args.length)
+				msg.call(this, String(args.shift()), expire);
+			return;
+		}
+		else if(msg.busy)
+			return msg.queue.push(arguments);
+
+		msg.busy = true;
+
+		var e = d3.select(this.elements().messages).insert("div", ":first-child");
+
+		e.text(text);
+
+		if(expire)
+			setTimeout(function() {e.remove()}, expire);
+
+		function proceed() {
+			msg.busy = false;
+			if(msg.queue.length)
+				msg.apply(context, msg.queue.shift());
+		};
+
+		var t = setTimeout(proceed, 1000);
+
+		return {
+			remove: function() { 
+				proceed();
+				clearTimeout(t); 
+				e.remove();				
+			}
+		};
+};
+
+ViewController.prototype.hideAll = function() {
 		for(var id in vrt.Api.DataSet.collection)
 			vrt.Api.DataSet.collection[id].hide();
-	},
+};
 
-	elements : function() {
+ViewController.prototype.elements =  function() {
 
 		return {
 			navigation : $('#navigation').get(0),
 			menu : $('#grouplist').get(0),
 			status : $('#status').get(0),
-			progressbar : $('#progressbar').get(0)
+			messages : $('div.backdrop div.messages').get(0)
 		};
-	}
-
 };
-
-$(document).ready(function() {
-
-	var navigation = viewController.elements().navigation,
-		navigation_height = $(navigation).height();
-
-	$(document).scroll(function(event) {
-		viewController.elements().navigation.setStyle({
-			top : document.body.scrollTop + 'px'
-		});
-	});
-
-	$(document).mousemove(function(event) {
-		if(event && (event.clientY <= navigation_height) )
-			$(navigation).show()
-		else
-			$(navigation).hide();
-	});
-
-	var responder = function(response) {
-		
-		if(response.action === 'onCreate')
-		{
-			var type = response.ms.type.capitalize();
-			new vrt.Api[type](response.ms);
-		}
-		else if(response.action === 'onError')
-			console.error(response);
-		else if(/^(on)/gi.test(response.action))
-			vrt.receive(response.type, response.action, response.ms);;
-	};
-
-	if(window['Stream'])
-		Stream.Responders.register(responder);
-	else {
-		var socket = io.connect('http://' + window.location.host + ':' + window.location.port);
-		socket.on('event', responder);
-	}
-
-
-	vrt.store.reload();
-	viewController.loadMenu().groups();
-	
-
-});

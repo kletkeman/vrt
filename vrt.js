@@ -34,14 +34,16 @@ var base = [basedir + '/dataset.js'].concat(fs.readdirSync(__dirname + basedir).
 		}).map(function(path) {
 			return browserdir + '/' + path;
 	}) );
-	js = fs.readdirSync(__dirname + jsdir).sort().map(function(path) {
-		return jsdir + '/' + path;
+	js = fs.readdirSync(__dirname + jsdir).sort().filter(function(path) {
+			return path.indexOf('boot.js') === -1;
+		}).map(function(path) {
+			return jsdir + '/' + path;
 	}),
 	deps = fs.readdirSync(__dirname + depsdir).sort().map(function(path) {
 		return depsdir + '/' + path;
 	});
 
-module.exports.scripts = deps.concat(js).concat(module.exports.scripts).concat(base).concat(browser);
+module.exports.scripts = deps.concat(js).concat(module.exports.scripts).concat(base).concat(browser).concat(['/js/boot.js']);
 
 module.exports.routes = [
 
