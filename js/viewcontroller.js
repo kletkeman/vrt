@@ -40,29 +40,33 @@ ViewController.prototype.loadMenu = function() {
 		};
 };
 
-ViewController.prototype.message =  function(text, expire) {
+ViewController.prototype.message =  function(text) {
+	
+		text = String(text);
 
-		var msg = this.message, context = this, args = Array.prototype.slice.call(arguments);
-			expire = typeof args[args.length - 1] === 'number' ? (args.pop() + 1) : undefined;
+		var msg = this.message, context = this, args = Array.prototype.slice.call(arguments),
+			expire = typeof args[args.length - 1] === 'number' ? args.pop() : undefined;
 		
 		msg.queue = msg.queue || [];
 
 		if(args.length > 1) {
-			while(args.length)
-				msg.call(this, String(args.shift()), expire);
+			while(args.length && (text = String(args.shift())))
+				msg.apply(this, typeof expire === 'number' ? [text, expire] : [text]);
 			return;
 		}
 		else if(msg.busy)
 			return msg.queue.push(arguments);
 
+		var e = d3.select(this.elements().messages).insert("div", ":first-child"),
+			b = d3.select(this.elements().backdrop).classed("front", true);
+			
 		msg.busy = true;
-
-		var e = d3.select(this.elements().messages).insert("div", ":first-child");
+		msg.back = clearTimeout(msg.back) | setTimeout(function(){b.classed("front", false);}, 5000);
 
 		e.text(text);
 
-		if(expire)
-			setTimeout(function() {e.remove()}, expire);
+		if(typeof expire === 'number')
+			setTimeout(function() {e.remove();}, expire);
 
 		function proceed() {
 			msg.busy = false;
@@ -70,7 +74,7 @@ ViewController.prototype.message =  function(text, expire) {
 				msg.apply(context, msg.queue.shift());
 		};
 
-		var t = setTimeout(proceed, 1000);
+		var t = setTimeout(proceed, 500);
 
 		return {
 			remove: function() { 
@@ -92,6 +96,7 @@ ViewController.prototype.elements =  function() {
 			navigation : $('#navigation').get(0),
 			menu : $('#grouplist').get(0),
 			status : $('#status').get(0),
-			messages : $('div.backdrop div.messages').get(0)
+			messages : $('div.backdrop div.messages').get(0),
+			backdrop : $('div.backdrop').get(0)
 		};
 };
