@@ -44,6 +44,7 @@ var base = [basedir + '/dataset.js'].concat(fs.readdirSync(__dirname + basedir).
 	});
 
 module.exports.scripts = deps.concat(js).concat(module.exports.scripts).concat(base).concat(browser).concat(['/js/boot.js']);
+module.exports.scripts.unshift('/node_modules/loglevel/dist/loglevel.js');
 
 module.exports.routes = [
 
@@ -215,3 +216,5 @@ module.exports.routes = [
 	}
 	
 ];
+
+module.exports.version = require("./package.json").version;
