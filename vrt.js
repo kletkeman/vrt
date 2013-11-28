@@ -62,11 +62,15 @@ module.exports.routes = [
 		sessions: false,
 		secure: false,
 		handler: function(req, res) {
-			vrt.list(function(err, list) {
-				list = list || {};
-				list.error =  err ? err.message : 0;
-				res.send(list);
-			});
+			try {
+				vrt.list(function(err, list) {
+					if(err) return res.send({error: err.message});
+					res.send(list);
+				});
+			}
+			catch(err) {
+				res.send({error: err.message});
+			}
 		}
 	},
 
@@ -79,8 +83,7 @@ module.exports.routes = [
 			req.accepts('application/json');
 			try {
 				vrt.list(req.body, function(err, list) {
-					list = list || {};
-					list.error =  err ? err.message : 0;
+					if(err) return res.send({error: err.message});
 					res.send(list);
 				});
 			}
@@ -98,7 +101,10 @@ module.exports.routes = [
 		handler: function(req, res) {
 			req.accepts('application/json');
 			try {
-				res.send(vrt.tree(req.params.path));	
+				vrt.tree(req.params.path, function(err, tree) {
+					if(err) return res.send({error: err.message});
+					res.send(tree);
+				});
 			}
 			catch(err) {
 				res.send({error: err.message});
@@ -125,9 +131,7 @@ module.exports.routes = [
 			req.accepts('application/json');
 			try {
 				vrt.create(req.body, function(err, config) {
-					config = config || {};
-					config.created_from_ip_address = req.connection.remoteAddress;
-					config.error =  err ? err.message : 0;
+					if(err) return res.send({error: err.message});
 					res.send(config);
 				});
 			}
@@ -143,11 +147,15 @@ module.exports.routes = [
 		sessions: false,
 		secure: false,
 		handler: function(req, res) {
-			vrt.get(req.params.id, function(err, config) {
-				config = config || {};
-				config.error =  err ? err.message : 0;
-				res.send(config);
-			});
+			try {
+				vrt.get(req.params.id, function(err, config) {
+					if(err) return res.send({error: err.message});
+					res.send(config);
+				});
+			}
+			catch(err) {
+				res.send({error: err.message});
+			}
 		}
 	},
 
