@@ -11,7 +11,7 @@ app.scripts = [
 
 for(var i=0,s=app.scripts;i<s.length;i++){s[i] = {url:s[i]};};
 
-app.routes[0].handler = function(req, res) { res.render('layout', {windowId: 'N/A', scripts: app.scripts }); };
+app.routes[0].handler = function(req, res) { res.render('layout', {windowId: 'N/A', scripts: app.scripts, stylesheets: app.stylesheets }); };
 
 express.configure(function() {
 	express.set('view engine', 'jade');
@@ -26,7 +26,7 @@ express.configure(function() {
 
 vrt.configure({
 
-	"store": new vrt.Api.MongoStore(),
+	"store": new vrt.Api.MongoStore({host: "10.0.0.2"}),
 	"publish": function(id, eventHandlerName, args, callback) {
 
 		io.sockets.emit('event', {

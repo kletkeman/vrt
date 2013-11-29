@@ -4,7 +4,8 @@ html(style='background-image: url(resources/images/background-normal.png); backg
     meta(http-equiv='content=text/html; charset=UTF-8;')
     meta(http-equiv='X-UA-Compatible', content='IE=8,9,10')
     meta(name='X-Window-Id', content=windowId)
-    link(rel='stylesheet', media='screen', href='./resources/css/styles.css')
+    - each stylesheet in stylesheets
+      link(rel='stylesheet', media='screen', href=stylesheet)
     title VRT
 
     - each script in scripts
