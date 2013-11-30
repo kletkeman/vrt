@@ -1,18 +1,16 @@
-var Base = require('../lib/base'),
-	Dashboard = new Base.Template({
+{
 
-		title: 'Sample Plot 5',
-		createdBy: 'Odd Marthon Lende',
-		creationDate: '2013-06-21:00Z',
-		datasets: {
+		"title": "Sample Plot 5",
+		"createdBy": "Odd Marthon Lende",
+		"creationDate": "2013-06-21:00Z",
+		"datasets": {
 
-			0: {
+			"0": {
 
-				"type": 'cubism',
+				"type": "cubism",
 				"height": "50%",
 				"width": "100%",
-				"bufferSize": 60 * 60 * 24 * 2,
-				// 24 hours of 500ms data
+				"bufferSize": "60 * 60 * 24 * 2",
 				"title": "Example Cubism Visualization with schema",
 				"description": "",
 				"step": 1e4,
@@ -33,15 +31,11 @@ var Base = require('../lib/base'),
 							"{letter}": "letter"
 						},
 						"defaults": {
-							"components": Object,
-							"functions": Array,
-							"function": String,
-							"letter": function(d) {
-								return d ? String(d).toLowerCase() : String();
-							},
-							"timestamp": function(d) {
-								return d ? d : +new Date();
-							}
+							"components": "Object",
+							"functions": "Array",
+							"function": "String",
+							"letter": "function(d) { return d ? String(d).toLowerCase() : String(); }",
+							"timestamp": "function(d) { return d ? d : +new Date(); }"
 						}
 
 					}
@@ -50,9 +44,9 @@ var Base = require('../lib/base'),
 
 			},
 
-			1: {
+			"1": {
 
-				"type": 'graph',
+				"type": "graph",
 				"width": "50%",
 				"height": "50%",
 				"labels": ["sqrt", "cos", "sin", "random"],
@@ -74,19 +68,17 @@ var Base = require('../lib/base'),
 							}
 						},
 						"defaults": {
-							"name": "Math",
-							"values": function(d) {
-								return d ? Math.abs(d) : Array();
-							}
+							"name": "#Math",
+							"values": "function(d) { return d ? Math.abs(d) : Array(); }"
 						}
 
 					}
 
 				}
 			},
-			2: {
+			"2": {
 
-				"type": 'stack',
+				"type": "stack",
 				"width": "50%",
 				"height": "50%",
 				"title": "Sample 5 Bottom Right Stack Producer",
@@ -96,10 +88,9 @@ var Base = require('../lib/base'),
 					"type": "curve",
 					"height": "50%",
 					"width": "50%",
-					"title": "Math",
+					"title": "#Math",
 					"description": "Curve Example",
-					"bufferSize": 60 * 2,
-					// 1 minute of 500ms data
+					"bufferSize": "60 * 2",
 					"step": 1000
 
 				},
@@ -114,12 +105,8 @@ var Base = require('../lib/base'),
 							"{value}": "value"
 						},
 						"defaults": {
-							"value": function(d) {
-								return d ? Math.abs(d) : Number();
-							},
-							"timestamp": function(d) {
-								return d ? d : +new Date();
-							}
+							"value": "function(d) { return d ? Math.abs(d) : Number(); }",
+							"timestamp": "function(d) { return d ? d : +new Date(); }"
 						}
 					}
 
@@ -128,6 +115,4 @@ var Base = require('../lib/base'),
 
 		}
 
-	});
-
-module.exports = Dashboard;
+	}

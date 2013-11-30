@@ -42,6 +42,8 @@ vrt.configure({
 	}
 });
 
+vrt.log.setLevel(0);
+
 Base.load();
 
 for(var i = 0, route, len = app.routes.length; i < len; i++) {

@@ -1,6 +1,4 @@
-var os = require('os');
-var Base = require('../lib/base'),
-	Dashboard = new Base.Template({
+{
 
 		title: 'Sample Plot 3',
 		createdBy: 'Odd Marthon Lende',
@@ -315,6 +313,4 @@ var Base = require('../lib/base'),
 
 		}
 
-	});
-
-module.exports = Dashboard;
+	}

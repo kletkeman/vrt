@@ -6,10 +6,10 @@ var Base = require('../lib/base'),
 	quotes = require('./quotes.js');
 
 
-var s1 = require('../dashboards/dashboard.example.1.js'),
-	s2 = require('../dashboards/dashboard.example.2.js'),/*
-	s3 = require('../dashboards/dashboard.example.3.js');*/
-	s4 = require('../dashboards/dashboard.example.4.js');
+var s1 = require('../dashboards/dashboard.example.1.json'),
+	s2 = require('../dashboards/dashboard.example.2.json'),/*
+	s3 = require('../dashboards/dashboard.example.3.json');*/
+	s4 = require('../dashboards/dashboard.example.4.json');
 
 global.vrt = require('../lib/api');
 
