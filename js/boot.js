@@ -36,8 +36,10 @@ $(document).ready(function() {
 		socket.on('event', responder);
 	}
 
-
+    vrt.log.disableAll();
 	vrt.store.reload();
 	vrt.controls.loadMenu().groups();	
+    
+    
 
 });

@@ -3,7 +3,8 @@ var express = require('express')()
   , io      = require('socket.io').listen(server)
   , app     = require('./vrt')
   , net     = require("net")
-  , repl    = require("repl");
+  , repl    = require("repl")
+  , argv    = require("optimist").argv;
 
 app.scripts = [
 	'/node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js'
@@ -42,7 +43,7 @@ vrt.configure({
 	}
 });
 
-vrt.log.setLevel(0);
+vrt.log.setLevel(typeof argv.setLevel === 'number' ? argv.setLevel : 2);
 
 Base.load();
 
