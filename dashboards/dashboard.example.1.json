@@ -1,15 +1,14 @@
-var Base = require('../lib/base'),
-	Dashboard = new Base.Template({
+{
 
-		title: 'Sample Plot',
-		createdBy: 'Odd Marthon Lende',
-		creationDate: '2012-09-24T12:55Z',
-		datasets: {
+		"title": "Sample Plot",
+		"createdBy": "Odd Marthon Lende",
+		"creationDate": "2012-09-24T12:55Z",
+		"datasets": {
 
-			0: {
+			"0": {
 
 				"type": "curve",
-				"id": '9795b25c-fa52-430a-a60b-85f8c30d056a',
+				"id": "9795b25c-fa52-430a-a60b-85f8c30d056a",
 				"height": "25%",
 				"width": "50%",
 				"title": "Example Curve 1 (Hours / 7 Days)",
@@ -17,10 +16,10 @@ var Base = require('../lib/base'),
 				"bufferSize": 500
 			},
 
-			1: {
+			"1": {
 
 				"type": "curve",
-				"id": 'ba99b297-0d68-4453-ac73-562888d540ad',
+				"id": "ba99b297-0d68-4453-ac73-562888d540ad",
 				"height": "25%",
 				"width": "50%",
 				"title": "Example Curve 2 (Minutes / 1 Day)",
@@ -28,18 +27,18 @@ var Base = require('../lib/base'),
 				"bufferSize": 500
 			},
 
-			2: {
+			"2": {
 
-				"type": 'stack',
+				"type": "stack",
 				"width": "50%",
 				"height": "75%",
 				"title": "Bottom Left",
 				"description": "",
 				"datasets": {
 
-					0: {
-						"type": 'graph',
-						"id": '969d2513-2eaf-4fbd-81af-2c82b06ec1c8',
+					"0": {
+						"type": "graph",
+						"id": "969d2513-2eaf-4fbd-81af-2c82b06ec1c8",
 						"width": "100%",
 						"height": "50%",
 						"labels": ["L1", "L2", "L3"],
@@ -47,10 +46,10 @@ var Base = require('../lib/base'),
 						"description": "Example Graph"
 					},
 
-					1: {
+					"1": {
 
-						"type": 'donut',
-						"id": '228e5020-de53-11e2-a28f-0800200c9a66',
+						"type": "donut",
+						"id": "228e5020-de53-11e2-a28f-0800200c9a66",
 						"height": "50%",
 						"width": "50%",
 						"title": "Example Donut 1",
@@ -58,10 +57,10 @@ var Base = require('../lib/base'),
 
 					},
 
-					2: {
+					"2": {
 
-						"type": 'donut',
-						"id": '81627ed1-4462-425c-97b6-9041747e2b88',
+						"type": "donut",
+						"id": "81627ed1-4462-425c-97b6-9041747e2b88",
 						"height": "50%",
 						"width": "50%",
 						"title": "Example Donut 2",
@@ -72,28 +71,28 @@ var Base = require('../lib/base'),
 				}
 			},
 
-			3: {
+			"3": {
 
-				"type": 'stack',
+				"type": "stack",
 				"width": "50%",
 				"height": "75%",
 				"title": "Bottom Right",
 				"description": "Example",
 				"datasets": {
 
-					0: {
-						"type": 'bubbletrouble',
-						"id": '22dec686-b52b-46b4-b302-df9b2531cfe5',
+					"0": {
+						"type": "bubbletrouble",
+						"id": "22dec686-b52b-46b4-b302-df9b2531cfe5",
 						"height": "50%",
 						"width": "100%",
 						"title": "Server Latency",
 						"description": "Visualizes server latency and availability"
 					},
 
-					1: {
+					"1": {
 
-						"type": 'messages',
-						"id": '22421476-720c-498a-9c34-c313d6fa4bf0',
+						"type": "messages",
+						"id": "22421476-720c-498a-9c34-c313d6fa4bf0",
 						"height": "50%",
 						"width": "100%",
 						"fontFamily": "Arial",
@@ -110,6 +109,4 @@ var Base = require('../lib/base'),
 
 		}
 
-	});
-
-module.exports = Dashboard;
+	}
