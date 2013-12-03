@@ -63,7 +63,7 @@ ViewController.prototype.message =  function(text) {
 		msg.busy = true;
 		msg.back = clearTimeout(msg.back) | setTimeout(function(){b.classed("front", false);}, 5000);
 
-		e.text(text);
+		e.html(text);
 
 		if(typeof expire === 'number')
 			setTimeout(function() {e.remove();}, expire);
