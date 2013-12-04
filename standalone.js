@@ -27,7 +27,7 @@ express.configure(function() {
 
 vrt.configure({
 
-	"store": new vrt.Api.MongoStore({host: "10.0.0.2"}),
+	"store": new vrt.Api.MongoStore(),
 	"publish": function(id, eventHandlerName, args, callback) {
 
 		io.sockets.emit('event', {
