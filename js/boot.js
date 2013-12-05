@@ -29,12 +29,7 @@ $(document).ready(function() {
 			vrt.receive(response.type, response.action, response.ms);;
 	};
 
-	if(window['Stream'])
-		Stream.Responders.register(responder);
-	else {
-		var socket = io.connect('http://' + window.location.host + ':' + window.location.port);
-		socket.on('event', responder);
-	}
+	io.connect('http://' + window.location.host + ':' + window.location.port).on('event', responder);
 
     vrt.log.disableAll();
 	vrt.store.reload();
