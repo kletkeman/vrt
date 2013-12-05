@@ -43,6 +43,8 @@ vrt.configure({
 	}
 });
 
+io.set('store', new vrt.Api.SocketIO);
+
 vrt.log.setLevel(typeof argv.setLevel === 'number' ? argv.setLevel : 2);
 
 Base.load();
