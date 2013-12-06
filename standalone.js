@@ -45,6 +45,7 @@ vrt.configure({
 
 io.set('store', new vrt.Api.SocketIO);
 io.set('log level', typeof argv.setLevel === 'number' ? argv.setLevel : 2);
+io.set('browser client', false);
 
 vrt.log.setLevel(typeof argv.setLevel === 'number' ? Math.min(argv.setLevel, 3) : 2);
 
