@@ -4,7 +4,9 @@ var express = require('express')()
   , app     = require('./vrt')
   , net     = require("net")
   , repl    = require("repl")
-  , argv    = require("optimist").argv;
+  , argv    = require("optimist").argv
+  , cluster = require("cluster")
+  , os      = require("os");
 
 app.scripts = [
 	'/node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js'
@@ -23,11 +25,9 @@ express.configure(function() {
 	express.use(require('express').static(__dirname+'/public'));
 });
 
-
-
 vrt.configure({
 
-	"store": new vrt.Api.MongoStore(),
+	"store": new vrt.Api.MongoStore({poolSize: 25}),
 	"publish": function(id, eventHandlerName, args, callback) {
 
 		io.sockets.emit('event', {
@@ -47,29 +47,42 @@ io.set('store', new vrt.Api.SocketIO);
 
 vrt.log.setLevel(typeof argv.setLevel === 'number' ? argv.setLevel : 2);
 
-Base.load();
+if(cluster.isMaster)
+    Base.load(function() {
+        if(argv.cluster)
+            for(var i = 0, len = typeof argv.cluster === 'number' ? argv.cluster : os.cpus().length; i < len; i++)
+                cluster.fork();
+    });
 
-for(var i = 0, route, len = app.routes.length; i < len; i++) {
-	route = app.routes[i];
-	express[route.method.toLowerCase()](route.path, route.handler);
+if(cluster.isWorker || !argv.cluster) {
+    
+    for(var i = 0, route, len = app.routes.length; i < len; i++) {
+	   route = app.routes[i];
+	   express[route.method.toLowerCase()](route.path, route.handler);
+    }
+
+    for(var i = 0, script, len = app.scripts.length; i < len; i++) {
+        script = app.scripts[i];
+        (function(url){
+            express.get(url, function(req, res) {
+                res.sendfile('.' + url);
+            });
+        })(script.url);
+    }
+    
+    server.listen(80);
+
 }
-
-for(var i = 0, script, len = app.scripts.length; i < len; i++) {
-	script = app.scripts[i];
-	(function(url){
-		express.get(url, function(req, res) {
-			res.sendfile('.' + url);
-		});
-	})(script.url);
-}
-
-server.listen(80);
 
 net.createServer(function (socket) {
+    
+    var remote = repl.start('vrt:'+(cluster.isMaster?'master':'worker['+cluster.worker.id+']') + '::remote> ', socket);
+    
+    remote.context.vrt = vrt;
+    remote.context.dump = heapdump.writeSnapshot;
+      
+}).listen(cluster.isMaster ? 5000 : 5000 + Number(cluster.worker.id));
 
-  var remote = repl.start("vrt::remote> ", socket);
 
-  remote.context.vrt = vrt;
-  remote.context.dump = heapdump.writeSnapshot;
-  
-}).listen(5001);
+
+
