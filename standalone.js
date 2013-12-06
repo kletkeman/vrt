@@ -44,8 +44,9 @@ vrt.configure({
 });
 
 io.set('store', new vrt.Api.SocketIO);
+io.set('log level', typeof argv.setLevel === 'number' ? argv.setLevel : 2);
 
-vrt.log.setLevel(typeof argv.setLevel === 'number' ? argv.setLevel : 2);
+vrt.log.setLevel(typeof argv.setLevel === 'number' ? Math.min(argv.setLevel, 3) : 2);
 
 if(cluster.isMaster)
     Base.load(function() {
@@ -80,6 +81,7 @@ net.createServer(function (socket) {
     
     remote.context.vrt = vrt;
     remote.context.dump = heapdump.writeSnapshot;
+    remote.context.io = io;
       
 }).listen(cluster.isMaster ? 5000 : 5000 + Number(cluster.worker.id));
 
