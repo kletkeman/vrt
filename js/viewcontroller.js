@@ -45,7 +45,11 @@ ViewController.prototype.message =  function(text) {
 		text = String(text);
 
 		var msg = this.message, context = this, args = Array.prototype.slice.call(arguments),
-			expire = typeof args[args.length - 1] === 'number' ? args.pop() : undefined;
+			expire = typeof args[args.length - 1] === 'number' ? args.pop() : undefined,
+            elements = this.elements(),
+            messages = elements.messages,
+            backdrop = elements.backdrop;
+            
 		
 		msg.queue = msg.queue || [];
 
@@ -57,8 +61,8 @@ ViewController.prototype.message =  function(text) {
 		else if(msg.busy)
 			return msg.queue.push(arguments);
 
-		var e = d3.select(this.elements().messages).insert("div", ":first-child"),
-			b = d3.select(this.elements().backdrop).classed("front", true);
+		var e = d3.select(messages).insert("div", ":first-child"),
+			b = d3.select(backdrop).classed("front", true);
 			
 		msg.busy = true;
 		msg.back = clearTimeout(msg.back) | setTimeout(function(){b.classed("front", false);}, 5000);
@@ -72,15 +76,19 @@ ViewController.prototype.message =  function(text) {
 			msg.busy = false;
 			if(msg.queue.length)
 				msg.apply(context, msg.queue.shift());
+            else if (!messages.childNodes.length) {
+                clearTimeout(msg.back);
+                b.classed("front", false);
+            }
 		};
 
-		var t = setTimeout(proceed, 500);
+		var t = setTimeout(proceed, 250);
 
 		return {
-			remove: function() { 
-				proceed();
+			remove: function() {
 				clearTimeout(t); 
-				e.remove();				
+				e.remove();	
+                proceed();
 			}
 		};
 };
