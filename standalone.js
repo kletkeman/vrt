@@ -6,7 +6,9 @@ var express = require('express')()
   , repl    = require("repl")
   , argv    = require("optimist").argv
   , cluster = require("cluster")
-  , os      = require("os");
+  , os      = require("os")
+  , config  = require("./package.json").configure
+  , workers    = {};
 
 app.scripts = [
 	'/node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js'
@@ -51,9 +53,38 @@ vrt.log.setLevel(typeof argv.setLevel === 'number' ? Math.min(argv.setLevel, 3) 
 
 if(cluster.isMaster)
     Base.load(function() {
-        if(argv.cluster)
+        
+        vrt.log.info("http server is configured to listen on port", config.http_port)
+        vrt.log.info("telnet interface is configured to listen on port", config.telnet_interface_port)
+        
+        if(argv.cluster) {
+            
             for(var i = 0, len = typeof argv.cluster === 'number' ? argv.cluster : os.cpus().length; i < len; i++)
                 cluster.fork();
+                       
+            cluster.on('exit', function(worker, code, signal) {
+                var pid = worker.process.pid;
+                vrt.log.info('worker[', worker.id, '][', pid, '] died');
+                delete workers[pid];
+                cluster.fork();
+            });
+            
+            cluster.on('listening', function(worker, address) { 
+                var pid = worker.process.pid;
+                vrt.log.info('worker[', worker.id, '][', pid, '] is now listening on port', address.port);
+                workers[pid] = workers[pid] || {};
+                workers[pid].net = workers[pid].net || [];
+                workers[pid].net.push(address);
+            });
+            
+            cluster.on('online', function(worker, address) {
+                var pid = worker.process.pid;
+                vrt.log.info('worker[', worker.id, '][', pid, '] is now online');
+                workers[pid] = workers[pid] || {};
+                workers[pid].id = worker.id;
+            });
+                       
+        }
     });
 
 if(cluster.isWorker || !argv.cluster) {
@@ -72,19 +103,26 @@ if(cluster.isWorker || !argv.cluster) {
         })(script.url);
     }
     
-    server.listen(80);
+    server.listen(config.http_port);
 
 }
 
-net.createServer(function (socket) {
+(function(port) {
     
-    var remote = repl.start('vrt:'+(cluster.isMaster?'master':'worker['+cluster.worker.id+']') + '::remote> ', socket);
-    
-    remote.context.vrt = vrt;
-    remote.context.dump = heapdump.writeSnapshot;
-    remote.context.io = io;
-      
-}).listen(cluster.isMaster ? 5000 : 5000 + Number(cluster.worker.id));
+    net.createServer(function (socket) {
+        
+        var remote = repl.start('vrt:'+(cluster.isMaster?'master':'worker[ '+cluster.worker.id+' ][ '+cluster.worker.process.pid) + ' ]::remote> ', socket);
+        
+        remote.context.vrt = vrt;
+        remote.context.dump = heapdump.writeSnapshot;
+        remote.context.io = io;
+        
+        if(cluster.isMaster)
+            remote.context.workers = workers;
+          
+    }).listen(port);
+
+})(cluster.isMaster ? config.telnet_interface_port : config.telnet_interface_port + Number(cluster.worker.id));
 
 
 

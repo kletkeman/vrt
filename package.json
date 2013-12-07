@@ -11,6 +11,10 @@
 	"url" : "https://raw.github.com/oddmarthon-lende/vrt/master/LICENSE"
 	  
   }],
+  "configure" : {
+    "http_port" : 80,
+    "telnet_interface_port" : 5000
+  },
   "version": "0.2.0",
   "main": "./standalone.js",
   "private" : true,
