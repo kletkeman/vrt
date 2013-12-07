@@ -16,20 +16,21 @@ $(document).ready(function() {
 			$(navigation).hide();
 	});
 
-	var responder = function(response) {
+	io.connect('http://' + window.location.host + ':' + window.location.port).on('event', 
+                                                                                 
+        function(response) {
 		
-		if(response.action === 'onCreate')
-		{
-			var type = response.ms.type.capitalize();
-			new vrt.Api[type](response.ms);
-		}
-		else if(response.action === 'onError')
-			console.error(response);
-		else if(/^(on)/gi.test(response.action))
-			vrt.receive(response.type, response.action, response.ms);;
-	};
-
-	io.connect('http://' + window.location.host + ':' + window.location.port).on('event', responder);
+            if(response.action === 'onCreate')
+            {
+                vrt.create(response.ms, false);
+            }
+            else if(response.action === 'onError') 
+            {
+                vrt.log.error(response);
+            }
+            else if(/^(on)/gi.test(response.action))
+                vrt.receive(response.type, response.action, response.ms);
+	});
 
     vrt.log.disableAll();
 	vrt.store.reload();
