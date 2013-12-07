@@ -41,6 +41,7 @@ div.backdrop.front div.messages {
 	background-color: white;
 	border-radius: 5px;
 	opacity: .8;
+    font-size: 12pt;
 }
 
 div.backdrop div.messages {
