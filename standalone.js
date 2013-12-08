@@ -124,6 +124,4 @@ if(cluster.isWorker || !argv.cluster) {
 
 })(cluster.isMaster ? config.telnet_interface_port : config.telnet_interface_port + Number(cluster.worker.id));
 
-
-
-
+vrt.consumer.start();
