@@ -111,7 +111,7 @@ if(cluster.isWorker || !argv.cluster) {
     
     net.createServer(function (socket) {
         
-        var remote = repl.start('vrt:'+(cluster.isMaster?'master':'worker[ '+cluster.worker.id+' ][ '+cluster.worker.process.pid) + ' ]::remote> ', socket);
+        var remote = repl.start('vrt:'+(cluster.isMaster?'master':'worker[ '+cluster.worker.id+' ][ '+cluster.worker.process.pid) + ' ] >>> ', socket);
         
         remote.context.vrt = vrt;
         remote.context.dump = heapdump.writeSnapshot;
