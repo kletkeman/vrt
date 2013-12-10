@@ -146,11 +146,9 @@ producer().produce(function() {
 		
 	producer().produce(function() {
 		
-		var values = [null, null, null, null];
+		var values = [1, 2, 3, 4];
 		
-		values[Math.floor(Math.random() * values.length)] = Math.random() * 1000;
-		
-		this.write(id, {name: 'T'+index, values: values});
+		this.write(id, {name: 'T'+index, values: values.map(function(v) { return v*index;})});
 		
 		index = Math.floor(Math.random() * 10);
 		
@@ -255,21 +253,21 @@ producer().produce(function() {
 	this.write(s2.datasets[5].id, {label : 'T0', value : Math.round(Math.random() * 100)});
 }, 1000 * 15);
 
-// Graph 1
+// Graph 1 and Graph 2
+(function() {
+    
 producer().produce(function() {
 	
-	for(var i = 0, obj = {}, t = (new Date()).getTime(); i < 50; i++)
-		this.write(s2.datasets[6].id, {name : "T"+i, values: [1000 - ( (Math.cos(i + t)) * 100)]});
+	for(var i = 0, obj = {}, t = (new Date()).getTime(); i < 50; i++) {
+		this.write(s2.datasets[6].id, {name : "T"+i, values: [i*10]});
+        if(i < 25)
+            this.write(s2.datasets[7].id, {name: "T"+i, values : [i*100]});
+    }
 
-}, 1000 * 1);
+}, 1000);
+    
+})();
 
-// Graph 2
-producer().produce(function() {
-	
-	for(var i = 0, obj = {}, t = (new Date()).getTime(); i < 25; i++)
-		this.write(s2.datasets[7].id, {name: "T"+i, values : [2000 - ( (Math.sin(i + t)) * 1000)]});
-		
-}, 1000 * 2);
 
 // Write to tree
 
