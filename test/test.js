@@ -4,9 +4,16 @@ var quotes = require('./quotes.js');
     s1 = require('../dashboards/dashboard.example.1.json'),
 	s2 = require('../dashboards/dashboard.example.2.json'),/*
 	s3 = require('../dashboards/dashboard.example.3.json'),*/
-	s4 = require('../dashboards/dashboard.example.4.json');
+	s4 = require('../dashboards/dashboard.example.4.json'),
+    os = require('os');
 
 vrt.log.setLevel(0);
+
+// Create a new producer for each test so that we can have many connections
+function producer() {
+    var Producer = vrt.producer.constructor;
+    return (new Producer(require('../package.json').configure.consumer)).start();
+}
 
 // Write some data to the routing tree
 
@@ -19,7 +26,7 @@ vrt.log.setLevel(0);
 		"sqrt" : null
 	}, value = 0, components;
 	
-    vrt.producer.produce(function() {
+    producer().produce(function() {
         
         for(var path in paths) {
             paths[path] = {value : Math[path](value), letter: path[0].toUpperCase()}
@@ -48,7 +55,7 @@ vrt.log.setLevel(0);
 			
 			var value = 0;
 			
-			vrt.producer.produce(function() {
+			producer().produce(function() {
 				this.write(id, {label: 'T'+i, value: value += .10 * Math.sqrt(i)});
 			}, 500);
 			
@@ -67,7 +74,7 @@ vrt.log.setLevel(0);
 			
 			var value = 0;
 			
-			vrt.producer.produce(function() {
+			producer().produce(function() {
 				this.write(id, {label: 'T'+i, value: f[i % 2](value += 5 / Math.pow(10, i+1)) + 1 });
 			}, 1000);
 			
@@ -76,7 +83,7 @@ vrt.log.setLevel(0);
 })();
 
 // The Messages widget
-vrt.producer.produce(function() {
+producer().produce(function() {
 	var quote = quotes[Math.floor(Math.random() * quotes.length)];
 	this.write(s1.datasets[3].datasets[1].id, {title : quote.substr(0, 20) + "...", text: quote, seen: Math.floor(Math.random() * 2)});
 }, 10000);
@@ -102,7 +109,7 @@ vrt.producer.produce(function() {
 				{name : 'facebook.com'}],
 		index = 0, warning;
 		
-		vrt.producer.produce(function() {
+		producer().produce(function() {
 			
 			if(typeof warning === 'object') {
 				warning.warning = '';
@@ -137,7 +144,7 @@ vrt.producer.produce(function() {
 		index = 0, v
 		i     = 0;
 		
-	vrt.producer.produce(function() {
+	producer().produce(function() {
 		
 		var values = [null, null, null, null];
 		
@@ -160,7 +167,7 @@ vrt.producer.produce(function() {
 	var id    = s1.datasets[2].datasets[1].id,
 		index = 0;
 		
-	vrt.producer.produce(function() {
+	producer().produce(function() {
 	
 		this.write(id, {label: 'T'+index, value: Math.random() * 100});
 		index = Math.floor(Math.random() * 10);
@@ -178,7 +185,7 @@ vrt.producer.produce(function() {
 	var id    = s1.datasets[2].datasets[2].id,
 		index = 0;
 		
-	vrt.producer.produce(function() {
+	producer().produce(function() {
 		
 		this.write(id, {label: 'T'+index, value: Math.random() * 1982});
 		index = Math.floor(Math.random() * 10);
@@ -195,7 +202,7 @@ vrt.producer.produce(function() {
 				
 (function(){
 	var value = 0;
-	vrt.producer.produce(function() {					
+	producer().produce(function() {					
 		
 		value += .1;
 		
@@ -221,21 +228,21 @@ vrt.producer.produce(function() {
 
 (function(){
 	var value = 0;
-	vrt.producer.produce(function() {
+	producer().produce(function() {
 		value++;					
 		this.write(s2.datasets[2].id, {label : 'T0', value : value % 4});
 }, 1000 * 60);
 })();
 
 // Curve 4
-vrt.producer.produce(function() {					
+producer().produce(function() {					
 	this.write(s2.datasets[3].id, {label : 'T0', value : Math.round(Math.random() * 100)});
 }, 1000 * 30);
 
 // Curve 5
 (function(){
 	var value = 0;
-	vrt.producer.produce(function() {					
+	producer().produce(function() {					
 		value += .25;
 		this.write(s2.datasets[4].id, {label : 'T0', value : 100 + (Math.sin(value) * 100)});
 		this.write(s2.datasets[4].id, {label : 'T1', value : 50 + (Math.cos(value) * 50) });
@@ -244,12 +251,12 @@ vrt.producer.produce(function() {
 })();
 
 // Curve 6
-vrt.producer.produce(function() {					
+producer().produce(function() {					
 	this.write(s2.datasets[5].id, {label : 'T0', value : Math.round(Math.random() * 100)});
 }, 1000 * 15);
 
 // Graph 1
-vrt.producer.produce(function() {
+producer().produce(function() {
 	
 	for(var i = 0, obj = {}, t = (new Date()).getTime(); i < 50; i++)
 		this.write(s2.datasets[6].id, {name : "T"+i, values: [1000 - ( (Math.cos(i + t)) * 100)]});
@@ -257,17 +264,16 @@ vrt.producer.produce(function() {
 }, 1000 * 1);
 
 // Graph 2
-vrt.producer.produce(function() {
+producer().produce(function() {
 	
 	for(var i = 0, obj = {}, t = (new Date()).getTime(); i < 25; i++)
 		this.write(s2.datasets[7].id, {name: "T"+i, values : [2000 - ( (Math.sin(i + t)) * 1000)]});
 		
 }, 1000 * 2);
 
-/*
-// Sample 3
+// Write to tree
 
-vrt.producer.produce(function() {
+producer().produce(function() {
 
 	var total = 0, 
 	    throughput = {'in': 1000000 + (Math.random() * 100000), 'out': 100000 + (Math.random() * 10000)};
@@ -281,139 +287,40 @@ vrt.producer.produce(function() {
 
 	  if(direction === 'in') {
 
-	  	var _in = {
+	    this.write('network', {
 	      'In (kB/s)' : throughput[direction] / 1024 
-	    };
-
-	    this.write(s3.datasets[0].id, _in);
-	    this.write(s3.datasets[7].datasets[2].id, _in);
-
-	    vrt.write(s3.datasets[3].id, {
-	      'In' : Math.round(throughput[direction] / 1024) + ' kB/s'
-	    });
-
-	    
-	   	vrt.get(s3.datasets[9].id, function(err, obj) {
-	   		var value = Math.round(throughput[direction] / 1024 / 1024);
-	   		var max = Math.ceil(value / 10) * 10;
-	   		if(obj.max !== max)
-		   		vrt.save(obj.id, {
-		   			max : max
-		   		});
-	   		vrt.write(s3.datasets[9].id, {
-	   			value : value
-	   		});
-	   	});	   	
+	    });	   	
 
 	  }
 	  else if(direction === 'out') {
 
-	  	var out = {
+	     this.write('network', {
 	      'Out (kB/s)' : throughput[direction] / 1024
-	     };
-
-	     vrt.write(s3.datasets[1].id, out);
-	     vrt.write(s3.datasets[7].datasets[2].id, out);
-
-	     vrt.write(s3.datasets[3].id, {
-	      'Out' : Math.round(throughput[direction] / 1024) + ' kB/s'
 	     });
-
-	     vrt.get(s3.datasets[10].id, function(err, obj) {
-	   		var value = Math.round(throughput[direction] / 1024);
-	   		var max = Math.ceil(value / 1000) * 1000
-	   		if(obj.max !== max)
-		   		vrt.save(obj.id, {
-		   			max : max
-		   		});
-	   		vrt.write(s3.datasets[10].id, {
-	   			value : value
-	   		});
-	   	});
-
-	   
-	    
+	     
 	  }
 	  
 	  throughput[direction] = 0;
 
 	}
 
-	var total_message = {
+	this.write('network', {
 	  'Total (kB/s)' : total / 1024
-	};
-
-	vrt.get(s3.datasets[7].datasets[2].id, function(err, obj) {   	
-	   	
-	   	var max = Math.ceil((total / 1024) / 1000) * 1000;
-
-	   	if(obj.topBoundary !== max)
-			vrt.save(obj.id, {
-		   		topBoundary : max
-		   	});
-
 	});
 
-	vrt.write(s3.datasets[2].id, total_message);
-	
+	this.write('computer', {
 
-	vrt.get(s3.datasets[11].id, function(err, obj) {
-		var value = Math.round(total / 1024 / 1024);
-		var max = Math.ceil(value / 10) * 10;
-	   	if(obj.max !== max)
-		   	vrt.save(obj.id, {
-		   		max : max
-		   	});
-	   	vrt.write(s3.datasets[11].id, {
-	   		value : value
-	   	});
-	});
-
-
-	vrt.write(s3.datasets[3].id, {
-
-	  "Free  Memory" : Math.round(os.freemem() / 1024 / 1024) + 'MB',
-	  "CPU Usage" : Math.round(os.loadavg()[0] * 100) + '%',
-	  "Uptime" : Math.round(os.uptime() / 60 / 60 / 24) + ' days',
+	  'Free  Memory' : Math.round(os.freemem() / 1024 / 1024) + 'MB',
+      'Used Memory' : Math.round(os.totalmem() / 1024 / 1024) - Math.round(os.freemem() / 1024 / 1024),
+	  'CPU Usage' : Math.round(os.loadavg()[0] * 100) + '%',
+	  'Uptime' : Math.round(os.uptime() / 60 / 60 / 24) + ' days',
 	  'Total' : Math.round(total / 1024) + ' kB/s'
 
-	});    
-
-	var memory = {
-	  'Used Memory' : Math.round(os.totalmem() / 1024 / 1024) - Math.round(os.freemem() / 1024 / 1024),
-	  'Free Memory' : Math.round(os.freemem() / 1024 / 1024)
-	};
-
-	vrt.write(s3.datasets[4].id, memory);
-	vrt.write(s3.datasets[7].datasets[0].id, memory);
-
-	var cpu = {
-	    'CPU Usage' : Math.round(os.loadavg()[0] * 100)
-	};
-
-	vrt.write(s3.datasets[5].id, cpu);
-	vrt.write(s3.datasets[7].datasets[1].id, cpu);
-
-	vrt.write(s3.datasets[8].id, {
-	    value : Math.round(os.loadavg()[0] * 100)
 	});
-
-	vrt.write(s3.datasets[6].id, {
-	    'CPU Usage' : os.loadavg().map(function(v) { return Math.round(v * 100); })
-	});
-
-
 
 }, 1000);
 
-setInterval(function() {
-	vrt.write(s3.datasets[7].datasets[3].id, {'Sin' : Math.max(Math.sin((new Date().getTime())), 0) * 100});
-},100);
-			
-*/
-
 // Sample 4
-
 
 // The Cubism widget
 (function() {
@@ -427,12 +334,10 @@ setInterval(function() {
 			var value = 0,
 	    	    i     = 0;
 	
-			vrt.producer.produce(function() {
+			producer().produce(function() {
 			    this.write(id, {label: 'T'+index, value: (value = Math.max(-10, Math.min(10, value + .8 * Math.random() - .4 + .2 * Math.cos(i += index * .02))))});
 			}, 1000);
 			
 		})(index++);
 	
 })();
-
-vrt.producer.start();
