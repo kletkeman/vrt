@@ -29,7 +29,7 @@ express.configure(function() {
 
 vrt.configure({
 
-	"store": new vrt.Api.MongoStore({poolSize: 25}),
+	"store": new vrt.Api.MongoStore(),
 	"publish": function(id, eventHandlerName, args, callback) {
 
 		io.sockets.emit('event', {
@@ -54,8 +54,9 @@ vrt.log.setLevel(typeof argv.setLevel === 'number' ? Math.min(argv.setLevel, 3) 
 if(cluster.isMaster)
     Base.load(function() {
         
-        vrt.log.info("http server is configured to listen on port", config.http_port)
-        vrt.log.info("telnet interface is configured to listen on port", config.telnet_interface_port)
+        vrt.log.info("http interface is configured to listen on port", config.http_port);
+        vrt.log.info("telnet interface is configured to listen on port", config.telnet_interface_port);
+        vrt.log.info("consumer interface is configured to listen on port", config.consumer.port);
         
         if(argv.cluster) {
             
