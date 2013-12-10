@@ -1,21 +1,5 @@
 $(document).ready(function() {
 
-	var navigation = vrt.controls.elements().navigation,
-		navigation_height = $(navigation).height();
-
-	$(document).scroll(function(event) {
-		vrt.controls.elements().navigation.setStyle({
-			top : document.body.scrollTop + 'px'
-		});
-	});
-
-	$(document).mousemove(function(event) {
-		if(event && (event.clientY <= navigation_height) )
-			$(navigation).show()
-		else
-			$(navigation).hide();
-	});
-
 	io.connect('http://' + window.location.host + ':' + window.location.port).on('event', 
                                                                                  
         function(response) {
@@ -33,9 +17,9 @@ $(document).ready(function() {
 	});
 
     vrt.log.disableAll();
-	vrt.store.reload();
-	vrt.controls.loadMenu().groups();	
+	vrt.store.reload(function() {
+        vrt.controls.message("<span style=\"font-size: 18pt;\">Welcome to VRT</span>", "<br /><span style=\"font-size: 12pt;\">Move the cursor to the top to display the toolbar</span>", "<span style=\"font-size: 16pt;\">&uarr;</span>", 10000);	
+    });
+	vrt.controls.initialize()
     
-    
-
 });

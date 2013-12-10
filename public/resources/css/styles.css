@@ -8,7 +8,8 @@ body {
 div#navigation {
 	display: none; 
 	position: absolute; 
-	top: 0px; height: 25px; 
+	top: 0px; 
+	height: 31px; 
 	width: 100%; 
 	background-color: #D8D8D8; 
 	color: #000; 
@@ -20,7 +21,7 @@ div#navigation {
 	background: -moz-linear-gradient(#FAFAFA,#EAEAEA); 
 	background: -webkit-linear-gradient(#FAFAFA,#EAEAEA); 
 	border-bottom: 1px solid #CACACA;
-	z-index : 99999;
+	z-index : 1100;
 }
 
 div.backdrop {
@@ -34,7 +35,7 @@ div.backdrop {
 }
 
 div.backdrop.front {
-	z-index: 9999;
+	z-index: 1000;
 }
 
 div.backdrop.front div.messages {

@@ -1,9 +1,12 @@
 function ViewController() {};
 
-ViewController.prototype.showGroup = function(groupname) {
+ViewController.prototype.open = function(groupname) {
 
 		if(typeof vrt.Api.DataSet.groups[groupname] === 'undefined')
 			throw new Error('No group `'+groupname+'`');
+
+		var context = this, 
+			tab_id  = 'vrt-navigation-toolbar-tab-' + groupname.split(' ').join('-').toLowerCase();
 
 		vrt.Api.DataSet.groups[groupname] = vrt.Api.DataSet.groups[groupname].sort(function(a, b) {
 			return d3.ascending(a.sortKey, b.sortKey);
@@ -14,30 +17,64 @@ ViewController.prototype.showGroup = function(groupname) {
 		for(var i = 0, group = vrt.Api.DataSet.groups[groupname], len = group.length; i < len; i++)
 			group[i].show();
 
+		(this.tabs = this.tabs ||
+				$('#navigation-tabs').w2tabs({
+					name: 'vrt-navigation-toolbar-tabs',
+					onClick: function(e) {
+						context.open(e.object.caption);
+					},
+					onClose: function(e) {
+						if(context.tabs.active === e.target)
+							context.hideAll();
+					}
+				})).add({ id: tab_id , caption: groupname, closable: true });
+
+		this.tabs.active = tab_id;
+		this.tabs.refresh();
+
 };
 
-ViewController.prototype.loadMenu = function() {
+ViewController.prototype.initialize = function() {
 
-		var context = this;
-		var elements = this.elements();
-		var menu = elements.menu;
-		var navigation = elements.navigation;
+		var context    = this,
+			elements   = this.elements(),
+            navigation = $(elements.navigation),
+		    height     = navigation.height(),
+			toolbar;
 
-		return {
+		(toolbar = this.toolbar = this.toolbar || 
+			$('#navigation').w2toolbar({
 
-			groups : function() {				
+				name: 'vrt-navigation-toolbar',
+				items: [
+					{ type: 'html',  id: 'vrt-navigation-toolbar-title', html: '&nbsp;&nbsp;&nbsp;<strong>VRT</strong>&nbsp;&nbsp;&nbsp;' },
+					{ type: 'button',   id: 'vrt-navigator-open-button', caption: 'Dashboards', img: 'icon-folder', items: []},
+					{ type: 'break',  id: 'vrt-navigation-break0' },
+					{ type: 'html',  id: 'vrt-navigation-toolbar-tabs', html: '<div style="background-color: transparent;" id="navigation-tabs"></div>' },
+					{ type: 'spacer'},
+					{ type: 'break',  id: 'vrt-navigation-break1' },
+				],
+				onClick: function(e) {
+					if(e.target === 'vrt-navigator-open-button')
+                        context.navigator();
+				}
+			}));
+		
+        toolbar.refresh();
 
-				for(var i = 0, len = menu.options.length; i < len; i++)
-					menu.remove(menu.options[i]);
+        $(document).scroll(function handleScrollEvent(event) {
+            navigation.setStyle({
+                top : document.body.scrollTop + 'px'
+            });
+        });
+    
+        $(document).mousemove(function handleMouseMoveEvent(event) {
+            if(event && (event.clientY <= height) )
+                navigation.show();
+            else
+                navigation.hide();
+        });
 
-				menu.add(new Option(''));
-
-				for(var name in vrt.Api.DataSet.groups)
-					if(!vrt.Api.DataSet.groups[name].__vrt_hide_group__)
-						menu.add(new Option(name));
-			}
-
-		};
 };
 
 ViewController.prototype.message =  function(text) {
@@ -102,7 +139,6 @@ ViewController.prototype.elements =  function() {
 
 		return {
 			navigation : $('#navigation').get(0),
-			menu : $('#grouplist').get(0),
 			status : $('#status').get(0),
 			messages : $('div.backdrop div.messages').get(0),
 			backdrop : $('div.backdrop').get(0)
