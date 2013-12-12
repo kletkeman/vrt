@@ -126,12 +126,12 @@ ViewController.prototype.navigator = function() {
                 
                 grid.records.forEach(
                 function(record) {
-                    if(tabs && !record.selected && (index = captions.indexOf(record.title)) > -1) {
+                    if(tabs && !record.selected && (index = captions.indexOf(record.title)) > -1 && (removed = true))
                         tabs.remove(tabs.tabs[index].id);
-                        if(!removed && (removed = true))
-                            vrt.controls.hideAll();
-                    }
                 });
+                
+                if(removed)
+                    vrt.controls.hideAll();
                 
                 grid.records.forEach(
                 function(record) {
