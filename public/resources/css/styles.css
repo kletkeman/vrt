@@ -110,8 +110,10 @@ div#navigation select {
 	width: 1px;
 }
 
-.widget .axis text {
+.widget .axis .tick text {
   -webkit-transition: fill-opacity 250ms linear;
+  font-size: 5.8pt;
+  font-weight: bold;
 }
 
 .widget.stack div.stack.title  {
@@ -210,10 +212,6 @@ div#navigation select {
 
 
 /* Graph */
-
-.widget.graph .axis text {
-	font : 10px sans-serif;
-}
 
 .widget.graph .axis path, .widget.graph .axis line {
 	fill : none;
