@@ -1,0 +1,21 @@
+{
+
+		"title": "Sample Plot 6",
+		"createdBy": "Odd Marthon Lende",
+		"creationDate": "2013-12-12.13:41:00Z",
+		"datasets": {
+
+			"0": {
+
+				"type": "matrix",
+				"height": "100%",
+                "size" : [200,100],
+				"width": "100%",
+				"title": "A Color Matrix",
+				"description": "For testing purposes"				
+
+			}
+
+		}
+
+	}
