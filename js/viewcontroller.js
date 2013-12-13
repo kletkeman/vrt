@@ -31,6 +31,9 @@ ViewController.prototype.open = function(groupname) {
 
 		this.tabs.active = tab_id;
 		this.tabs.refresh();
+        
+        this.__title = document.title;
+        document.title = this.__title + " -- " + groupname;
 
 };
 
@@ -133,6 +136,8 @@ ViewController.prototype.message =  function(text) {
 ViewController.prototype.hideAll = function() {
 		for(var id in vrt.Api.DataSet.collection)
 			vrt.Api.DataSet.collection[id].hide();
+    
+     document.title = this.__title ? this.__title : document.title;
 };
 
 ViewController.prototype.elements =  function() {
