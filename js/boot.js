@@ -11,6 +11,7 @@ $(document).ready(function() {
         for(var id in vrt.Api.DataSet.collection)
             if( !(w = vrt.Api.DataSet.collection[id]).visible() )
                 w.onResize.apply(w, arguments);
+
     });
 
 	io.connect('http://' + window.location.host + ':' + window.location.port).on('event', 
@@ -29,10 +30,11 @@ $(document).ready(function() {
                 vrt.receive(response.type, response.action, response.ms);
 	});
 
+    
     vrt.log.disableAll();
-	vrt.store.reload(function() {
-        vrt.controls.message("<span style=\"font-size: 18pt;\">Welcome to VRT</span>", "<br /><span style=\"font-size: 12pt;\">Move the cursor to the top to display the toolbar</span>", "<span style=\"font-size: 16pt;\">&uarr;</span>", 10000);	
+    vrt.store.reload(function() {
+        vrt.controls.message("<span style=\"font-size: 18pt;\">Welcome to VRT</span>", "<br /><span style=\"font-size: 12pt;\">Move the cursor to the top to display the toolbar</span>", "<span style=\"font-size: 16pt;\">&uarr;</span>", 10000);        
     });
-	vrt.controls.initialize()
+    vrt.controls.initialize()
     
 });
