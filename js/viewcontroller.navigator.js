@@ -128,7 +128,7 @@ ViewController.prototype.navigator = function() {
                 function(record) {
                     if(tabs && !record.selected && (index = captions.indexOf(record.title)) > -1 && (tab = tabs.tabs[index])) {
                         tabs.remove(tab.id);
-                        activeRemoved &= tab.active;
+                        activeRemoved |= tab.active;
                     }
                 });
                 
