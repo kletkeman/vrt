@@ -122,15 +122,17 @@ ViewController.prototype.navigator = function() {
                 
                 var index, tabs = w2ui["vrt-navigation-toolbar-tabs"],
                     captions = !tabs || tabs.tabs.map(function(t) { return t.caption; }),
-                    removed = false;
+                    activeRemoved = false, tab;
                 
                 grid.records.forEach(
                 function(record) {
-                    if(tabs && !record.selected && (index = captions.indexOf(record.title)) > -1 && (removed = true))
-                        tabs.remove(tabs.tabs[index].id);
+                    if(tabs && !record.selected && (index = captions.indexOf(record.title)) > -1 && (tab = tabs.tabs[index])) {
+                        tabs.remove(tab.id);
+                        activeRemoved &= tab.active;
+                    }
                 });
                 
-                if(removed)
+                if(activeRemoved)
                     vrt.controls.hideAll();
                 
                 grid.records.forEach(
