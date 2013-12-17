@@ -27,7 +27,9 @@ ViewController.prototype.open = function(groupname) {
 						if(context.tabs.active === e.target)
 							context.hideAll();
 					}
-				})).add({ id: tab_id , caption: groupname, closable: true });
+				}))
+        
+        this.tabs.get(tab_id) || this.tabs.add({ id: tab_id , caption: groupname, closable: true });
 
 		this.tabs.active = tab_id;
 		this.tabs.refresh();
