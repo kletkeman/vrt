@@ -45,7 +45,7 @@ ViewController.prototype.initialize = function() {
 			elements   = this.elements(),
             navigation = $(elements.navigation),
 		    height     = navigation.height(),
-			toolbar;
+			toolbar, t;
 
 		(toolbar = this.toolbar = this.toolbar || 
 			$('#navigation').w2toolbar({
@@ -78,6 +78,25 @@ ViewController.prototype.initialize = function() {
                 navigation.show();
             else
                 navigation.hide();
+        });
+    
+        d3.select(window).on('resize', function() {
+            
+            clearTimeout(t);        
+            t = setTimeout(function() {
+                
+                var w;
+                
+                for(var id in vrt.Api.DataSet.collection)
+                    if( (w = vrt.Api.DataSet.collection[id]).visible() )
+                        w.onResize.apply(w, arguments);
+                
+                for(var id in vrt.Api.DataSet.collection)
+                    if( !(w = vrt.Api.DataSet.collection[id]).visible() )
+                        w.onResize.apply(w, arguments);
+                
+            }, 100);
+    
         });
 
 };

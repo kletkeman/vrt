@@ -1,19 +1,5 @@
 $(document).ready(function() {
     
-    d3.select(window).on('resize', function() {
-        
-        var w;
-        
-        for(var id in vrt.Api.DataSet.collection)
-            if( (w = vrt.Api.DataSet.collection[id]).visible() )
-                w.onResize.apply(w, arguments);
-        
-        for(var id in vrt.Api.DataSet.collection)
-            if( !(w = vrt.Api.DataSet.collection[id]).visible() )
-                w.onResize.apply(w, arguments);
-
-    });
-
 	io.connect('http://' + window.location.host + ':' + window.location.port).on('event', 
                                                                                  
         function(response) {
