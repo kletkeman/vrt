@@ -8,6 +8,7 @@ var express = require('express')()
   , cluster = require("cluster")
   , os      = require("os")
   , config  = require("./package.json").configure
+  , Store   = require('./lib/store')
   , workers    = {};
 
 app.scripts = [
@@ -29,7 +30,21 @@ express.configure(function() {
 
 vrt.configure({
 
-	"store": new vrt.Api.MongoStore(),
+	"store": (function(Api, name, options) {
+                
+        name = name.toLowerCase();
+        
+        for(var k in Api) {
+            if(typeof Api[k] === 'function' && k.toLowerCase() === name && (Api[k].prototype instanceof Store) )
+                return new Api[k](options);
+        }
+                
+    })( 
+       vrt.Api, 
+       typeof config.store === 'object' ? config.store.name : 'memorystore',
+       typeof config.store === 'object' ? config.store.options : {}
+    ),
+    
 	"publish": function(id, eventHandlerName, args, callback) {
 
 		io.sockets.emit('event', {
