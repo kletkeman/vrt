@@ -29,6 +29,7 @@ div#navigation {
 	background: -webkit-linear-gradient(#FAFAFA,#EAEAEA); 
 	border-bottom: 1px solid #CACACA;
 	z-index : 1100;
+    opacity: .6;
 }
 
 div.backdrop {
