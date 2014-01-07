@@ -88,11 +88,11 @@ ViewController.prototype.initialize = function() {
                 var w;
                 
                 for(var id in vrt.Api.DataSet.collection)
-                    if( (w = vrt.Api.DataSet.collection[id]).visible() )
+                    if( (w = vrt.Api.DataSet.collection[id]).visible() && !w.stacked )
                         w.onResize.apply(w, arguments);
                 
                 for(var id in vrt.Api.DataSet.collection)
-                    if( !(w = vrt.Api.DataSet.collection[id]).visible() )
+                    if( !(w = vrt.Api.DataSet.collection[id]).visible() && !w.stacked )
                         w.onResize.apply(w, arguments);
                 
             }, 100);
