@@ -1,6 +1,6 @@
 $(document).ready(function() {
     
-	io.connect('http://' + window.location.host + ':' + window.location.port).on('event', 
+	io.connect('http://' + window.location.hostname + ':' + window.location.port).on('event', 
                                                                                  
         function(response) {
 		
