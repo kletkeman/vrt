@@ -27,18 +27,44 @@
 								"sin": "functions[2]",
 								"random": "functions[3]"
 							},
-							"{value}": "value",
+							"value": "function() { this.data.timestamp = new Date(); return this.data.value; }",
 							"{letter}": "letter"
 						},
 						"defaults": {
 							"components": "Object",
 							"functions": "Array",
 							"function": "String",
-							"letter": "function(d) { return d ? String(d).toLowerCase() : String(); }",
-							"timestamp": "function(d) { return d ? d : +new Date(); }"
+							"letter": "function(d) { return d ? String(d).toLowerCase() : String(); }"
 						}
 
-					}
+					},
+                    "Math" : {
+                        "bind" : [
+                            {
+                                "value" : "function() { return this.aggregate.mean(); }",
+                                "MEAN" : "label"
+                            },
+                            {
+                                "value" : "function() { return this.aggregate.median(); }",
+                                "MEDIAN" : "label"
+                            },
+                            {
+                                "value" : "function() { return this.aggregate.max(); }",
+                                "MAX" : "label"
+                            },
+                            {
+                                "value" : "function() { return this.aggregate.min(); }",
+                                "MIN" : "label"
+                            }
+                        ]
+                    },
+                    "network.[direction]" : {
+                        "bind" : {
+                            "label" : "function() { return this.params.direction; }",
+                            "value" : "function() { return this.data; }"
+                        }
+                        
+                    }
 
 				}
 
