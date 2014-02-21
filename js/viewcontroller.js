@@ -67,10 +67,8 @@ ViewController.prototype.initialize = function() {
 		
         toolbar.refresh();
 
-        $(document).scroll(function handleScrollEvent(event) {
-            navigation.setStyle({
-                top : document.body.scrollTop + 'px'
-            });
+        $(document).scroll(function () {
+            navigation.css('top', document.body.scrollTop + 'px');
         });
     
         $(document).mousemove(function handleMouseMoveEvent(event) {
@@ -97,6 +95,31 @@ ViewController.prototype.initialize = function() {
                 
             }, 100);
     
+        });
+    
+        var body = d3.select("body");
+    
+        body.call(
+            d3.behavior.drag()
+            .on("dragstart", function() {
+                body.style({
+                    'cursor': 'pointer'
+                });                            
+            })
+            .on("dragend", function() {
+                body.style({
+                    'cursor': null
+                });                        
+            })
+            .on("drag", function() {
+                document.body.scrollTop -= d3.event.dy;
+                navigation.css('top', document.body.scrollTop + 'px');
+                
+            }));
+    
+        $(window).on("mousewheel", function(e) {
+             document.body.scrollTop -= e.originalEvent.wheelDeltaY;
+             navigation.css('top', document.body.scrollTop + 'px');
         });
 
 };
