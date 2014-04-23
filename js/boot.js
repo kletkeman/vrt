@@ -8,10 +8,6 @@ $(document).ready(function() {
             {
                 vrt.create(response.ms, false);
             }
-            else if(response.action === 'onError') 
-            {
-                vrt.log.error(response);
-            }
             else if(/^(on)/gi.test(response.action))
                 vrt.receive(response.type, response.action, response.ms);
 	});
