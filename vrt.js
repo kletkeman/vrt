@@ -83,12 +83,12 @@ module.exports.routes = [
 		handler: function(req, res) {
 			try {
 				vrt.list(function(err, list) {
-					if(err) return res.send({error: err.message});
+					if(err) return res.send({error: err});
 					res.send(list);
 				});
 			}
 			catch(err) {
-				res.send({error: err.message});
+				res.send({error: err});
 			}
 		}
 	},
@@ -102,12 +102,12 @@ module.exports.routes = [
 			req.accepts('application/json');
 			try {
 				vrt.list(req.body, function(err, list) {
-					if(err) return res.send({error: err.message});
+					if(err) return res.send({error: err});
 					res.send(list);
 				});
 			}
 			catch(err) {
-				res.send({error: err.message});
+				res.send({error: err});
 			}
 		}
 	},
@@ -121,12 +121,12 @@ module.exports.routes = [
 			req.accepts('application/json');
 			try {
 				vrt.tree(req.params.path, function(err, tree) {
-					if(err) return res.send({error: err.message});
+					if(err) return res.send({error: err});
 					res.send(tree);
 				});
 			}
 			catch(err) {
-				res.send({error: err.message});
+				res.send({error: err});
 			}
 		}
 	},
@@ -150,12 +150,12 @@ module.exports.routes = [
 			req.accepts('application/json');
 			try {
 				vrt.create(req.body, function(err, config) {
-					if(err) return res.send({error: err.message});
+					if(err) return res.send({error: err});
 					res.send(config);
 				});
 			}
 			catch(err) {
-				res.send({error: err.message});
+				res.send({error: err});
 			}
 		}
 	},
@@ -168,12 +168,12 @@ module.exports.routes = [
 		handler: function(req, res) {
 			try {
 				vrt.get(req.params.id, function(err, config) {
-					if(err) return res.send({error: err.message});
+					if(err) return res.send({error: err});
 					res.send(config);
 				});
 			}
 			catch(err) {
-				res.send({error: err.message});
+				res.send({error: err});
 			}
 		}
 	},
@@ -187,11 +187,11 @@ module.exports.routes = [
 			req.accepts('application/json');
 			try {
 				vrt.write(req.params.id, req.body, function(err) {
-					res.send({error: err ? err.message : 0});
+					res.send({error: err ? err : false});
 				});
 			}
 			catch(err) {
-				res.send({error: err.message});
+				res.send({error: err});
 			}
 		}
 	},
@@ -206,7 +206,7 @@ module.exports.routes = [
 			var stream = JSONStream.stringify(false);
 
 			stream.pipe(res).on('error', function(err) {
-				res.end({error: err.message});
+				res.end({error: err});
 			});
 
 			vrt.data(req.params.id, stream);
@@ -214,7 +214,7 @@ module.exports.routes = [
 			
 		}
 	},
-
+    
 	{	
 		path:   '/api/v1/:id/save',
 		method: 'post',
@@ -224,11 +224,11 @@ module.exports.routes = [
 			req.accepts('application/json');
 			try {
 				vrt.save(req.params.id, req.body, function(err) {
-					res.send({error: err ? err.message : 0});
+					res.send({error: err ? err : false});
 				});
 			}
 			catch(err) {
-				res.send({error: err.message});
+				res.send({error: err});
 			}
 		}
 	}
