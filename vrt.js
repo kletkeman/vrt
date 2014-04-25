@@ -215,6 +215,24 @@ module.exports.routes = [
 		}
 	},
     
+    {	
+		path:   '/api/v1/:id/data/delete',
+		method: 'post',
+		sessions: false,
+		secure: false,
+		handler: function(req, res) {
+			req.accepts('application/json');
+			try {
+				vrt.delete(req.params.id, (req.body.filter||req.body.index), req.body.path, function(err, info) {
+					res.send($.extend( info||{}, {error: err ? err : false}));
+				});
+			}
+			catch(err) {
+				res.send({error: err});
+			}
+		}
+	},
+
 	{	
 		path:   '/api/v1/:id/save',
 		method: 'post',
