@@ -35,7 +35,7 @@ ViewController.prototype.open = function(groupname) {
 		this.tabs.refresh();
         
         this.__title = document.title;
-        document.title = this.__title + " -- " + groupname;
+        document.title = this.__title + " -- " + (this.active = groupname);
 
 };
 
