@@ -26,6 +26,8 @@ express.configure(function() {
 	});
 	express.use(require('express').bodyParser());
 	express.use(require('express').static(__dirname+'/public'));
+    express.use(require('express').static(__dirname+'/public/resources/css'));
+    express.use(require('express').static(__dirname+'/lib/types/css'));
 });
 
 vrt.configure({

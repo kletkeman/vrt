@@ -13,7 +13,7 @@ Object.defineProperty(Error.prototype, 'toJSON', {
 
 var jsdom      = require("jsdom"),
 	fs         = require('fs'),
-	jquery     = fs.readFileSync(__dirname + "/deps/jquery.js", "utf-8").toString(),
+	jquery     = fs.readFileSync(__dirname + "/deps/0-jquery.js", "utf-8").toString(),
 	document   = jsdom.jsdom("<html><head></head><body></body></html>"),
 	window     = document.createWindow(),
 	JSONStream = require("JSONStream");
@@ -29,7 +29,7 @@ var basedir = '/lib/types/base',
 	browserdir = '/lib/types/browser',
 	jsdir = '/js',
 	depsdir = '/deps',
-	stylesdir = '/public/resources/css';
+	stylesdir = ['/lib/types/css', '/public/resources/css'];
 	
 module.exports.scripts = [
 	'/lib/store.js',
@@ -56,9 +56,7 @@ var base = [basedir + '/dataset.js'].concat(fs.readdirSync(__dirname + basedir).
 	deps = fs.readdirSync(__dirname + depsdir).sort().map(function(path) {
 		return depsdir + '/' + path;
 	}),
-	stylesheets = fs.readdirSync(__dirname + stylesdir).sort().map(function(path) {
-		return stylesdir.replace('/public', '.') + '/' +  path;
-	});
+	stylesheets = (function(a) {while(stylesdir.length) { a = a.concat(fs.readdirSync(__dirname + stylesdir.pop()).sort()); } return a; })([]);
 
 module.exports.scripts = deps.concat(js).concat(module.exports.scripts).concat(base).concat(browser).concat(['/js/boot.js']);
 module.exports.scripts.unshift('/node_modules/loglevel/dist/loglevel.js');
@@ -152,6 +150,24 @@ module.exports.routes = [
 				vrt.create(req.body, function(err, config) {
 					if(err) return res.send({error: err});
 					res.send(config);
+				});
+			}
+			catch(err) {
+				res.send({error: err});
+			}
+		}
+	},
+    
+    {	
+		path:   '/api/v1/destroy',
+		method: 'post',
+		sessions: false,
+		secure: false,
+		handler: function(req, res) {
+			req.accepts('application/json');
+			try {
+				vrt.destroy(req.body.id, function(err) {
+					res.send({error: err ? err : false});
 				});
 			}
 			catch(err) {

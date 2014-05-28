@@ -1,0 +1,33 @@
+
+.widget.table .background {
+  fill: #eee;
+  fill-opacity: .2;
+}
+
+.widget.table line {
+  stroke: #fff;
+}
+
+.widget.table text.active {
+  fill: red;
+}
+
+.widget.table text {
+  fill: #000;
+  font-size: 8pt;
+  cursor: pointer;
+}
+
+.widget.table text.highlight, rect.highlight {
+    fill: rgb(247, 237, 0);
+    font-weight: bolder;
+}
+
+.widget.table g.cell.highlight {
+    fill-opacity: .85;
+    font-weight: bolder;
+}
+
+.widget.table line.highlight {
+    
+}

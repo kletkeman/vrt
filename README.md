@@ -2,7 +2,10 @@
 
 Realtime Data Visualizer for Node.js
 <p>VRT + D3 (Data-Driven Documents) is a framework for creating visualizations and buffering the data on the server.<br />
-You can use the API to create your own widgets or use the widgets already included. You write data directly to the widget by posting JSON over http or you can create schemas and write data using paths. The data is then routed to the "subscribing" widgets. Being able to write data directly to a widget (also from the browser) gives the ability to make widgets that are interactive. Take the Messages widget for example. This widget displays a grid of squares, red square means that the message is unread. When you click on that square it updates the data and marks it as read. The API in the browser is pretty much the same as on the server. <br />
+You can use the API to create your own widgets or use the widgets already included. You write data directly to the widget by posting JSON 
+over http or you can create schemas and write data using paths. The data is then routed to the "subscribing" widgets. Being able to write 
+data directly to a widget (also from the browser) gives the ability to make widgets that are interactive and you can modify the data using 
+the api. The API in the browser is pretty much the same as on the server. <br />
 The data and configuration can be buffered/stored in memory or other ways as long as there has been written a store module for it , currently are modules for MongoDB and Memory. <br />
 Currently the best way is to define plots using files, but the goal is to be able to remote control the whole application remotely using the http API.
 </p>
@@ -46,10 +49,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 This license applies to all parts of VRT that are not externally
 maintained libraries. The externally maintained libraries used by VRT are:
 
-Cubism - http://github.com/square/cubism
 D3     - http://github.com/mbostock/d3
 jQuery - https://github.com/jquery/jquery
 W2UI   - https://github.com/vitmalina/w2ui
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/oddmarthon-lende/vrt/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
