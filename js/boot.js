@@ -60,7 +60,7 @@ require(['socketio', 'lib/api', 'lib/stores/clientstore', 'js/viewcontroller'], 
           
         vrt.get(id, function(err, obj) {
           if(err) return vrt.store.reload(function() { return vrt.controls.open(id).activate(), connect(); });
-            return vrt.controls.dock.destroy(), vrt.controls.toolbar.remove("destroy"), vrt.controls.toolbar.remove("layout"), (obj.dimensions.maximized = true), obj.toolbar.remove("expand"), obj.toolbar.remove("move"), obj.show();
+            return connect(), vrt.controls.dock.destroy(), vrt.controls.toolbar.remove("destroy"), vrt.controls.toolbar.remove("layout"), (obj.dimensions.maximized = true), obj.toolbar.remove("expand"), obj.toolbar.remove("move"), obj.show();
           });
       }
       else
