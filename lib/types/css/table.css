@@ -1,11 +1,10 @@
 
 .widget.table .background {
-  fill: #eee;
-  fill-opacity: .2;
+  fill: none;
 }
 
 .widget.table line {
-  stroke: #fff;
+  stroke: none;
 }
 
 .widget.table text.active {
@@ -13,7 +12,7 @@
 }
 
 .widget.table text {
-  fill: #000;
+  fill: whitesmoke;
   font-size: 8pt;
   cursor: pointer;
 }

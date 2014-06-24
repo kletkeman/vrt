@@ -1,17 +1,11 @@
 doctype html
-html
+html(class="background")
   head
     meta(http-equiv='content=text/html; charset=UTF-8;')
-    meta(http-equiv='X-UA-Compatible', content='IE=8,9,10')
-    meta(name='X-Window-Id', content=windowId)
     - each stylesheet in stylesheets
       link(rel='stylesheet', media='screen', href=stylesheet)
     title VRT
-
-    - each script in scripts
-      script(src=script.url)
-
+    script(data-main='js/boot', src='/node_modules/requirejs/require.js')
   body
-    #navigation
     div.backdrop
       div.messages

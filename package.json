@@ -12,7 +12,7 @@
 	  
   }],
   "configure" : {
-    "http_port" : 8080,
+    "http_port" : 6599,
     "telnet_interface_port" : 5000,
     "consumer" : {
         "host" : "127.0.0.1",
@@ -27,16 +27,17 @@
   "main": "./standalone.js",
   "private" : true,
   "dependencies" : {
-	 "socket.io" : ">=0.9.8",
+	 "socket.io" : ">=1.0.5",
      "express" : ">=3.0 <4.0",
      "jsdom" : ">=0.6.5",
      "guid" : ">=0.0.10",
      "jade" : ">=1.1.4",
-     "heapdump" : ">=0.2.1",
      "mongodb" : ">=1.3.19",
      "JSONStream" : ">=0.7.1",
      "loglevel" : ">=0.5.0",
      "optimist" : ">=0.6.0",
-     "msgpack" : ">=0.2.1"
+     "msgpack" : ">=0.2.1",
+     "morgan"  : ">=1.1.1",
+     "requirejs" : ">=2.1.14"
   }
 }
