@@ -12,7 +12,8 @@ requirejs.config({
         'types'   : 'lib/types/server',
         'jquery'  : 'deps/jquery'
     },
-    'nodeRequire': require
+    'nodeRequire': require,
+    'mainConfigFile' : 'js/boot'
 });
 
 requirejs(

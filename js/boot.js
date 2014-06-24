@@ -35,7 +35,7 @@ require.config({
     
     'paths' : {
         'types'    : 'lib/types/browser',
-        'socketio' : 'socket.io/socket.io',
+        'socketio' : 'node_modules/socket.io/node_modules/socket.io-client/socket.io',
         'jquery'   : 'deps/jquery',
         'd3'       : 'deps/d3.v3',
         'w2ui'     : 'deps/w2ui-1.3.2',
