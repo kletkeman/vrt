@@ -41,8 +41,6 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
 
         function fade (selection) {
 
-          !selection ;
-
           return !selection ?  (clearTimeout(fade.id), (fade.id = null)) :
             (fade.id = fade.id || setTimeout(function() {
               selection.transition(1000).style("opacity", 0);
@@ -96,15 +94,7 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
 
           return fade(t);
 
-        };
-
-
-        function click (d) { return d3.event.stopImmediatePropagation(), (d.click && d.click.call(this, d,  d3.event)); };
-        function over (d) { return vrt.controls.status(d.description), d3.select(this).style("opacity", 1), (d.over && d.over.call(this, d, d3.event)); };
-        function out (d) { return vrt.controls.status(""), d3.select(this).style("opacity", .8), (d.out && d.out.call(this, d, d3.event)); };
-        function down (d) { return (shrink.call(this, .95), d.down && d.down.call(this, d, d3.event)); };
-        function up (d) { return (shrink.call(this), d.up && d.up.call(this, d, d3.event)); };
-        function show (d) { return (d.show && d.show.apply(this, arguments)); };
+        };       
 
         function invoke (event) {
 
@@ -156,6 +146,13 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
         return (invoke.destroy = destroy), (invoke.orient = orient), (invoke.add = add), (invoke.get = get), (invoke.remove = remove), invoke;
         
   };
+    
+  function click (d) { return d3.event.stopImmediatePropagation(), (d.click && d.click.call(this, d,  d3.event)); };
+  function over (d) { return vrt.controls.status(d.description), d3.select(this).style("opacity", 1), (d.over && d.over.call(this, d, d3.event)); };
+  function out (d) { return vrt.controls.status(""), d3.select(this).style("opacity", .8), (d.out && d.out.call(this, d, d3.event)); };
+  function down (d) { return (shrink.call(this, .95), d.down && d.down.call(this, d, d3.event)); };
+  function up (d) { return (shrink.call(this), d.up && d.up.call(this, d, d3.event)); };
+  function show (d) { return (d.show && d.show.apply(this, arguments)); };
 
   return toolbar;
     

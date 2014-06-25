@@ -66,11 +66,7 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
 
       return obj;
 
-    };
-
-    function get (name) {
-      return this.filter(function(obj) { return obj.name === name; })[0];  
-    };
+    };   
 
     shortcuts.add    = windows.add    = add;
     shortcuts.remove = windows.remove = remove;
@@ -100,13 +96,7 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
         slide(event && box.compare(event.clientX, event.clientY));
     };
 
-    function over (d) {
-      return vrt.controls.status(d.description), (d.over && d.over.call(this, d, d3.event));
-    }
-   
-    function out (d) {
-      return vrt.controls.status(""), (d.out && d.out.call(this, d, d3.event));
-    }
+    
     
     window.addEventListener("mousemove", move);
 
@@ -180,6 +170,18 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
             selection.append("div").attr("class", "background"), 
            (box = new Box(selection.node())).freeze().on('scroll', invoke, window).on('resize', invoke, window), invoke(),  invoke;
 
+  };
+    
+  function get (name) {
+    return this.filter(function(obj) { return obj.name === name; })[0];  
+  };
+    
+  function over (d) {
+    return vrt.controls.status(d.description), (d.over && d.over.call(this, d, d3.event));
+  };
+   
+  function out (d) {
+    return vrt.controls.status(""), (d.out && d.out.call(this, d, d3.event));
   };
     
   return dock;
