@@ -1,6 +1,6 @@
 define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random, Box, vrt) {
     
-  function dock (context) {
+  function dock () {
     
     var shortcuts = [], windows = [], selection, box, id = random(), active;
     
@@ -164,8 +164,8 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
       return window.removeEventListener("mousemove", move), selection.remove(), (box && box.destroy());
     };
 
-    return (invoke.destroy = destroy), (invoke.shortcuts = shortcuts), (invoke.windows = windows), 
-           (selection=d3.select("body").append("div").attr("class", "dock").attr("id", id)), 
+    return (invoke.id = id), (invoke.destroy = destroy), (invoke.shortcuts = shortcuts), (invoke.windows = windows), 
+           (selection=d3.select(this).append("div").attr("class", "dock").attr("id", id)), 
             selection.style({'top' : function () { return (this.parentNode.offsetHeight - this.offsetHeight) + 'px'; }, 'left' : '0px'}),
             selection.append("div").attr("class", "background"), 
            (box = new Box(selection.node())).freeze().on('scroll', invoke, window).on('resize', invoke, window), invoke(),  invoke;

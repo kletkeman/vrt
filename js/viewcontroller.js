@@ -61,9 +61,9 @@ define(['lib/api', 'js/viewcontroller.dock', 'js/viewcontroller.toolbar', 'js/vi
           height     = navigation.height(),
           t;
 
-     (this.dock=dock(this)).shortcuts.add("dashboards", "Open the dashboard browser", function click () { context.navigator(); });
+     (this.dock = dock.call(document.body)).shortcuts.add("dashboards", "Open the dashboard browser", function click () { context.navigator(); });
       
-      (d3.select("body").each(this.toolbar = toolbar()),
+      (this.toolbar = toolbar.call(document.body),
       this.toolbar.add("destroy", "Close this dashboard", 
         function click (d) {
           return context.dock.windows.activate().remove(), d3.select("body").each(context.toolbar);

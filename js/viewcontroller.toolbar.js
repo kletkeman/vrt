@@ -98,7 +98,7 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
 
         function invoke (event) {
 
-            var t     = (selection = d3.select(this)).on("mousemove", move).select("#"+id),
+            var t     = selection.select("#"+id),
                 width = 0;
 
             if(event) return (t && t.style(orient()));
@@ -143,7 +143,8 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
             return selection.remove(), (box && box.destroy());
         };
 
-        return (invoke.destroy = destroy), (invoke.orient = orient), (invoke.add = add), (invoke.get = get), (invoke.remove = remove), invoke;
+        return (selection = d3.select(this).on("mousemove", move)), 
+            (invoke.id = id), (invoke.destroy = destroy), (invoke.orient = orient), (invoke.add = add), (invoke.get = get), (invoke.remove = remove), invoke;
         
   };
     
