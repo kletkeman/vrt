@@ -52,13 +52,13 @@ define(['js/random', 'lib/api'], function(random, vrt) {
         };
         
         function remove (name) {
-            var obj = get(name = name || this.name);
+            var obj = get(name = name || this.name || this.title);
             return (commands = commands.filter(function(c) { return c !== obj; })), 
                     d3.select("#"+id).selectAll("li.item").remove(), obj;
         };
         
         function get (name) {
-          return commands.filter(function(c) { return c.name === name; })[0];
+          return commands.filter(function(c) { return (c.name === name || c.title === name); })[0];
         };
         
         function destroy () {
@@ -69,7 +69,7 @@ define(['js/random', 'lib/api'], function(random, vrt) {
             
             var m = d3.select("#"+id), items, e = d3.event;
             
-            if(!commands.length) return;
+            if(!commands.length || !e) return;
                         
             e.stopImmediatePropagation(), e.preventDefault();
             
@@ -84,14 +84,25 @@ define(['js/random', 'lib/api'], function(random, vrt) {
                                     
             items = m.selectAll("li")
                      .classed("sub", sub)
-                     .data(commands)
-                     .enter()
-                     .append("li")
-                     .attr("class", "item")
-                     .classed("sub", sub)
-                     .on("click", click)
-                     .on("mouseover", over)
-                     .on("mouseout", out);
+                     .data(commands);
+            
+            items.each(show);
+            
+            items.selectAll("span.icon")
+                 .attr("class", icon);
+        
+            items.selectAll("span.title")
+                 .attr("class", "title")
+                 .text(text);
+            
+            items = items.enter()
+                 .append("li")
+                 .attr("class", "item")
+                 .classed("sub", sub)
+                 .on("click", click)
+                 .on("mouseover", over)
+                 .on("mouseout", out)
+                 .each(show);
             
             items.append("span")
                  .attr("class", icon);
@@ -121,6 +132,7 @@ define(['js/random', 'lib/api'], function(random, vrt) {
                 
     };
     
+    function show (d) { return (d.show && d.show.call(this, datum, d, d3.event)); };
     function icon (d) { return "icon small " + d.name; };
     function click (d) { return d3.event.stopImmediatePropagation(), (d.click && d.click.call(this, datum, d, d3.event)), clear(); };
     function text (d) { return d.title; };
