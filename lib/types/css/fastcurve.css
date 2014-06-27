@@ -6,6 +6,26 @@
   
 }
 
+.widget.fastcurve canvas.blur {
+    opacity: .05;
+}
+
+.widget.fastcurve text.blur {
+    opacity: .25;
+}
+
+.widget.fastcurve path.track {
+    opacity: .25;
+}
+
+.widget.fastcurve circle.track {
+    opacity: .5;
+}
+
+.widget.fastcurve .track.blur {
+    opacity: 0;
+}
+
 .widget.fastcurve g.legends text {
     fill: whitesmoke;
 }
