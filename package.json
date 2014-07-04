@@ -1,7 +1,7 @@
 {
   "author": "Odd Marthon Lende (oddmarthon.lende@bakerhughes.com)",
-  "name": "VisualizeRT",
-  "description": "RealTime Data Visualizer",
+  "name": "VRT",
+  "description": "Customizable RealTime Data Visualizer",
   "repository" : {
 	"type" : "git",
 	"url" : "https://github.com/oddmarthon-lende/vrt.git"
@@ -12,7 +12,8 @@
 	  
   }],
   "configure" : {
-    "http_port" : 6599,
+    "http_port" : 23485,
+    "http_address" : "127.0.0.1",
     "telnet_interface_port" : 5000,
     "consumer" : {
         "host" : "127.0.0.1",
@@ -38,6 +39,8 @@
      "optimist" : ">=0.6.0",
      "msgpack" : ">=0.2.1",
      "morgan"  : ">=1.1.1",
-     "requirejs" : ">=2.1.14"
+     "requirejs" : ">=2.1.14",
+     "bson" : ">=0.2.9",
+     "debug" : ">=0.6.2"
   }
 }

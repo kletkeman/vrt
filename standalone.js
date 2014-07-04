@@ -1,7 +1,8 @@
 var requirejs = require('requirejs'),
-    config    = require("./package.json").configure;
+    config    = require("./package.json").configure,
+    debug     = require("debug");
 
-requirejs.config({
+requirejs.config(config.requirejs = {
     'baseUrl': __dirname,
     'shims' : {
       'jquery' : {
@@ -13,18 +14,35 @@ requirejs.config({
         'jquery'  : 'deps/jquery'
     },
     'nodeRequire': require,
-    'mainConfigFile' : 'js/boot'
+    'mainConfigFile' : 'js/boot.js',
+    'out' : 'build/boot.js',
+    'name' : 'js/boot',
+    'uglify2' : {
+        'output' : {
+            'beautify' : true
+        },
+        'compress' : {
+            'sequences' : false,
+            'global_defs' : {
+                'DEBUG' : false
+            }
+        },
+        'warnings' : true,
+        'mangle' : false,
+        'screw-ie8' : true
+    }
 });
 
 requirejs(
-['express', 'morgan', 'http', 'socket.io', 'vrt', 'net', 'repl', 'optimist', 'cluster', 'os', ('lib/stores/' + config.store.name), 'lib/template'],
-function (express, morgan, http, socketio, vrt, net, repl, optimist, cluster, os, __STORE, Template ) {
+['bson', 'express', 'morgan', 'http', 'socket.io', 'vrt', 'net', 'repl', 'optimist', 'cluster', 'os', ('lib/stores/' + config.store.name), 'lib/template', 'fs'],
+function (bson, express, morgan, http, socketio, vrt, net, repl, optimist, cluster, os, __STORE, Template, fs ) {
     
     var app     = express(),
         server  = http.createServer(app),
         io      = socketio.listen(server),
         argv    = optimist.argv,
-        workers = {};
+        workers = {},
+        BSON = bson.pure().BSON;
 
     app.configure(function() {
         app.set('view engine', 'jade');
@@ -34,32 +52,29 @@ function (express, morgan, http, socketio, vrt, net, repl, optimist, cluster, os
         app.use(express.bodyParser());
         app.use(express.static(__dirname+'/public/resources/css'));
         app.use(express.static(__dirname+'/lib/types/css'));
-        app.use(express.static(__dirname));
-        app.use(morgan('tiny'));
+       
     });
 
     app.configure('development', function() {
         app.use(morgan('dev'));
+        app.use(express.static(__dirname));
+    });
+    
+    app.configure('production', function () {
+        
+        app.use(morgan('tiny'));
+        app.use('/js', express.static(__dirname+'/build'));
+        
+        requirejs.optimize(config.requirejs, function () {
+            
+        });
     });
 
     vrt.configure({
-
         "store": new __STORE(config.store.options),
-        "publish": function(id, eventHandlerName, args, callback) {
-
-            io.sockets.emit('event', {
-                _streamFetchType: 'on*',	
-                type: id,
-                action: eventHandlerName, 
-                ms: args
-            });
-
-            if(typeof callback === 'function')
-                callback();
-
-        }
+        "io" : io
     }).ready(function() {
-
+        
       io.set('log level', typeof argv.setLevel === 'number' ? argv.setLevel : 2);
       io.set('browser client', false);
 
@@ -109,7 +124,7 @@ function (express, morgan, http, socketio, vrt, net, repl, optimist, cluster, os
              app[route.method.toLowerCase()](route.path, route.handler);
           }
 
-          server.listen(config.http_port);
+          server.listen(config.http_port, config.http_address);
 
       }
 
@@ -119,8 +134,8 @@ function (express, morgan, http, socketio, vrt, net, repl, optimist, cluster, os
 
               var remote = repl.start('vrt:'+(cluster.isMaster?'master':'worker[ '+cluster.worker.id+' ][ '+cluster.worker.process.pid) + ' ] >>> ', socket);
 
-              remote.context.vrt = vrt;
-              remote.context.io = io;
+              remote.context.vrt   = vrt;
+              remote.context.debug = debug;
 
               if(cluster.isMaster)
                   remote.context.workers = workers;
@@ -129,8 +144,23 @@ function (express, morgan, http, socketio, vrt, net, repl, optimist, cluster, os
 
       })(cluster.isMaster ? config.telnet_interface_port : config.telnet_interface_port + Number(cluster.worker.id));
 
-      vrt.consumer.start();
-
+      vrt.consumer.start();        
+      
     });
+    
+    function exit (options, err) {
+        
+        if (err) vrt.log.error(err.stack);
+        
+        if(cluster.isMaster)
+            fs.writeFileSync('./etc/vrt.bson', BSON.serialize(vrt, false, true, true));        
+       
+        if (options.exit) process.exit();
+        
+    };
+
+    process.on('exit', exit);
+    process.on('SIGINT', exit.bind(null, {exit: true}));
+    process.on('uncaughtException', exit.bind(null, {exit: true}));
     
 });

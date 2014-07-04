@@ -23,7 +23,7 @@ define([], function() {
           'enumerable' : true,
           'configurable' : true,
           'get' : function() {
-            return add(target, 'offsetTop') + add(target.parentNode, 'scrollTop');
+            return add(target, 'offsetTop') - add(target.parentNode, 'scrollTop');
           }
         });
 
@@ -39,7 +39,7 @@ define([], function() {
           'enumerable' : true,
           'configurable' : true,
           'get' : function() {
-            return add(target, 'offsetLeft') + add(target.parentNode, 'scrollLeft');
+            return add(target, 'offsetLeft') - add(target.parentNode, 'scrollLeft');
           }
         });
 
@@ -72,14 +72,14 @@ define([], function() {
             'enumerable' : true,
             'configurable' : true,
             'get' : function() {
-              return context.right / 2;
+              return context.left + (target.offsetWidth / 2);
             }
           },
           'y' : {
             'enumerable' : true,
             'configurable' : true,
             'get' : function() {
-              return context.bottom / 2;
+              return context.top + (target.offsetHeight / 2);
             }
           }
         });
@@ -193,7 +193,7 @@ define([], function() {
 
         }
         else
-          return (x >= left && x <= right && (y += (this.scrollTop * 2)) >= top && y <= bottom);
+          return (x >= left && x <= right && y >= top && y <= bottom);
 
         return box;
       

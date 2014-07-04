@@ -1,12 +1,13 @@
-var jsdom = require("jsdom");
+var jsdom     = require("jsdom");
 
 document = jsdom.jsdom("<html><head></head><body></body></html>"),
 window   = document.createWindow();
 
-define(['module', 'path', 'fs', 'JSONStream', 'lib/api', 'lib/producer', 'lib/consumer', 'lib/ipc'], 
-function (module, path, fs, JSONStream, vrt, Producer, Consumer, IPC) {   
+define(['bson', 'jquery', 'module', 'path', 'fs', 'JSONStream', 'lib/api', 'lib/producer', 'lib/consumer', 'lib/ipc'], 
+function (bson, $, module, path, fs, JSONStream, vrt, Producer, Consumer, IPC) {   
     
-    var __dirname = path.dirname(module.uri);
+    var __dirname = path.dirname(module.uri),
+        BSON      = bson.pure().BSON;
 
     Object.defineProperty(Error.prototype, 'toJSON', {
         value: function () {
@@ -20,16 +21,12 @@ function (module, path, fs, JSONStream, vrt, Producer, Consumer, IPC) {
         },
         configurable: true
     });
-    
-    var stylesdir   = ['/lib/types/css', '/public/resources/css'],
-        stylesheets = (function(a) {while(stylesdir.length) { a = a.concat(fs.readdirSync(__dirname + stylesdir.pop()).sort()); } return a; })([]);
 
     vrt.configure({
         
         producer    : new Producer(),
         consumer    : new Consumer(),
         ipc         : new IPC(),
-        stylesheets : stylesheets,
         routes      : [
 
             {	
@@ -37,9 +34,7 @@ function (module, path, fs, JSONStream, vrt, Producer, Consumer, IPC) {
                 method: 'get',
                 secure: false,
                 handler: function(req, res) {
-                    res.render('layout', {
-                        stylesheets: stylesheets
-                    }); 
+                    res.render('layout', {}); 
                 }
             },
 
@@ -237,7 +232,18 @@ function (module, path, fs, JSONStream, vrt, Producer, Consumer, IPC) {
                 }
             }
 
-        ]});
+        ]}).ready(function (config) {
+        
+            require = require.nodeRequire;
+        
+            try { 
+                config = BSON.deserialize(fs.readFileSync(path.resolve(path.dirname(module.uri), 'etc/vrt.bson')), {evalFunctions : true});
+            } catch (e) { config = {}; } 
+            finally { 
+                this.trigger = $.extend(this.trigger, config.trigger);
+            }
+            
+        });
         
         return vrt;
 

@@ -2,7 +2,10 @@ require.config({
     
     'baseUrl' : '/',    
     'shim'    : {
-        'socketio': {
+        'bson': {
+          'exports': 'bson'
+        },
+        'socket.io': {
           'exports': 'io'
         },
         'jquery': {
@@ -20,7 +23,7 @@ require.config({
                     'w2confirm' : w2confirm,
                     'w2obj'     : w2obj, 
                     'w2popup'   : w2popup, 
-                    'w2ui'      : w2ui, 
+                    'w2ui'      : w2ui,
                     'w2utils'   : w2utils
                 }
             }
@@ -35,48 +38,60 @@ require.config({
     
     'paths' : {
         'types'    : 'lib/types/browser',
-        'socketio' : 'node_modules/socket.io/node_modules/socket.io-client/socket.io',
+        'socket.io' : 'node_modules/socket.io/node_modules/socket.io-client/socket.io',
         'jquery'   : 'deps/jquery',
         'd3'       : 'deps/d3.v3',
         'w2ui'     : 'deps/w2ui-1.3.2',
         'guid'     : 'node_modules/guid/guid',
-        'loglevel' : 'node_modules/loglevel/dist/loglevel'
+        'loglevel' : 'node_modules/loglevel/dist/loglevel',
+        'bson'     : 'node_modules/bson/browser_build/bson',
+        'debug'     : 'deps/debug'
     }
 });
 
-require(['socketio', 'lib/api', 'lib/stores/clientstore', 'js/viewcontroller'], function (io, vrt, ClientStore, ViewController) {
-    
+require(['guid', 'lib/api', 'lib/stores/clientstore', 'js/viewcontroller'], function (Guid, vrt, ClientStore, ViewController) {
+        
     vrt.configure({
-        store : new ClientStore(),
-        controls : new ViewController(),
-        browser : true
+        store     : new ClientStore(),
+        controls  : new ViewController(),
+        browser   : true
     }).ready(function () {
 
       var id = window.location.hash.replace(/^#/, "");
 
       vrt.log.disableAll();
+      vrt.controls.initialize();
 
-      if(id.length) {
-          
-        vrt.get(id, function(err, obj) {
-          if(err) return vrt.store.reload(function() { return vrt.controls.open(id).activate(), connect(); });
-            return connect(), vrt.controls.dock.destroy(), vrt.controls.toolbar.remove("destroy"), vrt.controls.toolbar.remove("layout"), (obj.dimensions.maximized = true), obj.toolbar.remove("expand"), obj.toolbar.remove("move"), obj.show(), (document.title = document.title + ' -- ' + obj.title);
+      if(!Guid.isGuid(id))
+          return vrt.store.reload(function () {
+            
+            if(id.length)
+                return vrt.controls.open(id);
+              
+            return vrt.controls.message("<span style=\"font-size: 18pt;\">Welcome to the VRT application</span>", "<br /><span style=\"font-size: 12pt;\">Move the cursor to the bottom to display the toolbar</span>", "<span style=\"font-size: 16pt;\">&darr;</span>", 10000);
+              
           });
-      }
       else
-        vrt.store.reload(function() {
-            return connect(), vrt.controls.message("<span style=\"font-size: 18pt;\">Welcome to the VRT application</span>", "<br /><span style=\"font-size: 12pt;\">Move the cursor to the bottom to display the toolbar</span>", "<span style=\"font-size: 16pt;\">&darr;</span>", 10000);
-        });
-
-      vrt.controls.initialize()
-
-      function connect () {
-        return io.connect('http://' + window.location.hostname + ':' + window.location.port).on('event', 
-          function(response) {
-            vrt.receive(response.type, response.action, response.ms);
-        });
-      }
-
+          return vrt.get(id, function(err, obj) {
+              
+            if(err) throw err;
+              
+            obj.toolbar.remove("expand"), 
+            obj.toolbar.remove("move");
+            obj.toolbar.remove("aligntop");
+              
+              
+            vrt.controls.toolbar.remove("destroy"), 
+            vrt.controls.toolbar.remove("layout"),    
+            vrt.controls.toolbar.remove("aligntop");              
+            
+            vrt.controls.open(id);
+            
+            vrt.controls.dock.destroy();              
+            
+          
+          });
+ 
     });
     
 });

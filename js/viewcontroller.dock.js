@@ -77,15 +77,16 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
     function slide (visible) {
 
       var t            = selection.node(),
-          parentHeight = t.parentNode.offsetHeight,
           height       = t.offsetHeight;
-
+        
+      visible = typeof visible === 'boolean' ? visible : false;
+        
       selection.
         transition(100)
         .style({
           'opacity' : visible ? 1 : 0,
           'top' : function () {
-            return ((visible ?  (parentHeight - height) : parentHeight) + t.parentNode.scrollTop) + 'px';
+            return ( visible ?  box.top : (box.top + height) ) + t.parentNode.scrollTop + 'px';
           }
         });
     };
@@ -163,12 +164,21 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
     function destroy () {
       return window.removeEventListener("mousemove", move), selection.remove(), (box && box.destroy());
     };
+      
+    function reset () {
+      return selection.style({
+          'top' : function () { 
+                return ($(window).height() + this.parentNode.scrollTop - this.offsetHeight) + 'px'; 
+            }, 
+          'left' : '0px'
+      });
+    };
 
     return (invoke.id = id), (invoke.destroy = destroy), (invoke.shortcuts = shortcuts), (invoke.windows = windows), 
-           (selection=d3.select(this).append("div").attr("class", "dock").attr("id", id)), 
-            selection.style({'top' : function () { return (this.parentNode.offsetHeight - this.offsetHeight) + 'px'; }, 'left' : '0px'}),
+           (selection=d3.select(this).append("div").attr("class", "dock").attr("id", id)),
+            reset(),
             selection.append("div").attr("class", "background"), 
-           (box = new Box(selection.node())).freeze().on('scroll', invoke, window).on('resize', invoke, window), invoke(),  invoke;
+           (box = new Box(selection.node())).freeze().on('scroll', reset, window).on('resize', reset, window), invoke(),  invoke;
 
   };
     

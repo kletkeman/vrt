@@ -1,4 +1,7 @@
-define(['lib/api', 'js/viewcontroller.dock', 'js/viewcontroller.toolbar', 'js/viewcontroller.navigator', 'd3'], function (vrt, dock, toolbar, navigator, d3) {
+define(['lib/api', 'js/viewcontroller.dock', 'js/viewcontroller.toolbar', 'js/viewcontroller.navigator', 'd3', 'guid', 'socket.io'],
+function (vrt, dock, toolbar, navigator, d3, Guid, io) {
+
+  var title; 
 
   function ViewController() {
     
@@ -20,35 +23,53 @@ define(['lib/api', 'js/viewcontroller.dock', 'js/viewcontroller.toolbar', 'js/vi
           groups  = vrt.groups,
           window;
       
-      if(typeof groups[name] === 'undefined')
-        throw new Error('No group `'+name+'`');
-
-      (window = windows.get(name) || 
-                windows.add(name, "", 
-
-            function close () {
-               return context.hideAll(), history.pushState(null, null, "/");
-            },
+      function close () {
+        return context.hideVisible(), history.pushState(null, null, "/");
+      };
         
-            function active (d) {
+      function active (d) {
 
-              groups[d.name] = groups[d.name].sort(function(a, b) {
-                return d3.ascending(a.sortKey, b.sortKey);
-              });
-
-              context.hideAll();
-
-              for(var i = 0, group = groups[d.name], len = group.length; i < len; i++)
-                group[i].show();  
-
-              context.__title = document.title;
-              document.title  = context.__title + " -- " + d.name;
+        context.hideVisible();
           
-              return history.pushState(null, null, "#"+d.name), d3.select("body").each(context.toolbar), document.body.scrollIntoView(); 
+        if(groups[d.name]) {
 
+            groups[d.name] = groups[d.name].sort(function(a, b) {
+                return d3.ascending(a.sortKey, b.sortKey);
+            });
+
+            for(var i = 0, group = groups[d.name], len = group.length; i < len; i++) {
+                (group[i].dimensions.maximized = false), (group[i].show().visible() && group[i].reload());
             }
+            
+        }
 
-      ));
+        title = title || document.title;
+        document.title  = title + " -- " + d.name;
+          
+        return history.pushState(null, null, "#"+(d.id||d.name)), d3.select("body").each(context.toolbar), document.body.scrollIntoView(); 
+
+      };   
+             
+      (window = windows.get(name) || windows.add(name, "", close, active));
+      
+      if(Guid.isGuid(name)) {
+          vrt.get(name, function(err, obj) {
+              
+              if(err) throw err;
+              
+              window = windows.get(name);
+              window.name = obj.title;
+              window.id = obj.id;
+              window.active = function () {
+                  return (obj.dimensions.maximized = true), active.apply(this, arguments), obj.show().reload();  
+              };
+              
+          });
+      }
+      else if(typeof groups[name] === 'undefined') {
+          window.remove();
+          throw new Error('No group `'+name+'`');   
+      }
       
       return windows.activate() ? window : window.activate();
   };
@@ -71,6 +92,10 @@ define(['lib/api', 'js/viewcontroller.dock', 'js/viewcontroller.toolbar', 'js/vi
         function show () {
           return d3.select(this).style("display", context.dock.windows.activate() ? null : "none");
         }),
+      this.toolbar.add("aligntop", "Scroll dashboard to top", 
+        function click () {
+          return document.body.scrollIntoView();
+        }), 
       this.toolbar.add("layout", "Save this layout", 
         function click (d) {
           
@@ -81,7 +106,7 @@ define(['lib/api', 'js/viewcontroller.dock', 'js/viewcontroller.toolbar', 'js/vi
       );
      
       window.addEventListener("popstate", function() {
-          return context.open(window.location.hash.replace(/^#/, "")||context.hideAll()).activate();
+          return context.open(window.location.hash.replace(/^#/, "")||context.hideVisible()).activate();
       }, false);
             
      (function(widgets) {
@@ -98,11 +123,23 @@ define(['lib/api', 'js/viewcontroller.dock', 'js/viewcontroller.toolbar', 'js/vi
                 if( !(widget = widgets[id]).visible() && !widget.stacked )
                     widget.onResize();
                 
-            }, true);
+        }, true);
+         
+         window.addEventListener('scroll', function () {
+
+            d3.selectAll(".widget.container")
+              .each(function () {
+                  vrt.get(this.id, function (_, obj) {
+                    if(obj.visible() && !obj.reload(3))
+                        obj.reload();
+                    else if(!obj.visible())
+                        obj.unload();
+                });
+            });
+             
+        });
             
     })(vrt.collection);
-          
-    
 
   };
 
@@ -154,16 +191,22 @@ define(['lib/api', 'js/viewcontroller.dock', 'js/viewcontroller.toolbar', 'js/vi
         remove: function() {
           clearTimeout(t); 
           e.remove();	
-                  proceed();
+          proceed();
         }
       };
   };
 
-  ViewController.prototype.hideAll = function () {
-      for(var id in vrt.collection)
-        vrt.collection[id].hide();
+  ViewController.prototype.hideVisible = function () {      
       
-       document.title = this.__title ? this.__title : document.title;
+      document.title = title || document.title;
+      
+      return d3.selectAll(".widget.container").each(function () {
+        vrt.get(this.id, function(err, obj) {
+            if(err) throw err;
+            return obj.hide().unload();
+        });
+      });
+      
   };
 
   ViewController.prototype.elements =  function () {
