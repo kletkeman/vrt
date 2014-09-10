@@ -1,0 +1,26 @@
+{
+    "baseUrl" : ".",
+    "optimize" : "uglify2",
+    "generateSourceMaps" : false,
+    "preserveLicenseComments": true,
+    "mainConfigFile" : "js/boot.js",
+    "name" : "js/boot",
+    "insertRequire" : ["js/boot"],
+    "out" : "build/boot.js",
+    "uglify2" : {
+        "output" : {
+            "beautify" : true
+        },
+        "compress" : {
+            "sequences" : false,
+            "global_defs" : {
+                "DEBUG" : false
+            }
+        },
+        "warnings" : true,
+        "mangle" : {
+            "except" : ["show", "hide", "over", "click", "activate", "close", "down", "up", "out", "DataSet", "Table", "FastCurve", "BarGraph", "Mail"]
+        },
+        "screw-ie8" : true 
+    }
+}

@@ -232,15 +232,17 @@ function (bson, $, module, path, fs, JSONStream, vrt, Producer, Consumer, IPC) {
                 }
             }
 
-        ]}).ready(function (config) {
-        
-            require = require.nodeRequire;
-        
+        ],
+        dump : function (name) {
+            return fs.writeFileSync('./etc/vrt.bson', BSON.serialize(vrt, false, true, true));        
+        }})
+        .ready(function (config) {
+                
             try { 
                 config = BSON.deserialize(fs.readFileSync(path.resolve(path.dirname(module.uri), 'etc/vrt.bson')), {evalFunctions : true});
             } catch (e) { config = {}; } 
             finally { 
-                this.trigger = $.extend(this.trigger, config.trigger);
+                $.extend(this.trigger, config.trigger);
             }
             
         });

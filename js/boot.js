@@ -37,7 +37,6 @@ require.config({
     },
     
     'paths' : {
-        'types'    : 'lib/types/browser',
         'socket.io' : 'node_modules/socket.io/node_modules/socket.io-client/socket.io',
         'jquery'   : 'deps/jquery',
         'd3'       : 'deps/d3.v3',
@@ -46,6 +45,9 @@ require.config({
         'loglevel' : 'node_modules/loglevel/dist/loglevel',
         'bson'     : 'node_modules/bson/browser_build/bson',
         'debug'     : 'deps/debug'
+    },
+     'map': {
+        '*': {'types' : 'lib/types/browser'},
     }
 });
 

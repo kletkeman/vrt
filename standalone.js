@@ -1,9 +1,11 @@
 var requirejs = require('requirejs'),
     config    = require("./package.json").configure,
-    debug     = require("debug");
+    build     = require("./build.json"),
+    debug     = require("debug"),
+    fs        = require("fs");
 
-requirejs.config(config.requirejs = {
-    'baseUrl': __dirname,
+requirejs.config(build);
+requirejs.config({
     'shims' : {
       'jquery' : {
         'exports' : '$'
@@ -14,22 +16,9 @@ requirejs.config(config.requirejs = {
         'jquery'  : 'deps/jquery'
     },
     'nodeRequire': require,
-    'mainConfigFile' : 'js/boot.js',
-    'out' : 'build/boot.js',
-    'name' : 'js/boot',
-    'uglify2' : {
-        'output' : {
-            'beautify' : true
-        },
-        'compress' : {
-            'sequences' : false,
-            'global_defs' : {
-                'DEBUG' : false
-            }
-        },
-        'warnings' : true,
-        'mangle' : false,
-        'screw-ie8' : true
+    'loglevel' : 1,
+    'throwWhen' : {
+       'optimize': true
     }
 });
 
@@ -42,38 +31,45 @@ function (bson, express, morgan, http, socketio, vrt, net, repl, optimist, clust
         io      = socketio.listen(server),
         argv    = optimist.argv,
         workers = {},
-        BSON = bson.pure().BSON;
-
-    app.configure(function() {
-        app.set('view engine', 'jade');
-        app.set('view options', {
-            layout: false
-        });
-        app.use(express.bodyParser());
-        app.use(express.static(__dirname+'/public/resources/css'));
-        app.use(express.static(__dirname+'/lib/types/css'));
-       
-    });
-
-    app.configure('development', function() {
-        app.use(morgan('dev'));
-        app.use(express.static(__dirname));
-    });
-    
-    app.configure('production', function () {
-        
-        app.use(morgan('tiny'));
-        app.use('/js', express.static(__dirname+'/build'));
-        
-        requirejs.optimize(config.requirejs, function () {
-            
-        });
-    });
+        BSON = bson.pure().BSON;   
 
     vrt.configure({
         "store": new __STORE(config.store.options),
         "io" : io
     }).ready(function() {
+        
+        app.configure(function() {
+            app.set('view engine', 'jade');
+            app.set('view options', {
+                layout: false
+            });
+            app.use(express.bodyParser());
+            app.use(express.static(__dirname+'/public/resources/css'));
+            app.use(express.static(__dirname+'/lib/types/css'));
+            app.use('/r', express.static(__dirname+'/node_modules/requirejs'));
+       
+        });
+
+        app.configure('development', function () {
+            app.use(morgan('dev'));
+            app.use(express.static(__dirname));
+        });
+
+        app.configure('production', function () {
+
+            app.use(morgan('tiny'));
+            app.use('/js', express.static(__dirname+'/build'));
+            
+            build.include = fs.readdirSync("lib/types/browser")
+                  .filter(function (name) { return name.indexOf('.js') > -1; })
+                  .map(function (name) { return "lib/types/browser/"+name.replace('.js', ''); });
+            
+            requirejs.optimize(build, function () {
+                vrt.log("Build Completed...");
+            });
+            
+        });
+    
         
       io.set('log level', typeof argv.setLevel === 'number' ? argv.setLevel : 2);
       io.set('browser client', false);
@@ -144,17 +140,13 @@ function (bson, express, morgan, http, socketio, vrt, net, repl, optimist, clust
 
       })(cluster.isMaster ? config.telnet_interface_port : config.telnet_interface_port + Number(cluster.worker.id));
 
-      vrt.consumer.start();        
+      vrt.consumer.start();   
       
     });
     
     function exit (options, err) {
         
-        if (err) vrt.log.error(err.stack);
-        
-        if(cluster.isMaster)
-            fs.writeFileSync('./etc/vrt.bson', BSON.serialize(vrt, false, true, true));        
-       
+        if (err) vrt.log.error(err.stack);        
         if (options.exit) process.exit();
         
     };
