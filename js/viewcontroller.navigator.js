@@ -53,7 +53,7 @@ define(['jquery', 'w2ui', 'lib/api'], function ($, w2, vrt) {
                                     { field: 'bufferSize', caption: 'bufferSize', size: '10%' },
                                     { field: 'step', caption: 'Step', size: '10%' },
                                 ],
-                                records: (function() {
+                                records: (function () {
 
                                     var i = 0, records = [];
 
@@ -70,7 +70,12 @@ define(['jquery', 'w2ui', 'lib/api'], function ($, w2, vrt) {
 
                                     return records;
 
-                                })()
+                                })(),
+                                onDblClick: function (e) {
+                                    return vrt.get(this.get(e.recid).id, function (err, obj) {
+                                        return err || obj.open();
+                                    });
+                                }
                             }) 
                         );
 

@@ -110,7 +110,8 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
         .append("div")
         .attr("class", function(d) { 
           if(d === shortcuts) 
-            return "shortcuts"; else if (d === windows) return "windows"; 
+            return "shortcuts"; 
+          else if (d === windows) return "windows"; 
         })
         .classed("section", true);
 
