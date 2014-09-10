@@ -50,24 +50,24 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
 
         function orient (v, h, s) {
 
-          var t, stickTo, width, height, top, left;
+          var t, width, height, top, left;
 
           if(!arguments.length) {
 
             if(selection) {
 
-              t       = selection.select("#"+id).node(),
-              stickTo = orientation.stickTo ? selection.select(orientation.stickTo).node() : selection.node();
+              t = selection.select("#"+id).node(),
+              s = orientation.stickTo ? selection.select(orientation.stickTo).node() : selection.node();
 
-              if(stickTo) {
+              if(s) {
 
-                width   = selection.node().clientWidth,
-                height  = selection.node().clientHeight,
-                top     = stickTo.offsetTop,
-                left    = stickTo.offsetLeft;
+                width   = s.clientWidth,
+                height  = s.clientHeight,
+                top     = s.offsetTop,
+                left    = s.offsetLeft;
 
                 orientation.top     = ((orientation.vertical   === 'bottom' ? ( height  - t.clientHeight) : top) + t.parentNode.scrollTop) + 'px';
-                orientation.left    = (orientation.horizontal === 'right' ? ( width - t.clientWidth - left) : left) + 'px'
+                orientation.left    = (orientation.horizontal === 'right' ? ( width - t.clientWidth + left) : left) + 'px'
 
               }
 
