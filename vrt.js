@@ -232,10 +232,7 @@ function (bson, $, module, path, fs, JSONStream, vrt, Producer, Consumer, IPC) {
                 }
             }
 
-        ],
-        dump : function (name) {
-            return fs.writeFileSync('./etc/vrt.bson', BSON.serialize(vrt, false, true, true));        
-        }})
+        ]})
         .ready(function (config) {
                 
             try { 
@@ -244,6 +241,12 @@ function (bson, $, module, path, fs, JSONStream, vrt, Producer, Consumer, IPC) {
             finally { 
                 $.extend(this.trigger, config.trigger);
             }
+        
+            this.configure({
+                dump : function (name) {
+                    fs.writeFileSync('./etc/vrt.bson', BSON.serialize(vrt, false, true, true));        
+                }
+            });
             
         });
         
