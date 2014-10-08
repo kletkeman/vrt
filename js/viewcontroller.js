@@ -1,7 +1,7 @@
-define(['lib/api', 'js/viewcontroller.dock', 'js/viewcontroller.toolbar', 'js/viewcontroller.navigator', 'd3', 'guid', 'socket.io'],
-function (vrt, dock, toolbar, navigator, d3, Guid, io) {
+define(['deps/packery.pkgd', 'lib/api', 'js/viewcontroller.dock', 'js/viewcontroller.toolbar', 'js/viewcontroller.navigator', 'd3', 'guid', 'socket.io'],
+function (Packery, vrt, dock, toolbar, navigator, d3, Guid, io) {
 
-  var title; 
+  var title, packery;
 
   function ViewController() {
     
@@ -24,13 +24,15 @@ function (vrt, dock, toolbar, navigator, d3, Guid, io) {
           window;
       
       function close () {
-        return context.hideVisible(), history.pushState(null, null, "/");
+        packery && packery.destroy();
+        context.hideVisible();
+        history.pushState(null, null, "/");
       };
         
       function active (d) {
-
-        context.hideVisible();
           
+        close();
+                  
         if(groups[d.name]) {
 
             groups[d.name] = groups[d.name].sort(function(a, b) {
@@ -40,11 +42,20 @@ function (vrt, dock, toolbar, navigator, d3, Guid, io) {
             for(var i = 0, group = groups[d.name], len = group.length; i < len; i++) {
                 (group[i].dimensions.maximized = false), (group[i].show().visible() && group[i].reload());
             }
-            
+                  
         }
-
+        
         title = title || document.title;
         document.title  = title + " -- " + d.name;
+          
+        packery = new Packery(
+            document.body, 
+            {
+                itemSelector : ".widget.container", 
+                gutter: 0, 
+                isInitLayout: true, 
+                isResizeBound: true
+            });
           
         return history.pushState(null, null, "#"+(d.id||d.name)), d3.select("body").each(context.toolbar), document.body.scrollIntoView(); 
 
@@ -98,7 +109,14 @@ function (vrt, dock, toolbar, navigator, d3, Guid, io) {
         }), 
       this.toolbar.add("layout", "Save this layout", 
         function click (d) {
-          
+            packery.getItemElements().forEach(
+                function (element, index) {
+                    vrt.get(element.id, function (err, obj) {
+                        if(err) throw err;
+                        obj.save({sortKey: index});
+                    });
+                });
+            return vrt.controls.status("Layout was saved!");
         }), 
         this.toolbar.add("status", "", function show () {
           return d3.select(this).text(context.status()).attr("class", "status");
@@ -116,11 +134,11 @@ function (vrt, dock, toolbar, navigator, d3, Guid, io) {
         window.addEventListener('resize', function () {
           
             for(var id in widgets)
-                if( (widget = widgets[id]).visible() && !widget.stacked )
-                    widget.onResize()
+                if( (widget = widgets[id]) )
+                    widget.onResize();
               
             for(var id in widgets)
-                if( !(widget = widgets[id]).visible() && !widget.stacked )
+                if( !(widget = widgets[id]).visible() )
                     widget.onResize();
                 
         }, true);
@@ -140,7 +158,7 @@ function (vrt, dock, toolbar, navigator, d3, Guid, io) {
         });
             
     })(vrt.collection);
-
+      
   };
 
   ViewController.prototype.message =  function(text) {
@@ -199,7 +217,7 @@ function (vrt, dock, toolbar, navigator, d3, Guid, io) {
   ViewController.prototype.hideVisible = function () {      
       
       document.title = title || document.title;
-      
+          
       return d3.selectAll(".widget.container").each(function () {
         vrt.get(this.id, function(err, obj) {
             if(err) throw err;
