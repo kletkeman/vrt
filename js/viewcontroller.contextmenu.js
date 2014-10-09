@@ -1,6 +1,6 @@
 define(['js/random', 'lib/api'], function(random, vrt) {
     
-    var root, datum;
+    var root;
     
     function menu () {
         
@@ -10,8 +10,13 @@ define(['js/random', 'lib/api'], function(random, vrt) {
 
             var args = Array.prototype.slice.call(arguments), obj;
             
-            if(this !== invoke)
-                return (this.menu = this.menu || menu()).destroy().add.apply(this.menu, arguments);
+            if(this !== invoke) {
+                
+                obj        = (this.menu = this.menu || menu()).destroy().add.apply(this.menu, arguments);
+                obj.parent = this;
+                
+                return obj;
+            }
             
             name = args.shift(),
             title = args.shift(),
@@ -80,7 +85,7 @@ define(['js/random', 'lib/api'], function(random, vrt) {
                 .attr("class", "contextmenu")
                 .classed("sub", sub(d));
             
-            (!m.classed("sub") && (clear(), (root = invoke), (datum = d)) );
+            (!m.classed("sub") && (clear(), (root = invoke)) );
                                     
             items = m.selectAll("li")
                      .classed("sub", sub)
@@ -132,20 +137,20 @@ define(['js/random', 'lib/api'], function(random, vrt) {
                 
     };
     
-    function show (d) { return (d.show && d.show.call(this, datum, d, d3.event)); };
+    function show (d) { return (d.show && d.show.call(this, d, d3.event)); };
     function icon (d) { return "icon small " + d.name; };
-    function click (d) { return d3.event.stopImmediatePropagation(), (d.click && d.click.call(this, datum, d, d3.event)), clear(); };
+    function click (d) { return d3.event.stopImmediatePropagation(), (d.click && d.click.call(this, d, d3.event)), clear(); };
     function text (d) { return d.title; };
     function sub (d) { return d && (typeof d.menu === 'function'); };
     function over (d) { 
         return hide.call(this.parentNode, true), (d.description && vrt.controls.status(d.description)), 
-                (d.over && d.over.call(this, datum, d, d3.event)), (d.menu && d3.select(this).classed("selected", true) && d.menu.call(this, d)); 
+                (d.over && d.over.call(this, d, d3.event)), (d.menu && d3.select(this).classed("selected", true) && d.menu.call(this, d)); 
     };
-    function out (d) { return (d.out && d.out.call(this, datum, d, d3.event)), vrt.controls.status(""); };
+    function out (d) { return (d.out && d.out.call(this, d, d3.event)), vrt.controls.status(""); };
         
     function appear (selection) {
             
-        var e = d3.event, target = d3.select(e.target), width = e.target.offsetWidth;
+        var e = d3.event, target = d3.select(e.target), width = selection.node().offsetWidth;
                 
         if(target.classed("item sub"))
             return selection.style(
@@ -163,7 +168,7 @@ define(['js/random', 'lib/api'], function(random, vrt) {
                 'left': e.clientX + 'px',
                 'opacity' : 0
             })
-            .transition(100)
+            .transition(200)
             .style('opacity', 1);
         
     };
@@ -173,7 +178,8 @@ define(['js/random', 'lib/api'], function(random, vrt) {
     };
     
     function clear () {
-        return root && root.hide() && ((root = null) || (datum = null));
+        return root && root.hide() && (root = null);
+        return root && root.hide() && (root = null);
     };
     
     window.addEventListener('click', clear, false);
