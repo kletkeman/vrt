@@ -1,0 +1,21 @@
+
+.widget.grid .background {
+  fill: none;
+}
+
+.widget.grid text {
+  fill: whitesmoke;
+  font-size: 7.5pt;
+  cursor: pointer;
+}
+
+.widget.grid svg.gutter {
+    border-radius: 0px;
+}
+
+.widget.grid .brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+  pointer-events: none;
+}
