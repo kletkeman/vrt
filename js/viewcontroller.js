@@ -122,6 +122,20 @@ function (Packery, vrt, dock, toolbar, navigator, d3, Guid, io) {
           return d3.select(this).text(context.status()).attr("class", "status");
         })
       );
+      
+      (function (add) {
+        
+        this.toolbar.add = function () {        
+            
+            var item = context.toolbar.get("status").remove(), 
+                added = add.apply(this, arguments);
+            
+            add(item.name, item.description, item.show);
+            
+            return added;
+        };
+        
+      }).call(this, this.toolbar.add);
      
       window.addEventListener("popstate", function() {
           return context.open(window.location.hash.replace(/^#/, "")||context.hideVisible()).activate();

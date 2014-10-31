@@ -18,6 +18,12 @@ body {
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
+     -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 div.dock {
@@ -109,7 +115,7 @@ div.dock .window .title {
 ul.contextmenu {
     position: absolute;
     z-index: 1101;
-    font-size: 8pt;
+    font-size: 9pt;
     background: rgba(255,255,255,.5);
     border-radius: 8px;
     padding: 8px;
@@ -124,7 +130,7 @@ ul.contextmenu li.item {
     list-style: none;
     text-indent: 0px;
     text-align: left;
-    padding-left: 16px;
+    padding-left: 0px;
     padding-right: 16px;
     text-align: left;
     margin-bottom: 2px;
@@ -186,7 +192,6 @@ div.backdrop.front div.messages {
 div.backdrop div.messages {
 	min-width: 50%;
 	opacity: .2;
-	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10pt;
 	font-weight: bolder;
 	cursor: pointer;
@@ -205,12 +210,6 @@ div.backdrop div.messages {
     position: relative;
     flex-grow: 0;
     flex-shrink: 0;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
 .widget.spacer {
   background-color: red;
@@ -243,7 +242,7 @@ div.backdrop div.messages {
 	
 	display : inline-block;
 	text-align : left;
-	font : 10px sans-serif;
+	font-size : 8pt;
 	position : absolute;
 	transform: rotate(-90deg);
 	-ms-transform : rotate(-90deg);
@@ -262,6 +261,7 @@ div.backdrop div.messages {
   padding-left: 10px;
   white-space: nowrap;
   background-color: whitesmoke;
+    
 }
 
 .widget.container > .widget.toolbar {
@@ -275,19 +275,17 @@ body >  .widget.toolbar {
   z-index: 1198;
 }
 
-body > .widget.toolbar .status {
+body > .widget.toolbar .status, div.widget.container > .widget.toolbar .status {
     width: auto;
     margin-right: 10px;
     font-size: 9pt;
     font-weight: bold;
+    color: black;
+    border-right: 1px dotted #555;
+    padding-right: 10px;
+    margin-right: 10px;
 }
 
-body > .widget.toolbar .layout {
-  border-left: 1px dotted #555;
-  padding-left: 10px;
-  margin-left: 10px;
-  margin-right: 0px;
-}
 
 .widget.stack div.stack.title  {
 	display : none;
@@ -337,6 +335,7 @@ body > .widget.toolbar .layout {
 .icon.dashboards {
     background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjEwMHB4IiBoZWlnaHQ9IjEwMHB4IiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTAwIDEwMCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTk0LjYyMywxOS41MjhIMzQuMDc0Yy0xLjMzNC0xLjIxNy0yLjM2OC01LjYxLTMuNzc4LTUuNjFIMTMuODEyYy0xLjQxLDAtMi40MTgsNC4zOTMtMy43NjcsNS42MUg1Ljg3OCAgIGMtMi4wMDIsMC0zLjYyOCwxLjYyNC0zLjYyOCwzLjYyN3Y2MS44NjdjMCwyLjAwMiwxLjYyNiwzLjYyNSwzLjYyOCwzLjYyNWg4OC43NDVjMi4wMDcsMCwzLjYyNy0xLjYyMywzLjYyNy0zLjYyNVYyMy4xNTUgICBDOTguMjUsMjEuMTUxLDk2LjYzLDE5LjUyOCw5NC42MjMsMTkuNTI4eiBNOTAuMTg4LDgzLjQxSDkuODc2Yy0yLjA5MSwwLTMuNzg1LTEuNjkyLTMuNzg1LTMuNzg2VjI5LjM0MyAgIGMwLTIuMDksMS42OTMtMy43ODMsMy43ODUtMy43ODNoODAuMzEyYzIuMDksMCwzLjc4NSwxLjY5MywzLjc4NSwzLjc4M3Y1MC4yODFoMC4wMDJDOTMuOTc1LDgxLjcxOCw5Mi4yNzksODMuNDEsOTAuMTg4LDgzLjQxeiIvPgoJPHBhdGggZD0iTTI4LjE5Miw2NC4yNTRWNDguMjM4SDQ0LjIxYy0wLjAwMS04Ljg0Ny03LjE3Mi0xNi4wMTktMTYuMDE4LTE2LjAxOWMtOC44NDYsMC0xNi4wMTgsNy4xNzItMTYuMDE4LDE2LjAyMSAgIEMxMi4xNzQsNTcuMDgzLDE5LjM0Niw2NC4yNTQsMjguMTkyLDY0LjI1NHoiLz4KCTxwYXRoIGQ9Ik0zMC45NzcsNjcuMDQxYzguODQ2LDAsMTYuMDE4LTcuMTczLDE2LjAxOC0xNi4wMkgzMC45NzdWNjcuMDQxeiIvPgoJPHJlY3QgeD0iNzAuNDQxIiB5PSI0Mi43MDYiIHdpZHRoPSI2LjkwMiIgaGVpZ2h0PSIyMC43MTIiLz4KCTxyZWN0IHg9IjgwLjc5NyIgeT0iMzUuODAyIiB3aWR0aD0iNi45MDQiIGhlaWdodD0iMjcuNjE2Ii8+Cgk8cmVjdCB4PSI2MC4wODMiIHk9IjQ5LjYxMSIgd2lkdGg9IjYuOTA1IiBoZWlnaHQ9IjEzLjgwNyIvPgoJPHJlY3QgeD0iMTMuMjUiIHk9IjczLjY2NiIgd2lkdGg9Ijc1LjI1IiBoZWlnaHQ9IjMiLz4KPC9nPgo8L3N2Zz4=);
 }
+
 .icon.expand {
     background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJZb3VyX0ljb24iIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMTAwcHgiIGhlaWdodD0iMTAwcHgiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAxMDAgMTAwIiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cGF0aCBkPSJNODMuODY3LDkwLjk5N0g0Ljg2MkMyLjE3Nyw5MC45OTcsMCw4OC44MiwwLDg2LjEzNVYyNC40NjljMC0yLjY4NSwyLjE3Ny00Ljg2Miw0Ljg2Mi00Ljg2Mmg0NC4xNjUgICBjMi42ODUsMCw0Ljg2MiwyLjE3Nyw0Ljg2Miw0Ljg2MnMtMi4xNzcsNC44NjItNC44NjIsNC44NjJIOS43MjR2NTEuOTQyaDY5LjI4MlY1OC41NTRjMC0yLjY4NSwyLjE3Ny00Ljg2Miw0Ljg2Mi00Ljg2MiAgIGMyLjY4NSwwLDQuODYyLDIuMTc3LDQuODYyLDQuODYydjI3LjU4MUM4OC43MjksODguODIsODYuNTUyLDkwLjk5Nyw4My44NjcsOTAuOTk3eiIvPgo8L2c+CjxnPgoJPGc+CgkJPHBhdGggZD0iTTEwMCwxMy4xOTh2MjUuMTM2YzAsMi42ODYtMi4xNzYsNC44NjItNC44NjIsNC44NjJjLTIuNjg2LDAtNC44NjItMi4xNzYtNC44NjItNC44NjJWMjQuOTRsLTMzLjk2LDMzLjk0OCAgICBjLTAuOTQ4LDAuOTQ4LTIuMTg4LDEuNDIyLTMuNDI4LDEuNDIyYy0xLjI1MiwwLTIuNDkyLTAuNDc0LTMuNDQtMS40MjJjLTEuODk2LTEuODk2LTEuODk2LTQuOTcxLDAtNi44NjdsMzMuOTQ4LTMzLjk2SDcwLjAwMiAgICBjLTIuNjg2LDAtNC44NjItMi4xNzYtNC44NjItNC44NjJjMC0yLjY4NiwyLjE3NS00Ljg2Miw0Ljg2Mi00Ljg2MmgyNS4xMzZjMC4zMjgsMCwwLjY1NiwwLjAzNiwwLjk4NSwwLjA5NyAgICBjMC4xNTgsMC4wMzYsMC4zMTYsMC4wNzMsMC40NjIsMC4xMjJjMC4xNTgsMC4wNDksMC4zMDQsMC4wOTcsMC40NSwwLjE3YzAuMTIxLDAuMDQ5LDAuMjQzLDAuMDk3LDAuMzY0LDAuMTcgICAgYzAuMTQ2LDAuMDczLDAuMjgsMC4xNDYsMC40MTMsMC4yNDNjMC4xMzQsMC4wODUsMC4yNjcsMC4xODIsMC40MDEsMC4yOTJjMC4xMjEsMC4wOTcsMC4yNDMsMC4yMDcsMC4zNjUsMC4zMjggICAgYzAuNTcxLDAuNTcxLDAuOTcyLDEuMjY0LDEuMjAzLDEuOTkzYzAuMDQ4LDAuMTU4LDAuMDg1LDAuMzE2LDAuMTIxLDAuNDc0Qzk5Ljk2NCwxMi41NDIsMTAwLDEyLjg3LDEwMCwxMy4xOTh6Ii8+Cgk8L2c+CjwvZz4KPC9zdmc+);
 }

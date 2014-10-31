@@ -147,8 +147,8 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
             (invoke.id = id), (invoke.destroy = destroy), (invoke.orient = orient), (invoke.add = add), (invoke.get = get), (invoke.remove = remove), invoke;
         
   };
-    
-  function click (d) { return d3.event.stopImmediatePropagation(), (d.click && d.click.call(this, d,  d3.event)); };
+  
+  function click (d) { return d3.event.stopImmediatePropagation(), (d.click && d.click.call(this, d,  d3.event)), (d.on && d.off && (d3.select(this).classed("on") ? (d3.select(this).classed("on", false), d.off.call(this, d, d3.event)) : (d3.select(this).classed("on", true), d.on.call(this, d, d3.event)))); };
   function over (d) { return vrt.controls.status(d.description), d3.select(this).style("opacity", 1), (d.over && d.over.call(this, d, d3.event)); };
   function out (d) { return vrt.controls.status(""), d3.select(this).style("opacity", .8), (d.out && d.out.call(this, d, d3.event)); };
   function down (d) { return (shrink.call(this, .95), d.down && d.down.call(this, d, d3.event)); };
