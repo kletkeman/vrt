@@ -1,0 +1,38 @@
+.widget.bargraph {
+    color: whitesmoke;
+}
+
+.widget.bargraph .brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+  pointer-events: none;
+}
+
+.widget.bargraph .icon.zoom, .widget.bargraph svg.zooming {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjEwMHB4IiBoZWlnaHQ9Ijc0cHgiIHZpZXdCb3g9IjAgMCAxMDAgNzQiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwMCA3NCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxwYXRoIGZpbGw9IiMwMDAwMDAiIGQ9Ik05MC4yMjEsNDAuMDU5bC0zLjM2Ny0zLjM2N2w3LjM5OS03LjM5OGwtNy4zOTktNy40bDMuMzY3LTMuMzY3bDkuMDgyLDkuMDgzYzAuOTMsMC45MywwLjkzLDIuNDM4LDAsMy4zNjcgIEw5MC4yMjEsNDAuMDU5eiBNMTMuMTQ4LDM2LjY5bC03LjQtNy4zOThsNy40LTcuMzk5bC0zLjM2Ny0zLjM2N2wtOS4wODQsOS4wODJDMC4yNTEsMjguMDU0LDAsMjguNjYsMCwyOS4yOTIgIGMwLDAuNjMxLDAuMjUxLDEuMjM3LDAuNjk3LDEuNjgzbDkuMDg0LDkuMDgyTDEzLjE0OCwzNi42OXogTTcwLjcwMyw0OS45OTZDNjUuMTczLDU1LjUyNSw1Ny44Miw1OC41NjksNTAsNTguNTY5ICBzLTE1LjE3Mi0zLjA0NC0yMC43MDMtOC41NzNjLTAuMjc3LTAuMjc3LTAuNTE2LTAuNTc4LTAuNzgxLTAuODY1bC0zLjc5NCwzLjc5NWwwLjAxNCwwLjAwNmMwLjI2NCwwLjI4MiwwLjQ5OCwwLjU4LDAuNzcyLDAuODU0ICBjMS41MjIsMS41MjIsMy4xNzUsMi44NjksNC45MTEsNC4wNjVMMTYuMTQzLDcyLjEyNWMtMS4yNCwxLjI0LTIuODY0LDEuODYtNC40ODksMS44NnMtMy4yNTEtMC42Mi00LjQ4OS0xLjg2ICBjLTIuNDgtMi40NzktMi40OC02LjQ5OSwwLTguOTc4bDE0LjI4NC0xNC4yODNsMy44NjMtMy44NjJjLTcuMjA1LTExLjMyMS01Ljg4Ny0yNi41NDEsMy45ODUtMzYuNDEyICBDMzQuODI2LDMuMDYsNDIuMTgsMC4wMTUsNTAsMC4wMTVTNjUuMTczLDMuMDYsNzAuNzAzLDguNTg5QzgyLjExOCwyMC4wMDUsODIuMTE4LDM4LjU3OSw3MC43MDMsNDkuOTk2eiBNNjUuMDkyLDE0LjIwMSAgYy00LjAzMS00LjAzLTkuMzkxLTYuMjUtMTUuMDkyLTYuMjVjLTUuNywwLTExLjA2LDIuMjItMTUuMDkyLDYuMjVjLTguMzE5LDguMzItOC4zMTksMjEuODYsMC4wMDEsMzAuMTgzICBjNC4wMyw0LjAyOCw5LjM5MSw2LjI0OCwxNS4wOSw2LjI0OGM1LjcwMSwwLDExLjA2MS0yLjIyLDE1LjA5Mi02LjI0OEM3My40MTMsMzYuMDYyLDczLjQxMywyMi41MjIsNjUuMDkyLDE0LjIwMXoiLz4KPC9zdmc+);
+}
+
+.widget.bargraph svg.zooming {
+  opacity: .5;
+  background-size: 128px 128px;
+}
+
+.widget.bargraph .icon.zoom.zooming {
+  opacity: 1;
+}
+
+
+.widget.bargraph text {
+  cursor: pointer;
+  font-size: 7.5pt; 
+}
+
+.widget.bargraph text.label {
+    fill: whitesmoke;
+    opacity: 0;
+}
+
+.widget.bargraph svg.gutter {
+    border-radius: 0px;
+}
