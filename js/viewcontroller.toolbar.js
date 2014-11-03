@@ -15,15 +15,22 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
         function add (name, desc, fn) {
 
           var args = Array.prototype.slice.call(arguments), obj;
-
+                        
           commands.unshift(obj = {
-            'name'        : String(args.shift()),
-            'description' : String(args.shift()),
+            'name'        : args.shift(),
+            'description' : typeof desc === 'string' ? args.shift() : ((fn = desc), ""),
             'remove'      : remove
           });
-
-          while( (fn = args.pop()) && (name = fn.name)) {
-            obj[name] = fn;
+            
+          if(typeof fn === 'object')
+              for(name in fn) {
+                  if(typeof fn[name] === 'function')
+                  obj[name] = fn[name];
+              }
+          else {
+              while( (fn = args.pop()) && (name = fn.name)) {
+                obj[name] = fn;
+              }
           }
 
           return obj;
@@ -148,12 +155,12 @@ define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random
         
   };
   
-  function click (d) { return d3.event.stopImmediatePropagation(), (d.click && d.click.call(this, d,  d3.event)), (d.on && d.off && (d3.select(this).classed("on") ? (d3.select(this).classed("on", false), d.off.call(this, d, d3.event)) : (d3.select(this).classed("on", true), d.on.call(this, d, d3.event)))); };
+  function click (d) { return d3.event.stopImmediatePropagation(), (d.click && d.click.call(this, d,  d3.event)), (d.on && d.off && (d3.select(this).classed("on") ? (d3.select(this).classed("on", false), (d.description = d.off.call(this, d, d3.event))) : (d3.select(this).classed("on", true), (d.description = d.on.call(this, d, d3.event)))), vrt.controls.status(d.description)); };
   function over (d) { return vrt.controls.status(d.description), d3.select(this).style("opacity", 1), (d.over && d.over.call(this, d, d3.event)); };
   function out (d) { return vrt.controls.status(""), d3.select(this).style("opacity", .8), (d.out && d.out.call(this, d, d3.event)); };
   function down (d) { return (shrink.call(this, .95), d.down && d.down.call(this, d, d3.event)); };
   function up (d) { return (shrink.call(this), d.up && d.up.call(this, d, d3.event)); };
-  function show (d) { return (d.show && d.show.apply(this, arguments)); };
+  function show (d) { return ((d.on && d.off) && (!d3.select(this).classed("on") && (d.description = d.off.call(this, d, d3.event)))), (d.show && d.show.apply(this, arguments));  };
 
   return toolbar;
     
