@@ -48,7 +48,8 @@ require.config({
         'loglevel'  : 'node_modules/loglevel/dist/loglevel',
         'bson'      : 'node_modules/bson/browser_build/bson',
         'debug'     : 'deps/debug',
-        'interact'  : 'deps/interact'
+        'interact'  : 'deps/interact',
+        'text'      : 'deps/text'
     },
      'map': {
         '*': {'types' : 'lib/types/browser'},
