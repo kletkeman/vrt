@@ -18,7 +18,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 This license applies to all parts of VRT that are not externally
 maintained libraries. The externally maintained libraries used by VRT are:
 
-Cubism - http://github.com/square/cubism
 D3     - http://github.com/mbostock/d3
 jQuery - https://github.com/jquery/jquery
 W2UI   - https://github.com/vitmalina/w2ui

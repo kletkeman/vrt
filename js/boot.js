@@ -1,3 +1,8 @@
+/*
+    Copyright © 2014 Odd Marthon Lende
+    All Rights Reserved
+*/
+
 require.config({
     
     'baseUrl' : '/',    

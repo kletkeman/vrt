@@ -59,13 +59,7 @@ define(['jquery', 'w2ui', 'lib/api'], function ($, w2, vrt) {
 
                                     vrt.groups[grid.records[event.recid].title].forEach(
                                     function(w) {
-
-                                        if(w instanceof vrt.type('stack'))
-                                            for(var k in w.datasets) {
-                                                records.push($.extend({recid: i++}, w.datasets[k]));
-                                            }
-                                        else
-                                            records.push($.extend({recid: i++}, w));
+                                        records.push($.extend({recid: i++}, w));
                                     });
 
                                     return records;
