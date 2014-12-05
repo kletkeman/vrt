@@ -1,16 +1,7 @@
 {
-  "author": "Odd Marthon Lende (oddmarthon.lende@bakerhughes.com)",
+  "author": "Odd Marthon Lende",
   "name": "VRT",
-  "description": "Customizable RealTime Data Visualizer",
-  "repository" : {
-	"type" : "git",
-	"url" : "https://github.com/oddmarthon-lende/vrt.git"
-  },
-  "licenses" : [{ 
-	"type" : "Apache",
-	"url" : "https://raw.github.com/oddmarthon-lende/vrt/master/LICENSE"
-	  
-  }],
+  "description": "Realtime HTML 5 Data Visualization Framework",
   "configure" : {
     "http_port" : 23485,
     "http_address" : "127.0.0.1",
@@ -24,7 +15,7 @@
         "options" : {"host": "10.0.0.2", "poolSize": 25}
     }
   },
-  "version": "0.2.0",
+  "version": "0",
   "main": "./standalone.js",
   "private" : true,
   "dependencies" : {

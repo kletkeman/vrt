@@ -1,4 +1,21 @@
-define(['js/shrink', 'js/random', 'js/box', 'lib/api'], function (shrink, random, Box, vrt) {
+/*
+    VRT - Copyright © 2014 Odd Marthon Lende
+    All Rights Reserved
+*/
+
+
+define([
+      'js/shrink'
+    , 'js/random'
+    , 'js/box'
+    , 'lib/api'
+],
+function (
+      shrink
+    , random
+    , Box
+    , vrt
+) {
         
     function toolbar () {
     

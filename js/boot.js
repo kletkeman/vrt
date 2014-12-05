@@ -1,7 +1,8 @@
 /*
-    Copyright © 2014 Odd Marthon Lende
+    VRT - Copyright © 2014 Odd Marthon Lende
     All Rights Reserved
 */
+
 
 require.config({
     

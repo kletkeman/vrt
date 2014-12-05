@@ -1,4 +1,19 @@
-define(['jquery', 'w2ui', 'lib/api'], function ($, w2, vrt) {
+/*
+    VRT - Copyright © 2014 Odd Marthon Lende
+    All Rights Reserved
+*/
+
+
+define([
+      'jquery'
+    , 'w2ui'
+    , 'lib/api'
+],
+function (
+      $
+    , w2
+    , vrt
+) {
   
     var w2popup = w2.w2popup, w2ui = w2.w2ui;
         

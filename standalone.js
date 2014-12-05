@@ -1,3 +1,8 @@
+/*
+    VRT - Copyright © 2014 Odd Marthon Lende
+    All Rights Reserved
+*/
+
 var requirejs = require('requirejs'),
     config    = require("./package.json").configure,
     build     = require("./build.json"),
@@ -22,9 +27,40 @@ requirejs.config({
     }
 });
 
-requirejs(
-['bson', 'express', 'morgan', 'http', 'socket.io', 'vrt', 'net', 'repl', 'optimist', 'cluster', 'os', ('lib/stores/' + config.store.name), 'lib/template', 'fs'],
-function (bson, express, morgan, http, socketio, vrt, net, repl, optimist, cluster, os, __STORE, Template, fs ) {
+requirejs([
+      'bson'
+    , 'express'
+    , 'morgan'
+    , 'http'
+    , 'socket.io'
+    , 'vrt'
+    , 'net'
+    , 'repl'
+    , 'optimist'
+    , 'cluster'
+    , 'os'
+    , ('lib/stores/' + config.store.name)
+    , 'lib/template'
+    , 'fs'
+],
+function (
+          
+      bson
+    , express
+    , morgan
+    , http
+    , socketio
+    , vrt
+    , net
+    , repl
+    , optimist
+    , cluster
+    , os
+    , __STORE
+    , Template
+    , fs
+
+) {
     
     var app     = express(),
         server  = http.createServer(app),

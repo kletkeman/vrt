@@ -1,10 +1,39 @@
+/*
+    VRT - Copyright © 2014 Odd Marthon Lende
+    All Rights Reserved
+*/
+
 var jsdom     = require("jsdom");
 
 document = jsdom.jsdom("<html><head></head><body></body></html>"),
 window   = document.createWindow();
 
-define(['bson', 'jquery', 'module', 'path', 'fs', 'JSONStream', 'lib/api', 'lib/producer', 'lib/consumer', 'lib/ipc'], 
-function (bson, $, module, path, fs, JSONStream, vrt, Producer, Consumer, IPC) {   
+define([
+      'bson'
+    , 'jquery'
+    , 'module'
+    , 'path'
+    , 'fs'
+    , 'JSONStream'
+    , 'lib/api'
+    , 'lib/producer'
+    , 'lib/consumer'
+    , 'lib/ipc'
+], 
+function (
+       
+      bson
+    , $
+    , module
+    , path
+    , fs
+    , JSONStream
+    , vrt
+    , Producer
+    , Consumer
+    , IPC
+
+) {   
     
     var __dirname = path.dirname(module.uri),
         BSON      = bson.pure().BSON;

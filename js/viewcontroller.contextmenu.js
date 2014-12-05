@@ -1,4 +1,16 @@
-define(['js/random', 'lib/api'], function(random, vrt) {
+/*
+    VRT - Copyright © 2014 Odd Marthon Lende
+    All Rights Reserved
+*/
+
+
+define([
+      'js/random'
+    , 'lib/api'
+], function(
+      random
+    , vrt
+) {
     
     var root;
     

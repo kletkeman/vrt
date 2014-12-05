@@ -1,5 +1,31 @@
-define(['deps/packery.pkgd', 'lib/api', 'js/viewcontroller.dock', 'js/viewcontroller.toolbar', 'js/viewcontroller.navigator', 'd3', 'guid', 'socket.io'],
-function (Packery, vrt, dock, toolbar, navigator, d3, Guid, io) {
+/*
+    VRT - Copyright © 2014 Odd Marthon Lende
+    All Rights Reserved
+*/
+
+
+define([
+      'deps/packery.pkgd'
+    , 'lib/api'
+    , 'js/viewcontroller.dock'
+    , 'js/viewcontroller.toolbar'
+    , 'js/viewcontroller.navigator'
+    , 'd3'
+    , 'guid'
+    , 'socket.io'
+],
+function (
+       
+      Packery
+    , vrt
+    , dock
+    , toolbar
+    , navigator
+    , d3
+    , Guid
+    , io
+    
+) {
 
   var title, packery;
 
