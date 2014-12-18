@@ -15,7 +15,7 @@
         "options" : {"host": "10.0.0.2", "poolSize": 25}
     }
   },
-  "version": "0",
+  "version": "0.0.0",
   "main": "./standalone.js",
   "private" : true,
   "dependencies" : {
