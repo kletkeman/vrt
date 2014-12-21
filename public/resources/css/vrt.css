@@ -43,8 +43,7 @@ div.dock {
 
 div.dock div.background {
   position: absolute;
-  background-color: white;
-  opacity: .5;
+  background-color: rgba(240, 240, 240, .5);
   width: 90%;
   margin-left: 5%;
   height: 100%;
@@ -121,7 +120,7 @@ ul.contextmenu {
     position: absolute;
     z-index: 1101;
     font-size: 9pt;
-    background: rgba(255,255,255,.5);
+    background: rgba(240, 240, 240, .5);
     border-radius: 8px;
     padding: 8px;
     font-weight: normal;
@@ -261,11 +260,10 @@ div.backdrop div.messages {
 
   position: absolute;
   display: inline-block;
-  opacity: .5;
   padding: 5px;
   padding-left: 10px;
   white-space: nowrap;
-  background-color: whitesmoke;
+  background-color: rgba(240, 240, 240, .5);
     
 }
 
