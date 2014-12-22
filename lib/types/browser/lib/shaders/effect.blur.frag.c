@@ -11,8 +11,34 @@ precision highp float;
 #endif
 
 uniform sampler2D sampler;
-uniform float time;
+uniform vec2 resolution;
+
+uniform float alpha;
+
+const float ds = 10.;
+
+float dx;
+float dy;
+
+vec4 result;
+vec2 coords;
 
 void main () {
-  gl_FragColor = vec4(1.,0.,1.,1.);
+    
+    coords = gl_FragCoord.xy / resolution; 
+    
+    for(float x = -ds; x <= ds; x++) {
+        
+        dx = (x * alpha) / resolution.x;
+        
+        for(float y = -ds; y <= ds; y++) {
+            
+            dy = (y * alpha) / resolution.y;
+            
+            result += texture2D(sampler, vec2(coords.x + dx, coords.y + dy));
+        }
+    }
+    
+    gl_FragColor = result / pow((ds * 2.) + 1., 2.);
+                                
 }
