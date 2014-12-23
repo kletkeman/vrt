@@ -29,11 +29,11 @@ void main () {
     
     for(float x = -ds; x <= ds; x++) {
         
-        dx = (x * alpha) / resolution.x;
+        dx = (x * (1. - alpha)) / resolution.x;
         
         for(float y = -ds; y <= ds; y++) {
             
-            dy = (y * alpha) / resolution.y;
+            dy = (y * (1. - alpha)) / resolution.y;
             
             result += texture2D(sampler, vec2(coords.x + dx, coords.y + dy));
         }
