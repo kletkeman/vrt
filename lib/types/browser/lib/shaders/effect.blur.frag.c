@@ -14,6 +14,7 @@ uniform sampler2D sampler;
 uniform vec2 resolution;
 
 uniform float alpha;
+uniform vec2 dir;
 
 const float ds = 10.;
 
@@ -29,11 +30,11 @@ void main () {
     
     for(float x = -ds; x <= ds; x++) {
         
-        dx = (x * (1. - alpha)) / resolution.x;
+        dx = (x * (1. - alpha) * dir.x) / resolution.x;
         
         for(float y = -ds; y <= ds; y++) {
             
-            dy = (y * (1. - alpha)) / resolution.y;
+            dy = (y * (1. - alpha) * dir.y) / resolution.y;
             
             result += texture2D(sampler, vec2(coords.x + dx, coords.y + dy));
         }
