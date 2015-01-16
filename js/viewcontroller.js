@@ -41,8 +41,19 @@ function (
   };
     
   ViewController.prototype.navigator = navigator;
+    
+  ViewController.prototype.blur = function blur (yes) {
+        
+    d3.selectAll(".widget.container")
+      .each(function () {
+        return vrt.get(this.id, function (err, obj) {
+            if(err) throw err;
+            return obj.blur(yes);
+        });
+      });
+ }
   
-  ViewController.prototype.open = function(name) {
+  ViewController.prototype.open = function open (name) {
 
       var context = this, 
           windows = this.dock.windows, 
@@ -52,7 +63,8 @@ function (
       function close () {
         packery && packery.destroy();
         context.hideVisible();
-        history.pushState(null, null, "/");
+        if(window.history)
+            history.pushState(null, null, "/");
       };
         
       function active (d) {
@@ -83,7 +95,9 @@ function (
                 isResizeBound: true
             });
           
-        return history.pushState(null, null, "#"+(d.id||d.name)), d3.select("body").each(context.toolbar), document.body.scrollIntoView(); 
+        context.blur(false);
+          
+        return (window.history && history.pushState(null, null, "#"+(d.id||d.name))), d3.select("body").each(context.toolbar), document.body.scrollIntoView(); 
 
       };   
              

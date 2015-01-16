@@ -46,16 +46,16 @@ require.config({
     },
     
     'paths' : {
-        'socket.io' : 'node_modules/socket.io/node_modules/socket.io-client/socket.io',
-        'jquery'    : 'deps/jquery',
-        'd3'        : 'deps/d3.v3',
-        'w2ui'      : 'deps/w2ui-1.3.2',
-        'guid'      : 'node_modules/guid/guid',
-        'loglevel'  : 'node_modules/loglevel/dist/loglevel',
-        'bson'      : 'node_modules/bson/browser_build/bson',
-        'debug'     : 'deps/debug',
-        'interact'  : 'deps/interact',
-        'text'      : 'deps/text'
+        'socket.io' : '/node_modules/socket.io/node_modules/socket.io-client/socket.io',
+        'jquery'    : '/deps/jquery',
+        'd3'        : '/deps/d3.v3',
+        'w2ui'      : '/deps/w2ui-1.3.2',
+        'guid'      : '/node_modules/guid/guid',
+        'loglevel'  : '/node_modules/loglevel/dist/loglevel',
+        'bson'      : '/node_modules/bson/browser_build/bson',
+        'debug'     : '/deps/debug',
+        'interact'  : '/deps/interact',
+        'text'      : '/deps/text'
     },
      'map': {
         '*': {'types' : 'lib/types/browser'},

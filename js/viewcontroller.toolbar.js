@@ -67,7 +67,7 @@ function (
 
           return !selection ?  (clearTimeout(fade.id), (fade.id = null)) :
             (fade.id = fade.id || setTimeout(function() {
-              selection.transition(1000).style("opacity", 0);
+              return hide();
             }, 5000));
 
         };
@@ -166,9 +166,13 @@ function (
         function destroy () {
             return selection.remove(), (box && box.destroy());
         };
+        
+        function hide () {
+            d3.select("#"+id).transition(1000).style("opacity", 0);
+        }
 
         return (selection = d3.select(this).on("mousemove", move)), 
-            (invoke.id = id), (invoke.destroy = destroy), (invoke.orient = orient), (invoke.add = add), (invoke.get = get), (invoke.remove = remove), invoke;
+            (invoke.hide = hide), (invoke.id = id), (invoke.destroy = destroy), (invoke.orient = orient), (invoke.add = add), (invoke.get = get), (invoke.remove = remove), invoke;
         
   };
   

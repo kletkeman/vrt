@@ -192,7 +192,7 @@ function (
       });
     };
 
-    return (invoke.id = id), (invoke.destroy = destroy), (invoke.shortcuts = shortcuts), (invoke.windows = windows), 
+    return (invoke.hide = slide), (invoke.id = id), (invoke.destroy = destroy), (invoke.shortcuts = shortcuts), (invoke.windows = windows), 
            (selection=d3.select(this).append("div").attr("class", "dock").attr("id", id)),
             reset(),
             selection.append("div").attr("class", "background"), 

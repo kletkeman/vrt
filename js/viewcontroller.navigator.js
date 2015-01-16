@@ -4,170 +4,175 @@
 */
 
 
+
+
 define([
       'jquery'
-    , 'w2ui'
     , 'lib/api'
+    , 'js/dialog'
+    , 'js/dialog.component'
 ],
 function (
+       
       $
-    , w2
     , vrt
-) {
-  
-    var w2popup = w2.w2popup, w2ui = w2.w2ui;
-        
-    function navigator () {
+    , Dialog
+    , DialogComponent
     
-        var subgrids = [],
+) {
+    
+    function Navigator () {
+        
+        var s;
+        
+        this.element = document.createElement("ul");
+        
+        DialogComponent.call(this);
+        
+        s = 
+        this.element
+            .selectAll("li")
+            .data(Object.keys(vrt.groups).sort().map(function(t, i) { return t; }))
+            .enter()
+            .append("li")
+            .attr("class", "group")
+            .append("h5")
+            .text(function(name) { return name; })
+            .classed("open", isOpen)
+            .on("click", open_close);
+        
+        s.append("div")
+                 .classed("icon dots small", true)
+                 .on("click", expand);
+            
+        s.append("ul")
+            .attr("class", "objects")
+            .style("display", "none")
+            .selectAll("li")
+            .data(function (name) {
+                return vrt.groups[name];
+            })
+            .enter()
+            .append("li")
+            .attr("class", "object")
+            .text(function (widget) { return widget.title; })
+            .append("div")
+            .classed("icon expand small", true)
+            .on("click", open_close);
+        
+    }
+                                 
+    Navigator.prototype = new DialogComponent("navigator");
+    
+    function isOpen (d) {
+        
+        for(var i = 0, window, windows = vrt.controls.dock.windows, length = windows.length; i < length; i++) {
+                
+            window = windows[i];
+                
+            if(window && window.name === d) break;
+            else window = null;
+                
+        }
+        
+        return window && window.name === d ? window : null;
+        
+    }
+    
+    function expand (title) {
+        
+        var selection = 
+        
+        d3.select(this.parentNode)
+          .select("ul.objects");
+        
+        selection.style("display", selection.style("display") === "none" ? null : "none");
+            
+    }
+    
+    function open_close (d) {
+        
+        var window;
+        
+        if(typeof d === "string") {
+            
+            d3.select(this)
+              .classed("open", (window = isOpen(d)) );
+            
+            window ? window.activate() : vrt.controls.open(d);
+        }
+        else
+            d.open();
+        
+        vrt.controls.blur(true);
+    }
+    
+    return function () {
+        
+        return vrt.controls.blur(true), vrt.controls.toolbar.hide(), vrt.controls.dock.hide(),
+            
+            new Dialog({
+            
+                'margin-left' : '25%',
+                'margin-top'  : '18%',
+                'min-width'   : '50%',
+                'min-height'  : '50%',
+                'max-height'  : '70%',
 
-            config = {
+            }, {
+                size: "small",
+                isModal: true
+            })
+            .insert(new Navigator())
+            .insert("button", {
 
-                layout: {
-                    name: 'vrt-navigator-layout',
-                    padding: 0,
-                    panels: [
-                        { type: 'main', minSize: 600, overflow: 'hidden' }
-                    ]
+                text: "Close",
+                type: "primary",
+                style: {
+                    "text-align" : "right"
                 },
-
-                grid: { 
-                    name: 'vrt-navigator-dashboards-grid',
-                    style: 'border: 0px; border-left: 1px solid silver',
-                    show: {
-                     selectColumn: true
-                    },
-                    columns: [              
-                        { field: 'title', caption: 'Dashboard Name', size: '100%', resizable: true, sortable: true },
-                        { field: 'count', caption: '#', size: '80px', attr: 'align="center"', resizable: true, sortable: true }
-                    ],
-                    records: Object.keys(vrt.groups).filter(function(g) {
-                                    return !vrt.groups[g].__vrt_hide_group__;
-                               }).sort().map(function(t,i) {
-                                    return {recid: i, title: t, count: vrt.groups[t].length };
-                               }),
-                    onExpand: function (event) {
-
-                        var _id = 'vrt-navigator-dashboards-subgrid-' + event.recid;
-
-                        if (w2ui.hasOwnProperty(_id)) w2ui[_id].destroy();
-                        $('#'+ event.box_id).css({ margin: '0px', padding: '0px', width: '100%' }).animate({ height: '250px' }, 100);
-
-                        setTimeout(function () {
-
-                            subgrids.push(
-
-                                $('#'+ event.box_id).w2grid({
-
-                                name: _id, 
-                                show: { columnHeaders: true },
-                                fixedBody: true,
-                                columns: [				
-                                    { field: 'title', caption: 'Title', size: '40%' },
-                                    { field: 'description', caption: 'Description', size: '40%' },
-                                    { field: 'bufferSize', caption: 'bufferSize', size: '10%' },
-                                    { field: 'step', caption: 'Step', size: '10%' },
-                                ],
-                                records: (function () {
-
-                                    var i = 0, records = [];
-
-                                    vrt.groups[grid.records[event.recid].title].forEach(
-                                    function(w) {
-                                        records.push($.extend({recid: i++}, w));
-                                    });
-
-                                    return records;
-
-                                })(),
-                                onDblClick: function (e) {
-                                    return vrt.get(this.get(e.recid).id, function (err, obj) {
-                                        return err || obj.open();
-                                    });
-                                }
-                            }) 
-                        );
-
-                        grid.resize();
-
-
-                        }, 300);
-                    }
-                }
+                action: function () {this.dialog.destroy();}
+            })
+            .on("destroy", function () {
+                return vrt.controls.blur(false); 
+            });
+        
+        
+        /*
+        
+        window.O = {
+            
+            "name" : "Odd Marthon",
+            "age"  : 33,
+            "body parts" : ["arms", "legs"],
+            "horny" : true,
+            "height" : 0,
+            "condition" : "sleeping"
+            
         };
-
-        var layout = $().w2layout(config.layout),
-            grid   = $().w2grid(config.grid);
-
-        w2popup.open({
-            title 	: 'VRT - Dashboards',
-            width	: Math.round($(document).width() * .5),
-            height	: Math.round($(document).height() * .5),
-            showMax : true,
-            body 	: '<div id="main" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px;"></div>',
-            onOpen  : function (event) {
-                event.onComplete = function () {
-
-                    var titles = grid.records.map(function(d) { return d.title; }),
-                        indexes = [];
-
-                    $('#w2ui-popup #main').w2render(layout);
-
-                    vrt.controls.dock.windows.forEach(
-                    function(w) {
-                        var index;
-                        if( (index = titles.indexOf(w.name)) > -1)
-                            indexes.push(index);
-                    });
-
-                    layout.content('main', grid);
-
-                    grid.select.apply(grid, indexes);
-                }
-            },
-            onMax : function (event) { 
-                event.onComplete = function () {
-                    layout.resize();
-                }
-            },
-            onMin : function (event) {
-                event.onComplete = function () {
-                    layout.resize();
-                }
-            },
-            onClose: function (event) {
-                event.onComplete = function () {
-
-                    var index, windows = vrt.controls.dock.windows,
-                        captions = windows.map(function(w) { return w.name; }),
-                        window;
-
-                    grid.records.forEach(
-                    function(record) {
-                        if(!record.selected && (index = captions.indexOf(record.title)) > -1 && (window = windows[index])) {
-                            window.remove();
-                        }
-                    });
-
-                    grid.records.forEach(
-                    function(record) {
-                        if(record.selected && captions.indexOf(record.title) === -1)
-                            vrt.controls.open(record.title);
-                    })
-
-
-                    while(subgrids.length)
-                        subgrids.pop().destroy();
-
-                    layout.destroy();
-                    grid.destroy();
-
-                }
-            }
-        });
-
-    };
-
-    return navigator;
-
+        
+        .insert("form")
+        .nest()
+        .add(O)
+        .add(O,  "height", -5, 5)
+        .add(O, "condition", ["tired", "horny", "angry"])
+        .insert("color", {text: 'skin', value: "#F4D3D3"})
+        .dialog
+        .insert("button", {
+            text: "Close", type: "primary", style: {"text-align" : "right"}, action: function () {this.dialog.destroy();}})
+        .on("destroy", function () {
+            return blur(false); 
+        })
+        
+        /*.insert(new Navigator());
+        .insert("form")
+        .nest()
+        .insert("text", {text: "Name", placeholder: "Enter your name"})
+        .insert("checkbox", {text: "Gay", checked: true} )
+        .insert("select", {text: "Fags", records: ["blue", "green", "yellow"]} )
+        .insert("html", {html: "<span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>"})
+        .insert("button", {text: "Close", type: "primary"});*/
+        
+    }
+    
 });
