@@ -7,6 +7,7 @@ define([
     
       'debug'
     , 'jquery'
+    , 'interact'
     , 'js/random'
     , 'd3'
     , 'js/dialog.component'
@@ -21,30 +22,60 @@ define([
     , 'js/dialog.component.html'
     , 'js/dialog.component.select'
     , 'js/dialog.component.color'
+    , 'js/dialog.component.progress'
+    , 'js/dialog.component.alert'
+    , 'js/dialog.component.jumbotron'
+    , 'js/dialog.component.titlebar'
     
-], function (debug, $, random, d3, DialogComponent) { debug = debug("lib:dialog")
+], function (debug, $, interact, random, d3, DialogComponent) { debug = debug("lib:dialog")
     
-    
-    function Dialog (style, options) {
+    var   zIndex   = 10999;
+    const bindings = [];
+                                                               
+    function Dialog (classnames, style, options) {
         
-        var background;
+        var background, dialog = this;
+        
+        switch(arguments.length) {
+            
+            case 1:
+                
+                if(typeof classnames === 'object') {
+                    style = classnames;
+                    classnames = null;
+                }
+                
+                break;
+                
+            case 2:
+                
+                if( typeof classnames !== 'string' ) {
+                    
+                    options = style;
+                    style = classnames;
+                    
+                    classnames = null;
+                    
+                }
+        }
         
         options  = options || {};
         style    = style || {};
         
+        style["z-index"] = ++zIndex;
+        
         this._components = [];
-        this._events     = [];
+        this._events     = {};
         this._options    = options;
         this._style      = style;
-        
-        style   = style   || {};
         
         if(options.isModal) {
             
             background = 
             d3.select(document.body)
             .append("div")
-            .classed("dialog-modal", true);
+            .classed("dialog-modal", true)
+            .style("z-index", zIndex - 1)
             
             d3.select("html").style("pointer-events", "none");
             
@@ -56,20 +87,50 @@ define([
         }
         
         this.element = (background || d3.select(document.body))
-            .append("div")
-            .classed("dialog", true)
-            .attr("id", (this.id = random()))
-            .style(style);
+             .append(function () {
+                return dialog.element || document.createElement("div");
+             })
+             .classed("dialog", true)
+             .attr("id", (this.id = random()))
+             .style(style);
+        
+        if(options.resizable)
+            interact(this.element.node(), {})
+            .resizable(true)
+            .on("resizemove",  function (event) {
+
+                style.width   = parseInt(dialog.element.style('width'))  + event.dx + 'px';
+                style.height  = parseInt(dialog.element.style('height')) + event.dy + 'px';
+
+                refresh();
+
+            });
+        
+        if(classnames)
+            this.element.classed(classnames, true);
+        
+        function refresh () {
+            dialog.refresh();
+        }
+        
+        window.addEventListener("resize", refresh, false);
+                                
+        this.on("destroy", function () {
+            return window.removeEventListener("resize", refresh);
+        });
                 
     }
     
     function insert (cmp, options) {
         
-        var node;
+        var node, dialog = this.dialog;
         
         with(this._components) {
             
-            push( typeof cmp === 'function' ? new cmp( $.extend({}, this._options || this.dialog._options, options)) : cmp );
+            options = $.extend({}, this._options || (dialog ? dialog._options : {}), options);
+            
+            push( typeof cmp === 'function' ? 
+                 new cmp( options ) : cmp );
             
             (cmp = valueOf()[length - 1]);
             
@@ -80,13 +141,19 @@ define([
             
         }
         
-        cmp.dialog = this.dialog || this;
+        cmp.dialog = dialog || this;
         cmp.parent = this;
         
         d3.select(node).style(cmp._style);
         
-        return this;
+        cmp.parent.emit("insert", cmp);
         
+        cmp.dialog.refresh();
+        
+    }
+    
+    Dialog.prototype.node = function () {
+        return this.element.node();
     }
     
     Dialog.prototype.insert = function (name, options) {
@@ -110,9 +177,9 @@ define([
         
     }
     
-    Dialog.prototype.add = function (obj, name) {
+    Dialog.prototype.add = function (obj, name, type) {
         
-        var args = Array.prototype.slice.call(arguments, 2);
+        var args = Array.prototype.slice.call(arguments, typeof type === 'string' ? 3 : 2), i;
         
         switch(arguments.length) {
                 
@@ -122,8 +189,17 @@ define([
                 
             case 1:
                 
-                for(name in obj)
+                debug(" Auto add properties ", obj);
+                
+                for(name in obj) {
+                    
+                    if( (i = bindings.indexOf(obj)) > -1 && bindings[++i][name]) {
+                        debug("Property '"+ name + "' has already been added, skipping...");
+                        continue;
+                    }
+                    
                     this.add(obj, name);
+                }
                 
                 return this;
                 
@@ -133,7 +209,22 @@ define([
                     throw "Argument(s) has wrong type, must be (object, string)";    
         }
         
-        switch(typeof obj[name]) {
+        if( (i = bindings.indexOf(obj)) > -1 && bindings[++i][name])
+            throw "Property '" + name + "' has already been added";
+        
+        switch(typeof type === "string" ? type : typeof obj[name]) {
+                
+            case 'undefined':
+                throw "Property '" + name + "' does not exist in the given object";
+                
+            case 'color':
+                
+                this.insert("color", {
+                    'text'    : name,
+                    'value' : obj[name]
+                });
+                
+                break;
                 
             case 'boolean':
                 
@@ -222,10 +313,45 @@ define([
         this.nest()
             .on("modified", function () {
                 obj[name] = this.valueOf();
+                this.dialog.emit("modified", this, name, obj);
             })
             .on("update-request", function () {
                 this.set(obj[name]);
-            });
+            })
+            .disabled(!Object.getOwnPropertyDescriptor(obj, name).writable);
+        
+        if( ( i = bindings.indexOf(obj) ) === -1) {
+            
+            for(i = 0, l = bindings.length; i < l; i += 3) {
+                
+                if(bindings[i] === null) {
+                    
+                    bindings[i] = obj;
+                    bindings[i+1] = {};
+                    bindings[i+2] = 0;
+                    
+                    break;
+                }
+            }
+            
+            if(bindings[i] !== obj) {
+                bindings.push(obj, {}, 0);
+                i = bindings.length - 3;
+            }
+        }
+        
+        bindings[++i][name] = this.nest();
+        bindings[i+1]++;
+        
+        this.on("destroy", function () {
+            
+            bindings[i][name] = null;
+            
+            if(! --bindings[i+1] ) {
+                bindings[i-1] = null;
+                bindings[i] = null;
+            }
+        });
         
         return this;
         
@@ -233,14 +359,31 @@ define([
     
     Dialog.prototype.destroy = function () {
         
-        var components = this._components, component;
+        var components = this._components,
+            parent      = this.parent,
+            component, length;
         
         while( (component = components.pop()) )
             component.destroy();
         
         this.element.remove();
         
-        this.emit("destroy");
+        if(parent && (components = parent._components).indexOf(this) > -1) {
+            
+            length = components.length;
+            
+            while ( length-- && (component = components.shift())) {
+                
+                if(component !== this)
+                    components.push(component);
+                
+            }
+            
+            if(parent instanceof Dialog && !components.length)
+                parent.destroy();
+        }
+        
+        return this.emit("destroy");
         
     }
     
@@ -252,15 +395,21 @@ define([
             components[i].update();
         }
         
+        this.emit("update");
+        
         return this;
     }
     
-    Dialog.prototype.refresh = function () {
+    Dialog.prototype.refresh = function refresh () {
         
         var components = this._components, component;
         
-        while( (component = components.pop()) )
-            component.refresh();
+        this.element.style(this._style);
+        
+        for(var i = 0, len = components.length; i < len; i++) {
+            components[i].refresh();
+            refresh.call(components[i]);
+        }
         
         this.emit("refresh");
         
@@ -269,9 +418,9 @@ define([
     }
     
     Dialog.prototype.trigger = function (eventname) {
-        var context = this;
+        var context = this, e = [eventname];
         return function () {
-            context.emit(eventname);
+            context.emit.apply(context, e.concat(Array.prototype.slice.call(arguments)));
         }
     }
     
@@ -281,12 +430,12 @@ define([
         
         if( (callbacks = this._events[eventname]) )
             for(var i = 0, len  = callbacks.length; i < len; i++)
-                callbacks[i].call(this, eventname);
+                callbacks[i].apply(this, Array.prototype.slice.call(arguments, 1));
         
         return this;
     }
     
-    Dialog.prototype.on = function (eventname, callback) {
+    function on (eventname, callback) {
         
         var events = this._events;
         
@@ -308,13 +457,33 @@ define([
         return this;
     }
     
-    DialogComponent.prototype.on      = Dialog.prototype.on;
-    DialogComponent.prototype.trigger = Dialog.prototype.trigger;
-    DialogComponent.prototype.insert  = Dialog.prototype.insert;
-    DialogComponent.prototype.add     = Dialog.prototype.add;
-    DialogComponent.prototype.nest    = Dialog.prototype.nest;
-    DialogComponent.prototype.destroy = Dialog.prototype.destroy;
-    DialogComponent.prototype.emit    = Dialog.prototype.emit;
+    Dialog.prototype.on = on;
+                                                                   
+    Dialog.prototype.each = function () {
+        
+        var components = this._components, component;
+        
+        for(var i = 0, len = components.length; i < len; i++) {
+            on.apply(components[i], arguments);
+        }
+        
+        return this;
+        
+    }
+    
+    Dialog.prototype.components = function () {
+        return this._components;
+    }
+    
+    DialogComponent.prototype.on         = Dialog.prototype.on;
+    DialogComponent.prototype.trigger    = Dialog.prototype.trigger;
+    DialogComponent.prototype.insert     = Dialog.prototype.insert;
+    DialogComponent.prototype.add        = Dialog.prototype.add;
+    DialogComponent.prototype.nest       = Dialog.prototype.nest;
+    DialogComponent.prototype.destroy    = Dialog.prototype.destroy;
+    DialogComponent.prototype.emit       = Dialog.prototype.emit;
+    DialogComponent.prototype.each       = Dialog.prototype.each;
+    DialogComponent.prototype.components = Dialog.prototype.components;
     
     return Dialog;
 

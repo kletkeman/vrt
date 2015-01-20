@@ -7,18 +7,19 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
     
     const classmap = {
 
-        'large' : 'form-group-lg',
-        'small' : 'form-group-sm'
+        'large'    : 'form-group-lg',
+        'small'    : 'form-group-sm',
+        'smallest' : 'form-group-xs'
 
     };
     
-    const classmapf = {
+    const classmapW = {
         0 : 'has-warning has-error',
         1 : 'has-warning',
         2 : 'has-error'
     };
         
-    const classmapi = {
+    const classmapI = {
         1 : 'glyphicon-warning-sign',
         2 : 'glyphicon-remove'
     };
@@ -42,7 +43,7 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
         
         s.append("label")
          .attr("for", id)
-         .classed("col-sm-2 control-label", true)
+         .classed("col-sm-4 control-label", true)
          .text(options.text || "");
         
         value = options.value === undefined ? "" : options.value;
@@ -50,7 +51,7 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
         
         s = 
         s.append("div")
-         .classed("col-sm-10", true)
+         .classed("col-sm-8", true)
          .append("input")
          .attr("type", typeof value === "number" ? "number" : "text")
          .attr("min",  typeof value === "number" ? options.min || null : null)
@@ -62,6 +63,11 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
          .attr("name", options.name || options.text.toLowerCase().split(" ")[0])
          .classed("form-control", true)
          .on("input", this.trigger("modified")).node();
+        
+        this.disabled = function (yes) {
+            s.disabled = yes;
+            return this;
+        }
         
         this.set = function (value) {
             return s.value = value;
@@ -86,7 +92,7 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
             
             n.selectAll(".form-control-feedback").remove();
             
-            n.classed(classmapf[code], !!code)
+            n.classed(classmapW[code], !!code)
              .classed("has-feedback", !!code);
                    
             if(!code) return;
@@ -94,7 +100,7 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
             d3.select(s.parentNode)
               .append("span")
               .classed("glyphicon form-control-feedback", true)
-              .classed(classmapi[code], true)
+              .classed(classmapI[code], true)
               .attr("aria-hidden", true)
         }
         
@@ -107,7 +113,7 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
     }
 
     Input.prototype = new DialogComponent("input");
-
+    
     return Input;
 
 })

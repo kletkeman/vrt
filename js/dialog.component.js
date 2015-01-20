@@ -33,7 +33,9 @@ define(['d3', 'js/random'], function (d3, random) {
 
     }
     
-    DialogComponent.prototype.set = function () {return this;}
+    DialogComponent.prototype.refresh  = 
+    DialogComponent.prototype.disabled = 
+    DialogComponent.prototype.set      = function () {return this;};
     
     DialogComponent.prototype.update = function () {
         
@@ -50,7 +52,7 @@ define(['d3', 'js/random'], function (d3, random) {
         return this.element.node();
     }
     
-    DialogComponent.prototype.refresh = function () {return this;}
+    
     
     DialogComponent.prototype.valueOf    = function () {
         return this.element.node().innerText;

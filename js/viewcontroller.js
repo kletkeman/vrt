@@ -5,7 +5,9 @@
 
 
 define([
-      'deps/packery.pkgd'
+    
+      'js/dialog'
+    , 'deps/packery.pkgd'
     , 'lib/api'
     , 'js/viewcontroller.dock'
     , 'js/viewcontroller.toolbar'
@@ -13,10 +15,11 @@ define([
     , 'd3'
     , 'guid'
     , 'socket.io'
+    , 'jquery'
 ],
 function (
-       
-      Packery
+      Dialog 
+    , Packery
     , vrt
     , dock
     , toolbar
@@ -24,10 +27,11 @@ function (
     , d3
     , Guid
     , io
+    , $
     
 ) {
 
-  var title, packery;
+  var title, packery, blurred = false;
 
   function ViewController() {
     
@@ -43,14 +47,20 @@ function (
   ViewController.prototype.navigator = navigator;
     
   ViewController.prototype.blur = function blur (yes) {
-        
-    d3.selectAll(".widget.container")
-      .each(function () {
-        return vrt.get(this.id, function (err, obj) {
-            if(err) throw err;
-            return obj.blur(yes);
-        });
-      });
+      
+        d3.selectAll(".widget.container")
+          .each(function () {
+            return vrt.get(this.id, function (err, obj) {
+                if(err) throw err;
+                return obj.render("blur", (blurred = yes) );
+            });
+          });
+
+        if(yes)
+            this.toolbar.hide(), this.dock.hide();
+
+        return this;
+
  }
   
   ViewController.prototype.open = function open (name) {
@@ -63,7 +73,8 @@ function (
       function close () {
         packery && packery.destroy();
         context.hideVisible();
-        if(window.history)
+          
+        if(! (chrome && chrome.app.window) )
             history.pushState(null, null, "/");
       };
         
@@ -78,7 +89,9 @@ function (
             });
 
             for(var i = 0, group = groups[d.name], len = group.length; i < len; i++) {
+                 
                 (group[i].dimensions.maximized = false), (group[i].show().visible() && group[i].reload());
+                
             }
                   
         }
@@ -95,9 +108,10 @@ function (
                 isResizeBound: true
             });
           
-        context.blur(false);
+        if(! (chrome && chrome.app.window))
+            history.pushState(null, null, "#"+(d.id||d.name))
           
-        return (window.history && history.pushState(null, null, "#"+(d.id||d.name))), d3.select("body").each(context.toolbar), document.body.scrollIntoView(); 
+        d3.select("body").each(context.toolbar), document.body.scrollIntoView(); 
 
       };   
              
@@ -147,7 +161,7 @@ function (
         function click () {
           return document.body.scrollIntoView();
         }), 
-      this.toolbar.add("layout", "Save this layout", 
+      this.toolbar.add("save", "Save this layout", 
         function click (d) {
             packery.getItemElements().forEach(
                 function (element, index) {
@@ -157,6 +171,15 @@ function (
                     });
                 });
             return vrt.controls.status("Layout was saved!");
+        }),
+       this.toolbar.add("fullscreen", "", 
+        function on (d) {
+            document.body.webkitRequestFullScreen();
+            return "Exit Fullscreen Mode";
+        },
+        function off (d) {
+          document.webkitExitFullscreen();
+          return "Fullscreen Mode";
         }), 
         this.toolbar.add("status", "", function show () {
           return d3.select(this).text(context.status()).attr("class", "status");
@@ -214,58 +237,53 @@ function (
     })(vrt.collection);
       
   };
-
-  ViewController.prototype.message =  function(text) {
     
-      text = String(text);
-
-      var msg = this.message, context = this, args = Array.prototype.slice.call(arguments),
-        expire = typeof args[args.length - 1] === 'number' ? args.pop() : undefined,
-              elements = this.elements(),
-              messages = elements.messages,
-              backdrop = elements.backdrop;
-              
+  ViewController.prototype.dialog  =  function(options) {
       
-      msg.queue = msg.queue || [];
-
-      if(args.length > 1) {
-        while(args.length && (text = String(args.shift())))
-          msg.apply(this, typeof expire === 'number' ? [text, expire] : [text]);
-        return;
-      }
-      else if(msg.busy)
-        return msg.queue.push(arguments);
-
-      var e = d3.select(messages).insert("div", ":first-child"),
-        b = d3.select(backdrop).classed("front", true);
-        
-      msg.busy = true;
-      msg.back = clearTimeout(msg.back) | setTimeout(function(){b.classed("front", false);}, 5000);
-
-      e.html(text);
-
-      if(typeof expire === 'number')
-        setTimeout(function() {e.remove();}, expire);
-
-      function proceed() {
-        msg.busy = false;
-        if(msg.queue.length)
-          msg.apply(context, msg.queue.shift());
-              else if (!messages.childNodes.length) {
-                  clearTimeout(msg.back);
-                  b.classed("front", false);
+      var context = this, dialog = this._dialog;
+      
+      this.blur(true);
+      
+      if(!dialog) {
+          
+          dialog = new Dialog('main-window-dialog', {
+              
+              "max-width" : function () { 
+                  return window.innerWidth + "px"; 
+              },
+              "max-height" : function () { 
+                  return window.innerHeight + "px"; 
+              },
+              "width" : function () { 
+                  return Math.round(window.innerWidth / 2) + "px"; 
+              },
+              "left" : function () {
+                  return Math.round( (window.innerWidth / 2) - (this.offsetWidth / 2) )  + "px"
+              },
+              "top" : function () {
+                  return Math.round( (window.innerHeight / 2) - (this.offsetHeight / 2) )  + "px"
               }
-      };
+              
+          }, $.extend({
+              isModal :true,
+              size: "smallest",
+              movable : true,
+              resizable: true
+          }, options))
+          .on("destroy", function () {
+              context.blur(false);
+              context._dialog = null;
+          });
+          
+          this._dialog = dialog;
+          
+      }
+      
+      return this._dialog;
+  };
 
-      var t = setTimeout(proceed, 250);
-
-      return {
-        remove: function() {
-          clearTimeout(t); 
-          e.remove();	
-          proceed();
-        }
-      };
+  ViewController.prototype.message =  function(text, type) {
+      return this.dialog().insert("alert", {type: type, html: text});
   };
 
   ViewController.prototype.hideVisible = function () {      

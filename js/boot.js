@@ -70,7 +70,8 @@ require(['guid', 'lib/api', 'lib/stores/clientstore', 'js/viewcontroller'], func
         browser   : true
     }).ready(function () {
 
-      var id = window.location.hash.replace(/^#/, "");
+      var id = chrome && chrome.app.window ? chrome.app.window.current().id : window.location.hash.replace(/^#/, "");
+        
 
       vrt.log.disableAll();
       vrt.controls.initialize();
@@ -80,12 +81,10 @@ require(['guid', 'lib/api', 'lib/stores/clientstore', 'js/viewcontroller'], func
             
             if(id.length)
                 return vrt.controls.open(id);
-              
-            return vrt.controls.message("<span style=\"font-size: 18pt;\">Welcome to the VRT application</span>", "<br /><span style=\"font-size: 12pt;\">Move the cursor to the bottom to display the toolbar</span>", "<span style=\"font-size: 16pt;\">&darr;</span>", 10000);
-              
+            
           });
-      else
-          return vrt.get(id, function(err, obj) {
+    
+      return vrt.get(id, function(err, obj) {
               
             if(err) throw err;
               
@@ -95,7 +94,7 @@ require(['guid', 'lib/api', 'lib/stores/clientstore', 'js/viewcontroller'], func
               
               
             vrt.controls.toolbar.remove("destroy"), 
-            vrt.controls.toolbar.remove("layout"),    
+            vrt.controls.toolbar.remove("save"),    
             vrt.controls.toolbar.remove("aligntop");              
             
             vrt.controls.open(id);
@@ -103,7 +102,7 @@ require(['guid', 'lib/api', 'lib/stores/clientstore', 'js/viewcontroller'], func
             vrt.controls.dock.destroy();              
             
           
-          });
+      });
  
     });
     

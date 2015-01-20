@@ -1,11 +1,9 @@
 doctype html
-html(class="background")
+html
   head
     meta(http-equiv='content=text/html; charset=UTF-8;')
-    link(rel='stylesheet', media='screen', href='bootstrap.css')
-    link(rel='stylesheet', media='screen', href='vrt.css')
+    link(rel='stylesheet', media='screen', href='/css/bootstrap.css')
+    link(rel='stylesheet', media='screen', href='/css/vrt.css')
     title VRT
     script(data-main='js/boot', src='/r/require.js')
-  body
-    div.backdrop
-      div.messages
+  body(oncontextmenu="javascript:return false;")

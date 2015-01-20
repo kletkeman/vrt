@@ -7,8 +7,9 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
     
     const classmap = {
 
-        'large': 'form-group-lg',
-        'small': 'form-group-sm'
+        'large'    : 'form-group-lg',
+        'small'    : 'form-group-sm',
+        'smallest' : 'form-group-xs'
 
     };
 
@@ -33,12 +34,12 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
         
         s.append("label")
          .attr("for", id)
-         .classed("col-sm-2 control-label", true)
+         .classed("col-sm-4 control-label", true)
          .text(options.text || "");
         
         s =
         s.append("div")
-         .classed("col-sm-10", true)
+         .classed("col-sm-8", true)
          .append("select")
          .classed("form-control", true)
          .attr("id", id)
@@ -55,6 +56,11 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
         
         s.exit()
          .remove();
+        
+        this.disabled = function (yes) {
+            s.node.disabled = yes;
+            return this;
+        }
         
         this.set = function () {
             

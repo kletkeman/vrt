@@ -21,6 +21,7 @@ function (
     
 ) {
     
+    
     function Navigator () {
         
         var s;
@@ -32,39 +33,52 @@ function (
         s = 
         this.element
             .selectAll("li")
-            .data(Object.keys(vrt.groups).sort().map(function(t, i) { return t; }))
+            .data(groups)
             .enter()
             .append("li")
             .attr("class", "group")
             .append("h5")
-            .text(function(name) { return name; })
-            .classed("open", isOpen)
-            .on("click", open_close);
+            .classed("open", opened);
+        
+        s.append("span")
+         .classed("title", true)
+         .text(groupname)
+         .on("click", activate);
         
         s.append("div")
                  .classed("icon dots small", true)
-                 .on("click", expand);
+                 .on("click", this.trigger("expand"));
+        
+        s.append("button")
+                 .classed("btn btn-xs", true)
+                 .classed("btn-danger", opened)
+                 .on("click", oc);
             
         s.append("ul")
             .attr("class", "objects")
             .style("display", "none")
             .selectAll("li")
-            .data(function (name) {
-                return vrt.groups[name];
-            })
+            .data(group)
             .enter()
             .append("li")
             .attr("class", "object")
-            .text(function (widget) { return widget.title; })
+            .text(title)
             .append("div")
             .classed("icon expand small", true)
-            .on("click", open_close);
+            .on("click", oc);
+        
+        this.on("expand", expand);
         
     }
                                  
     Navigator.prototype = new DialogComponent("navigator");
     
-    function isOpen (d) {
+    function groups () { return Object.keys(vrt.groups).sort().map(function(t, i) { return t; }); }
+    function group (name) { return vrt.groups[name]; }
+    function title (widget) { return widget.title; }
+    function groupname (name) { return name; };
+    
+    function opened (d) {
         
         for(var i = 0, window, windows = vrt.controls.dock.windows, length = windows.length; i < length; i++) {
                 
@@ -83,95 +97,53 @@ function (
         
         var selection = 
         
-        d3.select(this.parentNode)
+        d3.select(d3.event.target.parentNode)
           .select("ul.objects");
         
         selection.style("display", selection.style("display") === "none" ? null : "none");
+        
+        this.dialog.refresh();
             
     }
     
-    function open_close (d) {
+    function activate (name) {
+        
+        var window = opened(name);
+        
+        if(window)
+            window.activate();
+    }
+    
+    function oc (name) {
         
         var window;
         
-        if(typeof d === "string") {
+        if(typeof name === "string") {
+            
+            window = opened(name);
+            
+            window ? window.remove() : vrt.controls.open(name);
+            
+            d3.select(this.parentNode)
+              .classed("open", !window);
             
             d3.select(this)
-              .classed("open", (window = isOpen(d)) );
+              .classed("btn-danger", !window);
             
-            window ? window.activate() : vrt.controls.open(d);
+            
         }
         else
-            d.open();
+            name.open();
         
-        vrt.controls.blur(true);
     }
     
     return function () {
         
-        return vrt.controls.blur(true), vrt.controls.toolbar.hide(), vrt.controls.dock.hide(),
-            
-            new Dialog({
-            
-                'margin-left' : '25%',
-                'margin-top'  : '18%',
-                'min-width'   : '50%',
-                'min-height'  : '50%',
-                'max-height'  : '70%',
-
-            }, {
-                size: "small",
-                isModal: true
+        return vrt.controls.dialog()
+            .insert("titlebar", {
+                text: " Browse "
             })
-            .insert(new Navigator())
-            .insert("button", {
-
-                text: "Close",
-                type: "primary",
-                style: {
-                    "text-align" : "right"
-                },
-                action: function () {this.dialog.destroy();}
-            })
-            .on("destroy", function () {
-                return vrt.controls.blur(false); 
-            });
-        
-        
-        /*
-        
-        window.O = {
-            
-            "name" : "Odd Marthon",
-            "age"  : 33,
-            "body parts" : ["arms", "legs"],
-            "horny" : true,
-            "height" : 0,
-            "condition" : "sleeping"
-            
-        };
-        
-        .insert("form")
-        .nest()
-        .add(O)
-        .add(O,  "height", -5, 5)
-        .add(O, "condition", ["tired", "horny", "angry"])
-        .insert("color", {text: 'skin', value: "#F4D3D3"})
-        .dialog
-        .insert("button", {
-            text: "Close", type: "primary", style: {"text-align" : "right"}, action: function () {this.dialog.destroy();}})
-        .on("destroy", function () {
-            return blur(false); 
-        })
-        
-        /*.insert(new Navigator());
-        .insert("form")
-        .nest()
-        .insert("text", {text: "Name", placeholder: "Enter your name"})
-        .insert("checkbox", {text: "Gay", checked: true} )
-        .insert("select", {text: "Fags", records: ["blue", "green", "yellow"]} )
-        .insert("html", {html: "<span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>"})
-        .insert("button", {text: "Close", type: "primary"});*/
+            .insert(new Navigator());
         
     }
     

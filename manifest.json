@@ -4,7 +4,7 @@
     "description": "Realtime Data Visualizer",
     "version": "0.0",
     "icons": {
-        "128": "/public/resources/images/icon.png"
+        "256": "/public/resources/images/icon.png"
     },
     "app": {
         "background": {
@@ -15,6 +15,7 @@
     "permissions": [
         "unlimitedStorage",
         "notifications",
+        "fullscreen",
         "http://*/"
     ]
 }

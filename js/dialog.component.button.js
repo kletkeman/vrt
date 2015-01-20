@@ -22,7 +22,7 @@ define(['js/dialog.component'], function (DialogComponent) {
 
     };
 
-    function Button(options) {
+    function Button (options) {
 
         var s;
 
@@ -36,7 +36,7 @@ define(['js/dialog.component'], function (DialogComponent) {
             .append("div")
             .classed("form-group", true)
             .append("div")
-            .classed("col-sm-10", true)
+            .classed("col-sm-8", true)
             .classed("col-sm-offset-" + (options.offset || 2), true)
             .append("button")
             .attr("type", "button")

@@ -7,7 +7,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
     },
     frame:{
         type : "chrome",
-        color: "#000000"
+        color: "#0f0f0f"
     }
   });
 });

@@ -7,68 +7,105 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
     
     const classmap = {
 
-        'large': 'form-group-lg',
-        'small': 'form-group-sm'
-
-    };
-    
-    const classmapi = {
-
-        'large' : 'input-lg',
-        'small' : 'input-sm'
+        'large'    : ['form-group-lg', 'color-square'],
+        'small'    : ['form-group-sm', 'color-square'],
+        'smallest' : ['form-group-xs', 'color-square'],
 
     };
 
     function Color (options) {
         
-        var s, n, id = random();
+        var context = this, s, n, data = [];
 
         options = options || {};
         
         DialogComponent.call(this, options.style);
         
-        s =
+        s = n =
         this.element
             .classed("form-horizontal", true)
             .append("div")
             .classed("form-group", true);
         
         if(classmap[options.size])
-            s.classed(classmap[options.size], true);
+            s.classed(classmap[options.size][0], true);
         
-        n = s.append("label")
-         .attr("for", id)
-         .classed("col-sm-2 control-label", true)
+        s.append("label")
+         .classed("col-sm-4 control-label", true)
          .text(options.text || "");
         
         s = 
         s.append("div")
-         .classed("col-sm-10", true)
-         .append("input")
-         .attr("type", "color" )
-         .attr("id", id)
-         .attr("name", options.name || options.text.toLowerCase().split(" ")[0])
-         .on("input", this.trigger("modified"));
+         .classed("col-sm-8", true)
+         .append("div");
         
-        if(classmapi[options.size])
-            s.classed(classmapi[options.size], true);
-        
-        s  = s.node();
+        function map_values (v, i) {
+                
+            var d = data[i];
+                
+            if(d) {
+                d.value = v;
+                return d;
+            }
+                
+            return {value: v, id: random()};
+        }
         
         this.set = function (value) {
-            return s.value = value;
+            data = (Array.isArray(value) ? value : [value] ).map(map_values);
+            return this.refresh();
+        }
+        
+        this.disabled = function (yes) {
+            
+            s.selectAll("input")
+             .each(function () {
+                this.disabled = yes;
+            });
+            
+            return this;
         }
         
         this.node = function () {
-            return s.parentNode.parentNode;
+            return n.node();
         }
         
         this.valueOf = function () {
-            return s.value;
+            return Array.isArray(options.value) ? data.map(getValue) : data[0].value;
+        }
+        
+        function modified (d, i) {
+            d.value = this.value;
+            context.emit("modified", d, i);
         }
         
         function refresh () {
-            n.style("color", this.valueOf());
+            
+            var c, u;
+            
+            c = 
+            s.selectAll("label")
+             .data(data)
+             .call(update);
+            
+            u =
+            c.enter()
+             .append("label");
+            
+            if(classmap[options.size])
+                u.classed(classmap[options.size][1], true);
+            
+            u.attr("for", getId)
+             .append("input")
+             .attr("type", "color")
+             .style("visibility", "hidden")
+             .attr("id", getId)
+             .on("input", modified);
+             
+            u.call(update);
+            
+            c.exit().remove();
+            
             return this;
         }
         
@@ -76,11 +113,20 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
         
         this.on("modified", refresh)
              .set(options.value);
-        
-        this.refresh();
-
     }
-
+    
+    function getId (d) { return d.id; }
+    function getValue (d) { return d.value;}
+    
+    function update (s) {
+            
+        s.select("input")
+         .attr("value", getValue);
+            
+        s.style("background-color", getValue);
+            
+    }
+    
     Color.prototype = new DialogComponent("color");
 
     return Color;

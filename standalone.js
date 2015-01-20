@@ -80,8 +80,8 @@ function (
                 layout: false
             });
             app.use(express.bodyParser());
-            app.use(express.static(__dirname+'/public/resources/css'));
-            app.use(express.static(__dirname+'/lib/types/css'));
+            app.use(express.static(__dirname+'/public/resources/'));
+            app.use(express.static(__dirname+'/lib/types/'));
             app.use('/r', express.static(__dirname+'/node_modules/requirejs'));
        
         });

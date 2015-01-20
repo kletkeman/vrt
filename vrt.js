@@ -129,7 +129,11 @@ function (
                 sessions: false,
                 secure: false,
                 handler: function(req, res) {
-                    res.send(vrt.store.typeNames());
+                    vrt.store.typeNames(function (err, types) {
+                        if(err) return res.send({error: err});
+                        res.send(types);
+                    });
+                    
                 }
             },
 

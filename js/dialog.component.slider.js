@@ -7,21 +7,15 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
     
     const classmap = {
 
-        'large' : 'form-group-lg',
-        'small' : 'form-group-sm'
-
-    };
-    
-    const classmapi = {
-
-        'large' : 'input-lg',
-        'small' : 'input-sm'
+        'large'    : ['form-group-lg', 'input-lg'],
+        'small'    : ['form-group-sm', 'input-sm'],
+        'smallest' : ['form-group-xs', 'input-xs'],
 
     };
 
     function Slider (options) {
         
-        var s, n, v, id = random(), value;
+        var s, n, l, id = random(), value;
 
         options = options || {};
         
@@ -34,17 +28,17 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
             .classed("form-group", true);
         
         if(classmap[options.size])
-            s.classed(classmap[options.size], true);
+            s.classed(classmap[options.size][0], true);
         
         s.append("label")
          .attr("for", id)
-         .classed("col-sm-2 control-label", true)
+         .classed("col-sm-4 control-label", true)
          .text(options.text || "");
         
         
         s = 
         s.append("div")
-         .classed("col-sm-8", true)
+         .classed("col-sm-6", true)
          .append("input")
          .attr("type", "range")
          .attr("min", options.min || 0.)
@@ -53,25 +47,34 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
          .attr("name", options.name || options.text.toLowerCase().split(" ")[0])
          .on("input", this.trigger("modified"));
         
-        s.attr("step", options.step || ( (options.max || 1.) / (s.node().clientWidth || 10.) ) );
+        if(classmap[options.size])
+            s.classed(classmap[options.size][1], true);
         
-        if(classmapi[options.size])
-            s.classed(classmapi[options.size], true);
-        
-        v =
-        n.append("div")
-         .classed("col-sm-2 control-label", true)
-         .append("p")
-         .classed("text-center", true);
+        l =
+        n.append("label")
+         .classed("col-sm-2", true)
+         .classed("control-label text-center", true);
         
         function refresh () {
-            return v.node().innerText = s.node().value, this;
+            
+            var node = s.node(), v = arguments.length ? (value = parseFloat(node.value)) : value;
+            
+            s.attr("step", options.step || ( ((options.max || 1) - (options.min || 0)) / node.offsetWidth ) );
+            
+            node.value = v;
+            
+            return l.node().innerText = v.toPrecision(2), this;
         }
         
         this.refresh = refresh;
         
-        this.set = function (value) {
-            return s.node().value = value, this.refresh();
+        this.disabled = function (yes) {
+            s.node().disabled = yes;
+            return this;
+        }
+        
+        this.set = function (v) {
+            return s.node().value = value = v, this.refresh();
         }
         
         this.node = function () {
@@ -79,13 +82,11 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
         }
         
         this.valueOf = function () {
-            return parseFloat(s.node().value);
+            return value;
         }
         
         this.on("modified", refresh)
              .set(options.value);
-
-        this.refresh();
     }
 
     Slider.prototype = new DialogComponent("slider");
