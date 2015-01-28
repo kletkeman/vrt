@@ -90,7 +90,7 @@ function (
 
             for(var i = 0, group = groups[d.name], len = group.length; i < len; i++) {
                  
-                (group[i].dimensions.maximized = false), (group[i].show().visible() && group[i].reload());
+                (group[i].dimensions.maximized = false), group[i].show().visible();
                 
             }
                   
@@ -126,7 +126,7 @@ function (
               window.name = obj.title;
               window.id = obj.id;
               window.active = function () {
-                  return (obj.dimensions.maximized = true), active.apply(this, arguments), obj.show().reload();  
+                  return (obj.dimensions.maximized = true), active.apply(this, arguments), obj.show();  
               };
               
           });
@@ -219,20 +219,6 @@ function (
                     widget.onResize();
                 
         }, true);
-         
-         window.addEventListener('scroll', function () {
-
-            d3.selectAll(".widget.container")
-              .each(function () {
-                  vrt.get(this.id, function (_, obj) {
-                    if(obj.visible() && !obj.reload(3))
-                        obj.reload();
-                    else if(!obj.visible())
-                        obj.unload();
-                });
-            });
-             
-        });
             
     })(vrt.collection);
       
@@ -293,7 +279,7 @@ function (
       return d3.selectAll(".widget.container").each(function () {
         vrt.get(this.id, function(err, obj) {
             if(err) throw err;
-            return obj.hide().unload();
+            return obj.hide();
         });
       });
       

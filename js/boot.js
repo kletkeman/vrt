@@ -52,10 +52,11 @@ require.config({
         'w2ui'      : '/deps/w2ui-1.3.2',
         'guid'      : '/node_modules/guid/guid',
         'loglevel'  : '/node_modules/loglevel/dist/loglevel',
-        'bson'      : '/node_modules/bson/browser_build/bson',
-        'debug'     : '/deps/debug',
-        'interact'  : '/deps/interact',
-        'text'      : '/deps/text'
+        'bson'              : '/node_modules/bson/browser_build/bson',
+        'debug'             : '/deps/debug',
+        'interact'          : '/deps/interact',
+        'text'              : '/deps/text',
+        'default-adapter'   : '/lib/adapters/realtime.adapter'
     },
      'map': {
         '*': {'types' : 'lib/types/browser'},

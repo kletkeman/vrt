@@ -17,8 +17,9 @@ requirejs.config({
       }
     },
     'paths' : {
-        'types'   : 'lib/types/server',
-        'jquery'  : 'deps/jquery'
+        'types'            : 'lib/types/base',
+        'jquery'           : 'deps/jquery',
+        'default-adapter'  : 'lib/adapters/' + config.adapter.name + ".adapter"
     },
     'nodeRequire': require,
     'loglevel' : 1,
@@ -40,7 +41,6 @@ requirejs([
     , 'cluster'
     , 'os'
     , ('lib/stores/' + config.store.name)
-    , 'lib/template'
     , 'fs'
 ],
 function (
@@ -57,7 +57,6 @@ function (
     , cluster
     , os
     , __STORE
-    , Template
     , fs
 
 ) {
@@ -112,42 +111,40 @@ function (
 
       vrt.log.setLevel(typeof argv.setLevel === 'number' ? Math.min(argv.setLevel, 3) : 2);
 
-      if(cluster.isMaster)
-          Template.load(function() {
+      if(cluster.isMaster) {
+          
+          vrt.log.info("http interface is configured to listen on port", config.http_port);
+          vrt.log.info("telnet interface is configured to listen on port", config.telnet_interface_port);
 
-              vrt.log.info("http interface is configured to listen on port", config.http_port);
-              vrt.log.info("telnet interface is configured to listen on port", config.telnet_interface_port);
-              vrt.log.info("consumer interface is configured to listen on port", config.consumer.port);
+          if(argv.cluster) {
 
-              if(argv.cluster) {
+                for(var i = 0, len = typeof argv.cluster === 'number' ? argv.cluster : os.cpus().length; i < len; i++)
+                    cluster.fork();
 
-                  for(var i = 0, len = typeof argv.cluster === 'number' ? argv.cluster : os.cpus().length; i < len; i++)
-                      cluster.fork();
+                cluster.on('exit', function(worker, code, signal) {
+                    var pid = worker.process.pid;
+                    vrt.log.info('worker[', worker.id, '][', pid, '] died');
+                    delete workers[pid];
+                    cluster.fork();
+                });
 
-                  cluster.on('exit', function(worker, code, signal) {
-                      var pid = worker.process.pid;
-                      vrt.log.info('worker[', worker.id, '][', pid, '] died');
-                      delete workers[pid];
-                      cluster.fork();
-                  });
+                cluster.on('listening', function(worker, address) { 
+                    var pid = worker.process.pid;
+                    vrt.log.info('worker[', worker.id, '][', pid, '] is now listening on port', address.port);
+                    workers[pid] = workers[pid] || {};
+                    workers[pid].net = workers[pid].net || [];
+                    workers[pid].net.push(address);
+                });
 
-                  cluster.on('listening', function(worker, address) { 
-                      var pid = worker.process.pid;
-                      vrt.log.info('worker[', worker.id, '][', pid, '] is now listening on port', address.port);
-                      workers[pid] = workers[pid] || {};
-                      workers[pid].net = workers[pid].net || [];
-                      workers[pid].net.push(address);
-                  });
+                cluster.on('online', function(worker, address) {
+                    var pid = worker.process.pid;
+                    vrt.log.info('worker[', worker.id, '][', pid, '] is now online');
+                    workers[pid] = workers[pid] || {};
+                    workers[pid].id = worker.id;
+                });
 
-                  cluster.on('online', function(worker, address) {
-                      var pid = worker.process.pid;
-                      vrt.log.info('worker[', worker.id, '][', pid, '] is now online');
-                      workers[pid] = workers[pid] || {};
-                      workers[pid].id = worker.id;
-                  });
-
-              }
-          });
+            }
+      }
 
       if(cluster.isWorker || !argv.cluster) {
           
@@ -175,8 +172,6 @@ function (
           }).listen(port);
 
       })(cluster.isMaster ? config.telnet_interface_port : config.telnet_interface_port + Number(cluster.worker.id));
-
-      vrt.consumer.start();   
       
     });
     

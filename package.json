@@ -11,8 +11,10 @@
         "port" : "34855"
     },
     "store" : {
-        "name" : "memorystore",
-        "options" : {"host": "10.0.0.2", "poolSize": 25}
+        "name" : "filestore"
+    },
+    "adapter" : {
+        "name" : "memory"
     }
   },
   "version": "0.0.0",

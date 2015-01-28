@@ -16,9 +16,6 @@ define([
     , 'fs'
     , 'JSONStream'
     , 'lib/api'
-    , 'lib/producer'
-    , 'lib/consumer'
-    , 'lib/ipc'
 ], 
 function (
        
@@ -29,9 +26,6 @@ function (
     , fs
     , JSONStream
     , vrt
-    , Producer
-    , Consumer
-    , IPC
 
 ) {   
     
@@ -53,9 +47,6 @@ function (
 
     vrt.configure({
         
-        producer    : new Producer(),
-        consumer    : new Consumer(),
-        ipc         : new IPC(),
         routes      : [
 
             {	
@@ -96,25 +87,6 @@ function (
                         vrt.list(req.body, function(err, list) {
                             if(err) return res.send({error: err});
                             res.send(list);
-                        });
-                    }
-                    catch(err) {
-                        res.send({error: err});
-                    }
-                }
-            },
-
-            {	
-                path:   '/api/v1/tree/:path',
-                method: 'get',
-                sessions: false,
-                secure: false,
-                handler: function(req, res) {
-                    req.accepts('application/json');
-                    try {
-                        vrt.tree(req.params.path, function(err, tree) {
-                            if(err) return res.send({error: err});
-                            res.send(tree);
                         });
                     }
                     catch(err) {
@@ -184,61 +156,6 @@ function (
                         vrt.get(req.params.id, function(err, config) {
                             if(err) return res.send({error: err});
                             res.send(config);
-                        });
-                    }
-                    catch(err) {
-                        res.send({error: err});
-                    }
-                }
-            },
-
-            {	
-                path:   '/api/v1/:id',
-                method: 'post',
-                sessions: false,
-                secure: false,
-                handler: function(req, res) {
-                    req.accepts('application/json');
-                    try {
-                        vrt.write(req.params.id, req.body, function(err) {
-                            res.send({error: err ? err : false});
-                        });
-                    }
-                    catch(err) {
-                        res.send({error: err});
-                    }
-                }
-            },
-
-            {	
-                path:   '/api/v1/:id/data',
-                method: 'get',
-                sessions: false,
-                secure: false,
-                handler: function(req, res) {
-
-                    var stream = JSONStream.stringify(false);
-
-                    stream.pipe(res).on('error', function(err) {
-                        res.end({error: err});
-                    });
-
-                    vrt.data(req.params.id, stream);
-
-
-                }
-            },
-
-            {	
-                path:   '/api/v1/:id/data/delete',
-                method: 'post',
-                sessions: false,
-                secure: false,
-                handler: function(req, res) {
-                    req.accepts('application/json');
-                    try {
-                        vrt.delete(req.params.id, (req.body.filter||req.body.index), req.body.path, function(err, info) {
-                            res.send($.extend( info||{}, {error: err ? err : false}));
                         });
                     }
                     catch(err) {
