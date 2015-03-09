@@ -45,7 +45,9 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
          .attr("max", options.max || 1.)
          .attr("id", id)
          .attr("name", options.name || options.text.toLowerCase().split(" ")[0])
-         .on("input", this.trigger("modified"));
+         .on("input", this.trigger("modified"))
+         .attr("step", options.step ? options.step : null)
+         .classed("form-control", true);
         
         if(classmap[options.size])
             s.classed(classmap[options.size][1], true);
@@ -59,7 +61,8 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
             
             var node = s.node(), v = arguments.length ? (value = parseFloat(node.value)) : value;
             
-            s.attr("step", options.step || ( ((options.max || 1) - (options.min || 0)) / node.offsetWidth ) );
+            if( typeof options.step !== "number" )
+                s.attr("step", ( ((options.max || 1) - (options.min || 0)) / node.offsetWidth ) );
             
             node.value = v;
             

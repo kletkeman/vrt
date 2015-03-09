@@ -70,7 +70,7 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
         }
         
         this.set = function (value) {
-            return s.value = value;
+            return (s.value = value), this;
         }
         
         this.node = function () {
@@ -82,7 +82,7 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
             var v = s.value;
             
             if(Array.isArray(options.value))
-                v = v.split(",");
+                v = v.split(",").map(function (str) { return str.trim();});
             
             return typeof value === "number" ? (Number.isFinite( (v = parseFloat(v)) ) ? v : value) : v;
             

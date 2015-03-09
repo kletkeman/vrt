@@ -39,12 +39,15 @@ define(['js/dialog.component', 'jquery', 'interact'], function (DialogComponent,
                 
                 dialog.refresh();
                 
+                dialog.emit("move");
+                
             });
             
             interactable.draggable(true);
         })
         .on("mouseup", function () {
-            interactable.draggable(false);
+            if(interactable)
+                interactable.draggable(false);
         })
         .append("h5");
         
@@ -60,18 +63,17 @@ define(['js/dialog.component', 'jquery', 'interact'], function (DialogComponent,
         .classed("glyphicon glyphicon-remove", true)
         .on("click", this.trigger("dismiss"));
         
-        if(options.movable)
-            s.append("div")
-             .style({
-                display : "inline-block",
-                float : "right"
-            })
-            .attr("type", "button")
-            .classed("glyphicon glyphicon-move", true);
-        
         this.set = function (value) {
             t.text(value);
             return this;
+        }
+        
+        this.destroy = function () {
+            
+            if(interactable)
+                interactable.unset();
+            
+            return DialogComponent.prototype.destroy.call(this);
         }
         
         this.on("dismiss", dismiss)

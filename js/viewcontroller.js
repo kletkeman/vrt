@@ -7,7 +7,6 @@
 define([
     
       'js/dialog'
-    , 'deps/packery.pkgd'
     , 'lib/api'
     , 'js/viewcontroller.dock'
     , 'js/viewcontroller.toolbar'
@@ -16,10 +15,10 @@ define([
     , 'guid'
     , 'socket.io'
     , 'jquery'
+    , 'types/widget'
 ],
 function (
       Dialog 
-    , Packery
     , vrt
     , dock
     , toolbar
@@ -28,10 +27,11 @@ function (
     , Guid
     , io
     , $
+    , Widget
     
 ) {
 
-  var title, packery, blurred = false;
+  var title, blurred = false;
 
   function ViewController() {
     
@@ -52,7 +52,7 @@ function (
           .each(function () {
             return vrt.get(this.id, function (err, obj) {
                 if(err) throw err;
-                return obj.render("blur", (blurred = yes) );
+                return obj.render({'blur': [(blurred = yes)]});
             });
           });
 
@@ -71,14 +71,16 @@ function (
           window;
       
       function close () {
-        packery && packery.destroy();
+        
         context.hideVisible();
           
-        if(! (chrome && chrome.app.window) )
+        if(! (typeof chrome === "object" && chrome.app.window) )
             history.pushState(null, null, "/");
       };
         
       function active (d) {
+          
+          var i, group, len, widget;
           
         close();
                   
@@ -88,9 +90,11 @@ function (
                 return d3.ascending(a.sortKey, b.sortKey);
             });
 
-            for(var i = 0, group = groups[d.name], len = group.length; i < len; i++) {
+            for(i = 0, group = groups[d.name], len = group.length; i < len; i++) {
                  
-                (group[i].dimensions.maximized = false), group[i].show().visible();
+                widget = group[i];
+                widget.dimensions.maximized = false;
+                widget.show();
                 
             }
                   
@@ -99,16 +103,7 @@ function (
         title = title || document.title;
         document.title  = title + " -- " + d.name;
           
-        packery = new Packery(
-            document.body, 
-            {
-                itemSelector : ".widget.container", 
-                gutter: 0, 
-                isInitLayout: true, 
-                isResizeBound: true
-            });
-          
-        if(! (chrome && chrome.app.window))
+        if(! (typeof chrome === "object" && chrome.app.window))
             history.pushState(null, null, "#"+(d.id||d.name))
           
         d3.select("body").each(context.toolbar), document.body.scrollIntoView(); 
@@ -122,12 +117,22 @@ function (
               
               if(err) throw err;
               
+              obj.toolbar.remove("expand"), 
+              obj.toolbar.remove("move"),
+              obj.toolbar.remove("aligntop");
+              
+              context.toolbar.remove("destroy"), 
+              context.toolbar.remove("save"),    
+              context.toolbar.remove("aligntop");     
+              
               window = windows.get(name);
               window.name = obj.title;
               window.id = obj.id;
               window.active = function () {
                   return (obj.dimensions.maximized = true), active.apply(this, arguments), obj.show();  
-              };
+              }
+              
+              return window.activate();
               
           });
       }
@@ -139,7 +144,7 @@ function (
       return windows.activate() ? window : window.activate();
   };
 
-  ViewController.prototype.initialize = function() {
+  ViewController.prototype.initialize = function () {
 
       var context    = this,
           elements   = this.elements(),
@@ -147,7 +152,85 @@ function (
           height     = navigation.height(),
           t;
 
-     (this.dock = dock.call(document.body)).shortcuts.add("dashboards", "Open the dashboard browser", function click () { context.navigator(); });
+     (this.dock = dock.call(document.body));
+      
+     this.dock.shortcuts.add("dashboards", "Open the dashboard browser", function click () { context.navigator(); });
+      
+     if(vrt.data)
+         this.dock.shortcuts.add("data-editor-default-adapter", "Open Data Viewer", function click () {
+             
+             context.dialog("data-editor", {"min-width" : "85%"}, {isModal: true})
+                    .insert("titlebar", {text:  "Data Viewer"})
+                    .insert("datagrid", {
+                        "data" : vrt.data
+                    });
+
+         });
+      
+     this.dock.shortcuts.add("create", "Create a new widget", function click () {
+         
+         var window = context.dock.windows.activate();
+         
+         vrt.store.typeNames(function (err, types) {
+             
+             types.unshift("");
+             
+             Widget.prototype.dialog.call({}, {
+                 "type" : "",
+                 "title" : "My Widget",
+                 "description" : "",
+                 "group" : window ? window.name : "My Group",
+                 "width" : "50%",
+                 "height" : "25%",
+                 "background" : d3.select(document.body).style("background-color")
+
+             }, "Create a new widget", function (dialog) {
+
+                 obj = this;
+                 
+                 dialog
+                     .add(this, "type", types.filter(function (t) { return t !== "widget";}))
+                     .add(this, "group")
+                     .nest()
+                     .disabled(!!window);
+                 
+                 dialog.add(this, "background", "color");
+                 
+            })
+            .insert("button", {
+                 style: {
+                    "padding-top" : "16px",
+                    "padding-bottom" : "16px"
+             },
+             type: "primary",
+             text : "Create",
+             action: function () {
+                 
+                 var button = this;
+                 
+                 vrt.create(obj, function (err, obj) {
+                    
+                     if(err) {
+                        button.alert = button.dialog.insert("alert", {type: "danger", html: err.message});
+                        throw err;
+                     }
+                     
+                     button.dialog.destroy();
+                    
+                     if(!window)
+                         context.open(obj.group);
+                      else
+                          window.activate();
+
+                      obj.dialog();
+
+                  });
+                 
+             }});
+             
+         });
+         
+     });
       
       (this.toolbar = toolbar.call(document.body),
       this.toolbar.add("destroy", "Close this dashboard", 
@@ -163,14 +246,17 @@ function (
         }), 
       this.toolbar.add("save", "Save this layout", 
         function click (d) {
-            packery.getItemElements().forEach(
-                function (element, index) {
-                    vrt.get(element.id, function (err, obj) {
+          
+          return d3.selectAll(".widget.container").each(function () {
+                vrt.get(this.id, function(err, obj) {
+                    if(err) throw err;
+                    return obj.save(function (err) {
                         if(err) throw err;
-                        obj.save({sortKey: index});
+                        context.status("Saved!");
                     });
                 });
-            return vrt.controls.status("Layout was saved!");
+              });
+          
         }),
        this.toolbar.add("fullscreen", "", 
         function on (d) {
@@ -212,11 +298,11 @@ function (
           
             for(var id in widgets)
                 if( (widget = widgets[id]) )
-                    widget.onResize();
+                    Widget.events.resize.call(widget);
               
             for(var id in widgets)
                 if( !(widget = widgets[id]).visible() )
-                    widget.onResize();
+                    Widget.events.resize.call(widget);
                 
         }, true);
             
@@ -224,22 +310,18 @@ function (
       
   };
     
-  ViewController.prototype.dialog  =  function(options) {
+  ViewController.prototype.dialog  =  function(classnames, style, options) {
       
       var context = this, dialog = this._dialog;
       
       this.blur(true);
       
-      if(!dialog) {
+      options = options || {};
+      
+      if(!dialog || options.isModal === false) {
           
-          dialog = new Dialog('main-window-dialog', {
-              
-              "max-width" : function () { 
-                  return window.innerWidth + "px"; 
-              },
-              "max-height" : function () { 
-                  return window.innerHeight + "px"; 
-              },
+          dialog = new Dialog( (classnames || 'main-window-dialog') + " has-blur", $.extend({
+        
               "width" : function () { 
                   return Math.round(window.innerWidth / 2) + "px"; 
               },
@@ -250,22 +332,24 @@ function (
                   return Math.round( (window.innerHeight / 2) - (this.offsetHeight / 2) )  + "px"
               }
               
-          }, $.extend({
-              isModal :true,
+          }, style), $.extend({
+              isModal : true,
               size: "smallest",
               movable : true,
               resizable: true
           }, options))
           .on("destroy", function () {
-              context.blur(false);
+              context.blur(!!d3.select(".has-blur").node());
               context._dialog = null;
+              
           });
           
-          this._dialog = dialog;
+          if( !("isModal" in options) || options.isModal === false )
+            this._dialog = dialog;
           
       }
       
-      return this._dialog;
+      return this._dialog || dialog;
   };
 
   ViewController.prototype.message =  function(text, type) {

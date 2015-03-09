@@ -403,7 +403,12 @@
      * @return {Object} Current instance of EventEmitter for chaining.
      */
     proto.emit = function emit(evt) {
-        var args = Array.prototype.slice.call(arguments, 1);
+        
+        var args = new Array(arguments.length - 1);
+        
+        for(var i = 1; i < arguments.length; i++)
+            args[i-1] = arguments[i];
+        
         return this.emitEvent(evt, args);
     };
 

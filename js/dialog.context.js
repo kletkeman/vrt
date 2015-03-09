@@ -38,7 +38,7 @@ define(['js/dialog', 'js/dialog.component', 'd3'], function (Dialog, DialogCompo
               .style("display", "none");
             
             while( parent ) {
-                parent.element.style("display", null);
+                parent.style({"display": null});
                 parent = parent.parent;
             }
             
@@ -64,8 +64,9 @@ define(['js/dialog', 'js/dialog.component', 'd3'], function (Dialog, DialogCompo
             
             event = event || window.event;
             
-            this.element
-                .style("display", "none");
+            style.display = "none";
+            
+            this.refresh();
             
             window.removeEventListener("click", hide_t);
             

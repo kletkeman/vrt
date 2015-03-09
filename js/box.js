@@ -10,7 +10,7 @@ define([], function() {
          
           var value = 0;
           
-          while(true) {
+          while(element) {
             
             value += element[propertyName];
             if(element === document.body) break;
@@ -25,7 +25,49 @@ define([], function() {
       
         var context = this, events = [];
 
-        Object.defineProperty(this, 'top', {
+        Object.defineProperty(this, 'target', {
+          'enumerable' : false,
+          'configurable' : true,
+          'get' : function() {
+            return target;
+          }
+        });
+          
+        this.reset();
+          
+        this.on = function (name, fn, context) {
+
+            var target  = this.target.parentNode, args;
+
+            context = context || window;
+
+            if(typeof fn === 'function')
+                context.addEventListener.apply(context, (args = [name, listener(target, fn), false])), 
+                    args.unshift(context), 
+                    events.push(args);            
+            
+            return this;
+          
+        }
+      
+        this.destroy = function () {
+          
+            var args, context;
+            
+            while (args = events.pop())
+                (context = args.shift()).removeEventListener.apply(context, args);
+            
+            return this;
+          
+        };
+
+      }
+    
+      Box.prototype.reset = function () {
+          
+          var target = this.target;
+          
+          Object.defineProperty(this, 'top', {
           'enumerable' : true,
           'configurable' : true,
           'get' : function() {
@@ -56,14 +98,6 @@ define([], function() {
             return this.left + target.offsetWidth;
           }
         });
-
-        Object.defineProperty(this, 'target', {
-          'enumerable' : false,
-          'configurable' : true,
-          'get' : function() {
-            return target;
-          }
-        });
         
         Object.defineProperty(this, 'scrollTop', {
           'enumerable' : true,
@@ -72,56 +106,9 @@ define([], function() {
             return add(target.parentNode, 'scrollTop');
           }
         });
-        
-        this.center = Object.create({}, {
-          'x' : {
-            'enumerable' : true,
-            'configurable' : true,
-            'get' : function() {
-              return context.left + (target.offsetWidth / 2);
-            }
-          },
-          'y' : {
-            'enumerable' : true,
-            'configurable' : true,
-            'get' : function() {
-              return context.top + (target.offsetHeight / 2);
-            }
-          }
-        });
-        
-        this.orientation = {
-          'horizontal' : 1, 
-          'vertical' : 1
-        };
           
-        this.on = function (name, fn, context) {
-
-            var target  = this.target.parentNode, args;
-
-            context = context || window;
-
-            if(typeof fn === 'function')
-                context.addEventListener.apply(context, (args = [name, listener(target, fn), false])), 
-                    args.unshift(context), 
-                    events.push(args);            
-            
-            return this;
-          
-        };
-      
-        this.destroy = function () {
-          
-            var args, context;
-            
-            while (args = events.pop())
-                (context = args.shift()).removeEventListener.apply(context, args);
-            
-            return this;
-          
-        };
-
-      };
+        return this;
+      }
 
       Box.prototype.freeze = function () {
         for(var key in this)
@@ -132,12 +119,12 @@ define([], function() {
                 (key === 'scrollTop' || key === 'scrollLeft' ? 
                  {
                   'enumerable' : true,
-                  'configuable' : false,
+                  'configuable' : true,
                   'value' : 0
                  } : 
                  ((key = key.capitalize()), {
                   'enumerable' : true,
-                  'configuable' : false,
+                  'configuable' : true,
                   'get' : function () {
                       return value;
                   }
@@ -146,74 +133,33 @@ define([], function() {
             })(this, key, add(this.target, 'offset' + key.capitalize()));
 
         return (this.scrollTop = 0), (this.scrollLeft = 0), this;
-      };
+      }
 
-      Box.prototype.compare = function(x, y) {
+      Box.prototype.compare = function compare (x, y) {
 
-        var box, top = this.top, bottom = this.bottom, right = this.right, left = this.left;
+        var box    = x,
+            top    = this.top,
+            bottom = this.bottom,
+            right  = this.right,
+            left   = this.left;
 
-        if(x instanceof Box) {
-
-          box                        = new Box(x.target);
-
-          box.left                   = x.left     - left;
-          box.right                  = x.right    - right;
-          box.top                    = x.top      - top;
-          box.bottom                 = x.bottom   - bottom;
-          box.center.x               = x.center.x - this.center.x;
-          box.center.y               = x.center.y - this.center.y;
-        
-          (function() {
-              
-              var args = Array.prototype.slice.call(arguments), key,
-                  obj = x;
-              
-              while( (key = args.shift()) )
-                  Object.defineProperty(box, key, {
-                     'enumerable' : true,
-                     'configurable' : true,
-                     'value' : obj[key] - this[key]
-                  });
-              
-          }).call(this, 'left', 'right', 'top', 'bottom');
-            
-          (function() {
-              
-              var args = Array.prototype.slice.call(arguments), key,
-                  obj = x.center;
-              
-              while( (key = args.shift()) )
-                  Object.defineProperty(box.center, key, {
-                     'enumerable' : true,
-                     'configurable' : true,
-                     'value' : obj[key] - this[key]
-                  });
-              
-          }).call(this.center, 'x', 'y');
-
-          box.collision              = ( (x.left <= right && x.left >= left) || (x.right >= left && x.right <= right) ) &&
-                                       ( (x.top  >= top && x.top <= bottom) || (x.bottom >= top && x.bottom <= bottom) );
-
-          box.orientation.horizontal = (box.center.x < 0 ? -1 : (box.center.x === 0 ? 0 : 1));
-          box.orientation.vertical   = (box.center.y < 0 ? -1 : (box.center.y === 0 ? 0 : 1));
-
-        }
+        if(box instanceof Box)
+            return compare.call(this, box.left, box.top)    ||
+                   compare.call(this, box.right, box.top)   ||
+                   compare.call(this, box.left, box.bottom) ||
+                   compare.call(this, box.left, box.bottom);
         else
           return (x >= left && x <= right && y >= top && y <= bottom);
 
         return box;
       
-      };
+      }
       
       function listener (t, fn) {
         return function(event) {
             fn.call(t, event);
         };
-      };
-            
-      Box.prototype.toString = function () {
-        return this.left + this.top + this.bottom + this.right;
-      };
+      }
 
       return Box;
   

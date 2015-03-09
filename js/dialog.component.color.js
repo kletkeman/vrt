@@ -15,7 +15,7 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
 
     function Color (options) {
         
-        var context = this, s, n, data = [];
+        var context = this, s, n, data = [], current;
 
         options = options || {};
         
@@ -37,7 +37,62 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
         s = 
         s.append("div")
          .classed("col-sm-8", true)
-         .append("div");
+         .append("div")
+         .classed("colors", true)
+         .on("mouseover", function () {
+            s.select(".control.add")
+             .style("display", null);
+         })
+        .on("mouseout", function () {
+            s.selectAll(".control")
+             .style("display", "none");
+            s.selectAll("label")
+             .style("opacity", null);
+         });
+        
+        if(Array.isArray(options.value)) {
+                
+            s.selectAll("span.control")
+             .data(["add", "subtract"])
+             .enter()
+             .append("span")
+             .attr("class", function (name) {
+                return name;
+             })
+             .classed("control glyphicon", true)
+             .style("display", "none")
+             .on("click", function (name) {
+                
+                var button = this,
+                    values = context.valueOf(),
+                    done   = false,
+                    part;
+               
+                s.selectAll(".color-square")
+                 .each(function (_, i) {
+                        
+                    if(name === "subtract" && (done = this === current))
+                        values.splice(i, 1);
+                     else if(name === "add" && (done = this === current)) {
+                         
+                        part = values.splice(i + 1);
+                         
+                        values.push("#ffffff");
+                        values = values.concat(part);
+                        
+                    }
+                    
+                });
+                
+                if(!done)
+                    values.push("#ffffff");
+                
+                context.set(values);
+                context.emit("modified");
+                                
+             });
+                
+        }
         
         function map_values (v, i) {
                 
@@ -76,21 +131,65 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
         
         function modified (d, i) {
             d.value = this.value;
-            context.emit("modified", d, i);
+            context.emit("modified");
         }
         
         function refresh () {
             
             var c, u;
             
+            s.selectAll(".control")
+             .style("display", "none");
+            
             c = 
             s.selectAll("label")
+             .style("opacity", null)
              .data(data)
              .call(update);
             
             u =
             c.enter()
-             .append("label");
+             .append("label")
+             .on("mouseover", function (_, i) {
+                
+                var plus = s.select(".control.add")
+                            .style("display", null),
+                    
+                    minus = s.select(".control.subtract")
+                            .style("display", null),
+                    
+                    top   = this.offsetTop;
+                
+                current = this;
+                
+                d3.event.stopPropagation();
+                
+                s.selectAll(".color-square")
+                 .each(function (_, j) {
+                    
+                    if(j === i) {
+                        
+                        minus.style({
+                            "left" : this.offsetLeft + "px",
+                            "top"  : (this.offsetTop + this.offsetHeight) + "px"
+                        });
+                        
+                    
+                        plus.style({
+                            "left" : this.offsetLeft + "px",
+                            "top"  : (this.offsetTop - this.offsetHeight) + "px"
+                        });
+                    }
+                    
+                })
+                .style("opacity", function () {
+                    return this.offsetTop !== top ? .05 : null;
+                })
+                  
+             })
+             .on("mouseout", function () {
+                 d3.event.stopPropagation();
+            });
             
             if(classmap[options.size])
                 u.classed(classmap[options.size][1], true);
@@ -116,7 +215,7 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
     }
     
     function getId (d) { return d.id; }
-    function getValue (d) { return d.value;}
+    function getValue (d) { return d.value; }
     
     function update (s) {
             

@@ -3,11 +3,6 @@
     All Rights Reserved
 */
 
-var jsdom     = require("jsdom");
-
-document = jsdom.jsdom("<html><head></head><body></body></html>"),
-window   = document.createWindow();
-
 define([
       'bson'
     , 'jquery'
@@ -145,6 +140,35 @@ function (
                     }
                 }
             },
+            
+            {	
+                path:   '/api/v1/data',
+                method: 'get',
+                sessions: false,
+                secure: false,
+                handler: function(req, res) {
+                    res.send(vrt.data.data());
+                }
+            },
+            
+            {	
+                path:   '/api/v1/data/:path',
+                method: 'post',
+                sessions: false,
+                secure: false,
+                handler: function(req, res) {
+                    req.accepts('application/json');
+                    try {
+                        vrt.data.write(req.params.path, req.body, function(err) {
+                            res.send({error: err ? err : false});
+                        });
+                    }
+                    catch(err) {
+                        res.send({error: err});
+                    }
+                }
+            },
+            
 
             {	
                 path:   '/api/v1/:id',

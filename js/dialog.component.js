@@ -3,9 +3,11 @@
     All Rights Reserved
 */
 
-define(['d3', 'js/random'], function (d3, random) {
+define(['d3', 'js/random', 'eventemitter'], function (d3, random, EventEmitter) {
 
     function DialogComponent (style) {
+        
+        EventEmitter.call(this);
 
         if(typeof style === 'string') {
             
@@ -26,16 +28,24 @@ define(['d3', 'js/random'], function (d3, random) {
                 .classed("dialog-component-" + this.name, true);
             
             this._components = [];
-            this._events     = [];
             this._style      = style;
             
         }
 
     }
     
+    DialogComponent.prototype = Object.create(EventEmitter.prototype);
+    
+    DialogComponent.prototype.validate  = function () {
+        return true;
+    }
     DialogComponent.prototype.refresh  = 
     DialogComponent.prototype.disabled = 
     DialogComponent.prototype.set      = function () {return this;};
+    
+    DialogComponent.prototype.up       = function () {
+        return this.parent;
+    }
     
     DialogComponent.prototype.update = function () {
         

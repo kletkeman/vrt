@@ -20,20 +20,6 @@ require.config({
         'd3': {
           'exports': 'd3'
         },
-        'w2ui' : {
-            'deps': ['jquery'],
-            'exports': 'w2ui',
-            'init' : function () {
-                return {
-                    'w2alert'   : w2alert, 
-                    'w2confirm' : w2confirm,
-                    'w2obj'     : w2obj, 
-                    'w2popup'   : w2popup, 
-                    'w2ui'      : w2ui,
-                    'w2utils'   : w2utils
-                }
-            }
-        },
         'interact': {
           'exports': 'interact'
         },
@@ -56,14 +42,16 @@ require.config({
         'debug'             : '/deps/debug',
         'interact'          : '/deps/interact',
         'text'              : '/deps/text',
-        'default-adapter'   : '/lib/adapters/realtime.adapter'
+        'eventemitter'      : '/deps/eventemitter',
+        'gl-matrix'         : '/deps/gl-matrix',
+        'default-adapter'   : '/lib/adapters/csv.adapter'
     },
      'map': {
         '*': {'types' : 'lib/types/browser'},
     }
 });
 
-require(['guid', 'lib/api', 'lib/stores/clientstore', 'js/viewcontroller'], function (Guid, vrt, ClientStore, ViewController) {
+require(['guid', 'lib/api', 'lib/stores/clientstore', 'js/viewcontroller', 'default-adapter'], function (Guid, vrt, ClientStore, ViewController, Adapter) {
         
     vrt.configure({
         store     : new ClientStore(),
@@ -71,9 +59,10 @@ require(['guid', 'lib/api', 'lib/stores/clientstore', 'js/viewcontroller'], func
         browser   : true
     }).ready(function () {
 
-      var id = chrome && chrome.app.window ? chrome.app.window.current().id : window.location.hash.replace(/^#/, "");
+      var id = typeof chrome === "object" && chrome.app.window ? chrome.app.window.current().id : window.location.hash.replace(/^#/, "");
         
-
+      this.data = new Adapter();
+        
       vrt.log.disableAll();
       vrt.controls.initialize();
 
@@ -82,28 +71,10 @@ require(['guid', 'lib/api', 'lib/stores/clientstore', 'js/viewcontroller'], func
             
             if(id.length)
                 return vrt.controls.open(id);
-            
+              
           });
     
-      return vrt.get(id, function(err, obj) {
-              
-            if(err) throw err;
-              
-            obj.toolbar.remove("expand"), 
-            obj.toolbar.remove("move");
-            obj.toolbar.remove("aligntop");
-              
-              
-            vrt.controls.toolbar.remove("destroy"), 
-            vrt.controls.toolbar.remove("save"),    
-            vrt.controls.toolbar.remove("aligntop");              
-            
-            vrt.controls.open(id);
-            
-            vrt.controls.dock.destroy();              
-            
-          
-      });
+      return vrt.controls.dock.destroy(), vrt.controls.open(id);
  
     });
     

@@ -3,7 +3,7 @@
     All Rights Reserved
 */
 
-define(['js/dialog.component', 'js/random'], function (DialogComponent, random) {
+define(['jquery', 'js/dialog.component', 'js/random'], function ($, DialogComponent, random) {
     
     const classmap = {
 
@@ -49,21 +49,26 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
          .data(options.records || [])
          .text(get_value);
         
+        function is_selected (d) {
+            return d === options.value ? "" : null;
+        }
+        
         s.enter()
          .append("option")
          .text(get_value)
-         .attr("value", get_value);
+         .attr("value", get_value)
+         .attr("selected", is_selected)
         
         s.exit()
          .remove();
         
         this.disabled = function (yes) {
-            s.node.disabled = yes;
+            s.node().disabled = yes;
             return this;
         }
         
-        this.set = function () {
-            
+        this.set = function (value) {
+            return $(s.node().parentNode).val(value, false), this;
         }
         
         this.node = function () {

@@ -103,6 +103,7 @@ function (
         .style({
           'opacity' : visible ? 1 : 0,
           'top' : function () {
+            if(!this.parentNode) return;
             return ( visible ?  box.top : (box.top + height) ) + t.parentNode.scrollTop + 'px';
           }
         });
@@ -189,7 +190,7 @@ function (
                 return ($(window).height() + this.parentNode.scrollTop - this.offsetHeight) + 'px'; 
             }, 
           'left' : '0px'
-      });
+      }), (box && box.reset().freeze());
     };
 
     return (invoke.hide = slide), (invoke.id = id), (invoke.destroy = destroy), (invoke.shortcuts = shortcuts), (invoke.windows = windows), 

@@ -8,7 +8,8 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
     const classmap = {
 
         'large': 'form-group-lg',
-        'small': 'form-group-sm'
+        'small': 'form-group-sm',
+        'smallest': 'form-group-xs'
 
     };
 
@@ -39,22 +40,23 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
          .classed("col-sm-8", true)
          .append("input")
          .attr("type", "checkbox" )
-         .attr("checked", options.checked || false)
+         .attr("checked", options.checked || null)
          .attr("id", id)
          .attr("name", options.name || options.text.toLowerCase().split(" ")[0])
          .classed("form-control", true)
-         .on("change", this.trigger("modified"));
+         .on("change", this.trigger("modified"))
+         .node();
         
         this.set = function (checked) {
-            return s.node().checked = !!checked;
+            return s.checked =  !!checked;
         }
         
         this.node = function () {
-            return s.node().parentNode.parentNode;
+            return s.parentNode.parentNode;
         }
         
         this.valueOf = function () {
-            return s.node().checked;
+            return !!s.checked;
         }
 
     }

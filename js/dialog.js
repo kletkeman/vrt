@@ -10,6 +10,7 @@ define([
     , 'interact'
     , 'js/random'
     , 'd3'
+    , 'eventemitter'
     , 'js/dialog.component'
     // Must preload components, so they can be required synchronously
     , 'js/dialog.component.form'
@@ -26,15 +27,23 @@ define([
     , 'js/dialog.component.alert'
     , 'js/dialog.component.jumbotron'
     , 'js/dialog.component.titlebar'
+    , 'js/dialog.component.datagrid'
+    , 'js/dialog.component.scrollbar'
+    , 'js/dialog.component.tree'
+    , 'js/dialog.component.selector'
+    , 'js/dialog.component.layout'
+    , 'js/dialog.component.buttons'
     
-], function (debug, $, interact, random, d3, DialogComponent) { debug = debug("lib:dialog")
+], function (debug, $, interact, random, d3, EventEmitter, DialogComponent) { debug = debug("lib:dialog")
     
     var   zIndex   = 10999;
     const bindings = [];
                                                                
     function Dialog (classnames, style, options) {
         
-        var background, dialog = this;
+        var background, interactable, opacity, dialog = this;
+        
+        EventEmitter.call(this);
         
         switch(arguments.length) {
             
@@ -65,7 +74,6 @@ define([
         style["z-index"] = ++zIndex;
         
         this._components = [];
-        this._events     = {};
         this._options    = options;
         this._style      = style;
         
@@ -75,7 +83,7 @@ define([
             d3.select(document.body)
             .append("div")
             .classed("dialog-modal", true)
-            .style("z-index", zIndex - 1)
+            .style("z-index", zIndex - 1);
             
             d3.select("html").style("pointer-events", "none");
             
@@ -94,15 +102,32 @@ define([
              .attr("id", (this.id = random()))
              .style(style);
         
+        opacity = this.element.style("opacity");
+        
+        this.element.style("opacity", 0);
+            
+        this.element.transition()
+                    .duration(500)
+                    .style("opacity", opacity);
+        
         if(options.resizable)
+            interactable =
             interact(this.element.node(), {})
-            .resizable(true)
+            .resizable({
+                edges: {
+                    top : true, left: true, bottom: true, right: true
+                }
+            })
             .on("resizemove",  function (event) {
+                
+                var r = event.rect;
 
-                style.width   = parseInt(dialog.element.style('width'))  + event.dx + 'px';
-                style.height  = parseInt(dialog.element.style('height')) + event.dy + 'px';
+                style.width   = r.width  + 'px';
+                style.height  = r.height + 'px';
 
                 refresh();
+                
+                dialog.emit("resize");
 
             });
         
@@ -116,10 +141,18 @@ define([
         window.addEventListener("resize", refresh, false);
                                 
         this.on("destroy", function () {
+            
+            if(options.resizable)
+                interactable.unset();
+            
             return window.removeEventListener("resize", refresh);
         });
+        
+        setTimeout(refresh, 0);
                 
     }
+                                                               
+    Dialog.prototype = Object.create(EventEmitter.prototype);
     
     function insert (cmp, options) {
         
@@ -146,9 +179,10 @@ define([
         
         d3.select(node).style(cmp._style);
         
-        cmp.parent.emit("insert", cmp);
+        if(this instanceof DialogComponent)
+            d3.select(node).classed(cmp.element.attr("class"), true);
         
-        cmp.dialog.refresh();
+        cmp.parent.emit("insert", cmp);
         
     }
     
@@ -247,7 +281,8 @@ define([
                         });
                         
                         break;
-                        
+                    
+                    case 2:
                     case 1:
                         
                         if( !Array.isArray(args[0]) )
@@ -255,7 +290,8 @@ define([
                         
                         this.insert("select", {
                             'text'     : name,
-                            'records'  : args[0]
+                            'records'  : args[0],
+                            'value'    : obj[name]
                         });
                         
                 }
@@ -276,14 +312,16 @@ define([
                         });
                         
                         break;
-                        
+                    
+                    case 3:
                     case 2:
                         
                         this.insert("slider", {
                             'text'   : name,
                             'value'  : obj[name],
                             'min'    : args[0],
-                            'max'    : args[1]
+                            'max'    : args[1],
+                            'step'    : args[2]
                         });
                         
                         break;
@@ -312,8 +350,17 @@ define([
         
         this.nest()
             .on("modified", function () {
-                obj[name] = this.valueOf();
+            
+                var callback = args[args.length - 1];
+            
+                if(typeof callback === "function") {
+                    callback.call(this);
+                }
+                else
+                    obj[name] = this.valueOf();
+            
                 this.dialog.emit("modified", this, name, obj);
+            
             })
             .on("update-request", function () {
                 this.set(obj[name]);
@@ -357,11 +404,26 @@ define([
         
     }
     
+    Dialog.prototype.set = function () {
+        var obj = this.nest();
+        return obj.set.apply(obj, arguments);
+    }
+    
+    Dialog.prototype.disabled = function () {
+        var obj = this.nest();
+        return obj.disabled.apply(obj, arguments);
+    }
+    
+    Dialog.prototype.validate = function () {
+        var obj = this.nest();
+        return obj.validate.apply(obj, arguments);
+    }
+        
     Dialog.prototype.destroy = function () {
         
-        var components = this._components,
+        var components  = this._components,
             parent      = this.parent,
-            component, length;
+            component;
         
         while( (component = components.pop()) )
             component.destroy();
@@ -370,14 +432,7 @@ define([
         
         if(parent && (components = parent._components).indexOf(this) > -1) {
             
-            length = components.length;
-            
-            while ( length-- && (component = components.shift())) {
-                
-                if(component !== this)
-                    components.push(component);
-                
-            }
+            components.splice(components.indexOf(this), 1);
             
             if(parent instanceof Dialog && !components.length)
                 parent.destroy();
@@ -398,6 +453,15 @@ define([
         this.emit("update");
         
         return this;
+    }
+    
+    Dialog.prototype.style = function (style) {
+        
+        if(Array.isArray(style) || typeof style !== "object")
+            throw "TypeError: Argument must be an object";
+        
+        this._style = $.extend(this._style, style);
+        return this.refresh();
     }
     
     Dialog.prototype.refresh = function refresh () {
@@ -423,48 +487,13 @@ define([
             context.emit.apply(context, e.concat(Array.prototype.slice.call(arguments)));
         }
     }
-    
-    Dialog.prototype.emit = function (eventname) {
-        
-        var callbacks;
-        
-        if( (callbacks = this._events[eventname]) )
-            for(var i = 0, len  = callbacks.length; i < len; i++)
-                callbacks[i].apply(this, Array.prototype.slice.call(arguments, 1));
-        
-        return this;
-    }
-    
-    function on (eventname, callback) {
-        
-        var events = this._events;
-        
-        switch(arguments.length) {
-            case 0:
-            case 1:
-            case 2:
-                if(typeof eventname === 'string' && typeof callback === 'function')
-                    break;
-            default:
-                throw "Invalid number of arguments or wrong type(s)";
-        }
-        
-        events = (events[eventname] = events[eventname] || []);
-        
-        if(events.indexOf(callback) === -1)
-            events.push(callback);
-        
-        return this;
-    }
-    
-    Dialog.prototype.on = on;
                                                                    
     Dialog.prototype.each = function () {
         
         var components = this._components, component;
         
         for(var i = 0, len = components.length; i < len; i++) {
-            on.apply(components[i], arguments);
+           components[i].on.apply(components[i], arguments);
         }
         
         return this;
@@ -475,15 +504,14 @@ define([
         return this._components;
     }
     
-    DialogComponent.prototype.on         = Dialog.prototype.on;
     DialogComponent.prototype.trigger    = Dialog.prototype.trigger;
     DialogComponent.prototype.insert     = Dialog.prototype.insert;
     DialogComponent.prototype.add        = Dialog.prototype.add;
     DialogComponent.prototype.nest       = Dialog.prototype.nest;
     DialogComponent.prototype.destroy    = Dialog.prototype.destroy;
-    DialogComponent.prototype.emit       = Dialog.prototype.emit;
     DialogComponent.prototype.each       = Dialog.prototype.each;
     DialogComponent.prototype.components = Dialog.prototype.components;
+    DialogComponent.prototype.refresh    = Dialog.prototype.refresh;
     
     return Dialog;
 

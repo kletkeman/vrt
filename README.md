@@ -1,6 +1,6 @@
 ##VRT
 
-Realtime Data Visualizer for Node.js
+Realtime Data Visualizer
 
 ##License
 
