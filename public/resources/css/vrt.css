@@ -258,7 +258,7 @@ div.widget.container > .widget.toolbar .status {
     color: whitesmoke;
     position: absolute;
     background: rgb(50, 50, 50);
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 16px;
     opacity: .9;
     overflow: auto;

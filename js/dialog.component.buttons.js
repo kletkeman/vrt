@@ -43,18 +43,27 @@ define(['js/dialog.component', 'd3'], function (DialogComponent, d3) {
             .classed("btn-default", function (_, i) { return i !== selectedIndex; })
             .on("click", function (_, i) {
             
-                b.selectAll("button")
-                 .classed("btn-primary-black", false);
-            
-                d3.select(this)
-                  .classed("btn-primary-black", true);
-            
-                context.selectedIndex = i;
+                context.set(i);
                 context.emit("modified");
             
             })
             .append("span")
             .attr("class", classNames);
+        
+        this.set = function (j) {
+            
+            if(j >= buttons.length)
+                return this;
+            
+            b.selectAll("button")
+                 .classed("btn-primary-black", function (_, i) {
+                return j === i;
+            });
+            
+            context.selectedIndex = j;
+            
+            return this;
+        }
 
     }
     

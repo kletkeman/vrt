@@ -1,0 +1,25 @@
+.widget.linegraph {
+    
+}
+.widget.linegraph .brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+  pointer-events: none;
+}
+.icon.zoom:before {
+    content: "\e015";
+}
+.icon.zoom.on:before {
+
+}
+.widget.linegraph text {
+  cursor: pointer;
+  font-size: 7.5pt; 
+}
+.widget.linegraph text.label {
+    opacity: 0;
+}
+.widget.linegraph svg.gutter {
+    border-radius: 0px;
+}

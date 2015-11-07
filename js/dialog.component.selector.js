@@ -113,7 +113,6 @@ define(['js/dialog.component', 'js/dialog.component.datagrid', 'd3', 'interact',
                          
                         f    = 1 / (viewport.width),
                         left = v * f;
-                        
                             
                     }
                 
@@ -459,13 +458,13 @@ define(['js/dialog.component', 'js/dialog.component.datagrid', 'd3', 'interact',
                     
                     length = typeof p1 === "number" ? round(p1 * viewport.width) : (v[1] - v[0]);
                     
-                    v[0] = Math.max(0, Math.min(viewport.width - length, round(p0 * viewport.width)));
+                    v[0] = Math.max(0, Math.min(viewport.width - length, round(p0 * (viewport.width - 1))));
                     v[1] = Math.max(0, Math.min(viewport.width - 1, v[0] + length));
                     
                 }
                 else if (typeof v === "number" || typeof v === "object") {
 
-                    p0 = round(p0 * viewport.width);
+                    p0 = round(p0 * (viewport.width - 1));
 
                     if (typeof v === "object") {
                         

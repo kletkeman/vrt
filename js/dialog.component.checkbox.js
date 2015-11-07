@@ -48,7 +48,7 @@ define(['js/dialog.component', 'js/random'], function (DialogComponent, random) 
          .node();
         
         this.set = function (checked) {
-            return s.checked =  !!checked;
+            return (s.checked = !!checked);
         }
         
         this.node = function () {

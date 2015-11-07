@@ -3,7 +3,9 @@
     All Rights Reserved
 */
 
-define([], function () {
+define(['debug'], function (debug) {
+    
+    debug = debug("lib:viewport");
     
     function ViewPort (left, top, back, right, bottom, front) {
 
@@ -12,12 +14,12 @@ define([], function () {
             depth  = 1;
 
         this.left   = left = left || 0;
-        this.top    = top = top || 0;
+        this.top    = top  = top  || 0;
         this.back   = back = back || 0;
         
-        this.right  = right = right || 1;
+        this.right  = right  = right  || 1;
         this.bottom = bottom = bottom || 1;
-        this.front  = front = front || 1;
+        this.front  = front  = front  || 1;
         
         this.width  = width;
         this.height = height;
@@ -34,14 +36,27 @@ define([], function () {
         this.multiply =
             function (w, h, d) {
 
-                w = w || width;
-                h = h || height;
-
-                this.left   = Math.round(left   * w);
-                this.top    = Math.round(top    * h);
-                this.right  = Math.round(right  * w);
-                this.bottom = Math.round(bottom * h);
-
+                var l = left   * (w = w || width),
+                    t = top    * (h = h || height),
+                    r = right  * w,
+                    b = bottom * h;
+            
+                ;
+                ;
+                
+                this.left   = Math.round(l);
+                this.top    = Math.round(t);
+                this.right  = Math.round(r);
+                this.bottom = Math.round(b);
+            
+                l -= Math.floor(l);
+                t -= Math.floor(t);
+                r -= Math.floor(r);
+                b -= Math.floor(b);
+                
+                this.top  += Math.floor(b - t);
+                this.left += Math.floor(r - l);
+            
                 this.width  = width  = w;
                 this.height = height = h;
             

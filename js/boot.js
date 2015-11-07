@@ -44,7 +44,7 @@ require.config({
         'text'              : '/deps/text',
         'eventemitter'      : '/deps/eventemitter',
         'gl-matrix'         : '/deps/gl-matrix',
-        'default-adapter'   : '/lib/adapters/csv.adapter'
+        'default-adapter'   : '/lib/adapters/json.adapter'
     },
      'map': {
         '*': {'types' : 'lib/types/browser'},

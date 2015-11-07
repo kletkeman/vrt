@@ -43,8 +43,6 @@ define(['js/dialog.component', 'lib/data3', 'js/viewport'], function (DialogComp
         b =
             t.append("tbody");
         
-        viewport.multiply.apply(viewport, data3.dimensions().map(function(d, i) { return d + (i ? 0 : 1)}));
-        
         // Right
         this.insert("scrollbar", {
                 element : t.node(),
@@ -105,9 +103,16 @@ define(['js/dialog.component', 'lib/data3', 'js/viewport'], function (DialogComp
             context.refresh();
         });
         
+        function vp_multiply_map (d, i) { return d + (i ? 0 : 1)}
+        
         function refresh () {
             
-            var node = b.node();
+            var node = b.node(), dimensions = data3.dimensions();
+            
+            if(dimensions[0] + dimensions[1] + dimensions[2] === 0)
+                return;
+            
+            viewport.multiply.apply(viewport, data3.dimensions().map(vp_multiply_map));
             
             viewport.zoom( Math.floor( Math.max(1, viewport.width / (node.offsetWidth / 100) ) ) );
             
