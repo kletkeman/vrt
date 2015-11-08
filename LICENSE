@@ -26,13 +26,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-=======
-
-This license applies to all parts of VRT that are not externally
-maintained libraries. The externally maintained libraries used by VRT are:
-
-D3     - http://github.com/mbostock/d3
-jQuery - https://github.com/jquery/jquery
-W2UI   - https://github.com/vitmalina/w2ui
-
-=======
