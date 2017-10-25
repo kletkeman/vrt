@@ -1,11 +1,10 @@
 /*
-    VRT - Copyright © 2014 Odd Marthon Lende
+    VRT - Copyright © 2017 Odd Marthon Lende
     All Rights Reserved
 */
 
+import * as d3 from 'd3';
 
-define(['d3'], function (d3) {
-    return function random () {
-      return d3.shuffle("ABCDEFGHIJKLMNOPGRSTKLMNOPQRSTUVWZabcdefghijklmnopgrstklmnopqrstuvwz".split("")).join("").substr(0,16);
-    };
-});
+export function random () {
+  return d3.shuffle("ABCDEFGHIJKLMNOPGRSTKLMNOPQRSTUVWZabcdefghijklmnopgrstklmnopqrstuvwz".split("")).join("").substr(0,16);
+};

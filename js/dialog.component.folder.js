@@ -1,56 +1,50 @@
 /*
-    VRT - Copyright © 2014 Odd Marthon Lende
+    VRT - Copyright © 2017 Odd Marthon Lende
     All Rights Reserved
 */
 
-define(['js/dialog.component'], function (DialogComponent) {
+import {DialogComponent} from "./dialog.component.js";
 
-    function Folder(options) {
+export function Folder(options) {
 
-        var u, s, collapsed;
-        
-        options = options || {};
+    var u, s, collapsed;
 
-        DialogComponent.call(this, options.style);
-        
-        u = s = 
-        this.element
-            .classed("form-horizontal", true)
-            .classed("collapsed", (collapsed = !!options.collapsed));
-             
-        u.append("h6")
-         .classed("title", true)
-         .text(options.text)
-         .on("click", this.trigger("collapse"))
-         .append("span")
-         .classed("glyphicon", true);
-             
-        u =
-        u.append("ul");
-        
-        this.on("insert", function (comp) {
-            
-            d3.select(comp.node()).remove();
-            
-            u.append("li")
-             .append(function () {
-                return comp.node();
-            });
+    options = options || {};
+
+    DialogComponent.call(this, options.style, "folder");
+
+    u = s =
+    this.element
+        .classed("form-horizontal", true)
+        .classed("collapsed", (collapsed = !!options.collapsed));
+
+    u.append("h6")
+     .classed("title", true)
+     .text(options.text)
+     .on("click", this.trigger("collapse"))
+     .append("span")
+     .classed("glyphicon", true);
+
+    u =
+    u.append("ul");
+
+    this.on("insert", function (comp) {
+
+        d3.select(comp.node()).remove();
+
+        u.append("li")
+         .append(function () {
+            return comp.node();
         });
-        
-        function collapse () {
-            s.classed("collapsed", (collapsed = !collapsed));
-            this.dialog.refresh();
-        }
-        
-        this.on("collapse", collapse);
+    });
 
+    function collapse () {
+        s.classed("collapsed", (collapsed = !collapsed));
+        this.dialog.refresh();
     }
 
-    Folder.prototype = new DialogComponent("folder");
-    
-    
+    this.on("collapse", collapse);
 
-    return Folder;
+}
 
-})
+Folder.prototype = Object.create(DialogComponent.prototype);

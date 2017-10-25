@@ -1,22 +1,18 @@
 /*
-    VRT - Copyright © 2014 Odd Marthon Lende
+    VRT - Copyright © 2017 Odd Marthon Lende
     All Rights Reserved
 */
 
-define(['js/dialog.component'], function (DialogComponent) {
+import {DialogComponent} from "./dialog.component.js";
 
-     function HTML (options) {
-        
-        options = options || {};
-        
-        DialogComponent.call(this, options.style);
-        
-        this.element.html(options.html);
-        
-    }
-                                 
-    HTML.prototype = new DialogComponent("html");
+export function HTML (options) {
 
-    return HTML;
+   options = options || {};
 
-})
+   DialogComponent.call(this, options.style, "html");
+
+   this.element.html(options.html);
+
+}
+
+HTML.prototype = Object.create(DialogComponent.prototype);

@@ -1,0 +1,32 @@
+div.layoutgrid {
+  display: block;
+  position: absolute;
+}
+
+div.layoutgrid div.top, div.layoutgrid div.bottom  {
+  display: block;
+  margin: 0px;
+  padding: 0px;
+}
+
+div.layoutgrid div.top  {
+
+}
+
+div.layoutgrid div.bottom  {
+
+}
+
+div.layoutgrid div > div.frame {
+  display: inline-block;
+  margin: 0px;
+  vertical-align: top;
+  text-align: left;
+}
+
+div.frame div.column {
+  display: inline-block;
+  margin: 0px;
+  padding: 0px;
+  vertical-align: top;
+}
